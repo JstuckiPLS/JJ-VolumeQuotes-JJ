@@ -1,0 +1,13 @@
+<div class="addrList" data-ng-form="addressSelectForm">
+    <span class="addrListArrow">
+        <button type="button" data-ng-click="showTypeaheadList();" data-ng-disabled="ngDisabledVal">
+            <i class="icon-arrow-down"></i>
+        </button>
+    </span>
+    <span class="addrListInputParent">
+        <input type="text" class="addrListInput"
+            data-ng-model="selectedAddress" required data-typeahead-auto-select="true"
+            data-ng-disabled="ngDisabledVal"
+            data-pls-typeahead="address as address.address.addressName for address in findAddress($viewValue)"/>
+    </span>
+</div>

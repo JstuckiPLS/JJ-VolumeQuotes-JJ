@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="30 seconds">
+  <appender name="StdOut" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <appender name="File" class="ch.qos.logback.core.rolling.RollingFileAppender">
+    <file>target/logs/tests.log</file>
+    <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+      <!-- rollover daily -->
+      <fileNamePattern>target/logs/tests-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+      <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+        <maxFileSize>5MB</maxFileSize>
+      </timeBasedFileNamingAndTriggeringPolicy>
+    </rollingPolicy>
+    <encoder>
+      <pattern>%d{yyyy-MM-dd_HH:mm:ss} [%thread] %-5level %c - %msg%n</pattern>
+    </encoder>
+  </appender>
+
+    <property name="traceSQL" value="${profile.logging.traceSQL}" />
+    <if condition='"true".equals(property("traceSQL"))'>
+        <then>
+            <logger name="org.hibernate.type" level="TRACE" />
+            <logger name="org.hibernate.SQL" level="DEBUG" />
+            <logger name="org.hibernate.jdbc" level="DEBUG" />
+            <logger name="org.hibernate.hql" level="DEBUG" />
+            <logger name="org.springframework.jdbc.core" level="TRACE" />
+        </then>
+    </if>
+
+  <logger name="com.pls" level="ALL" />
+
+  <root level="INFO">
+    <appender-ref ref="StdOut" />
+    <appender-ref ref="File" />
+  </root>
+</configuration>

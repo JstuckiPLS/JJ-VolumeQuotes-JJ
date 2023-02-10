@@ -1,0 +1,91 @@
+<div data-ng-controller="AddEditLocationCtrl">
+    <form name="addEditLocationForm" novalidate class="margin0">
+        <div id="editLocationDialog" data-pls-modal="editLocationModel.showLocationDialog" class="modalWidth7 modalHeight7" 
+                data-close="closeLocationDialog()" data-enter-allowed="{{addEditLocationForm.$valid}}" data-enter="saveLocation()">
+            <div class="modal-header">
+                <h4 data-ng-if="!editLocationModel.location.id">Add Location</h4>
+                <h4 data-ng-if="editLocationModel.location.id">
+                    <span data-ng-bind ="changeLabelAccordingToPermission('CUSTOMER_PROFILE_VIEW','View Location','Edit Location')"></span>
+                </h4>
+            </div>
+            <div class="modal-body" data-ng-if="editLocationModel.showLocationDialog"
+                    data-pls-form-disabled="!$root.isFieldRequired('CUSTOMER_PROFILE_VIEW')">
+                <div class="row-fluid">
+                    <label class="control-label span4" for="locationNameInp"><b>Location Name:</b></label>
+                    <div class="span7">
+                        <input id="locationNameInp" class="span12" type="text"
+                               data-ng-model="editLocationModel.location.name" required maxlength="50">
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <label class="control-label span4" for="accountExecutiveInp">Account Executive:</label>
+                    <div class="span7">
+                        <select id="accountExecutiveInp" class="span12 a_accExec" data-ng-required="false" data-ng-model="editLocationModel.location.accExecPersonId"
+                                data-ng-options="ae.id as ae.name for ae in editLocationModel.accountExecutives" data-ng-change="resetAccExecStartDate()" 
+                                data-pls-selection-validator data-option-list="editLocationModel.accountExecutives">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row-fluid" data-ng-if="$root.isFieldRequired('CUSTOMER_PROFILE_VIEW')">
+                    <label class="control-label span4 label-middle">AE Effective Dates:</label>
+                    <div class="span7 form-inline ">
+                        <label class="control-label inline label-middle"
+                            for="accountExecutiveStartDate">Start:</label>
+                        <div class="input-append">
+                            <input name="dateField" type="text"
+                                id="accountExecutiveStartDate"
+                                data-ng-model="editLocationModel.location.accExecStartDate"
+                                data-max-date="editLocationModel.location.accExecEndDate" data-pls-datepicker
+                                class="input-small a_accountExecutiveStartDate" 
+                                data-ng-disabled="checkAccExecSelected()"
+                                data-ng-required="!checkAccExecSelected()"/>
+                            <button type="button" class="btn" data-toggle="datepicker" data-ng-disabled="checkAccExecSelected()">
+                                <i class="icon-calendar"></i>
+                            </button>
+                        </div>
+                        <label class="control-label inline label-middle"
+                            for="accountExecutiveEndDate">End:</label>
+                        <div class="input-append">
+                            <input name="dateField" type="text" id="accountExecutiveEndDate"
+                                data-ng-model="editLocationModel.location.accExecEndDate"
+                                data-min-date="editLocationModel.location.accExecStartDate" data-pls-datepicker
+                                class="input-small a_accountExecutiveEndDate" 
+                                data-ng-disabled="checkAccExecSelected()"
+                                data-ng-required="!checkAccExecSelected()"/>
+                            <button type="button" class="btn" data-toggle="datepicker" data-ng-disabled="checkAccExecSelected()">
+                                <i class="icon-calendar"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <label class="control-label span4" for="billToInp">Bill To:</label>
+                    <div class="span7">
+                        <select id="billToInp" class="span12 a_accExec" data-ng-model="editLocationModel.location.billToId"
+                                data-ng-options="bt.key as bt.value for bt in editLocationModel.billTos">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <label class="checkbox offset4" for="isDefault">
+                        <input id="isDefault" type="checkbox" data-ng-model="editLocationModel.location.defaultNode" data-ng-disabled="true">
+                        Default
+                    </label>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn a_cancelButton" data-ng-click="closeLocationDialog()">
+                    <span data-ng-bind="changeLabelAccordingToPermission('CUSTOMER_PROFILE_VIEW','Close','Cancel')"></span>
+                </button>
+                <button type="button" 
+                        class="btn btn-primary a_okButton" 
+                        data-ng-click="saveLocation()" data-ng-disabled="addEditLocationForm.$invalid" 
+                        data-ng-if="$root.isFieldRequired('CUSTOMER_PROFILE_VIEW')">
+                    OK
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

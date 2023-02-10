@@ -1,0 +1,39 @@
+<div data-ng-controller="AccountHistoryCalendarCtrl" data-ng-init="init()">
+    <div>
+        <div class="row-fluid form-inline">
+            <div class="span8">
+                <div class="form-inline">
+                    <span data-ng-style="{backgroundColor: account.monthlyColor}">Monthly shipments/Costs</span>
+                    <span data-ng-style="{backgroundColor: account.weeklyColor}">Weekly shipments/Costs</span>
+                </div>
+                <strong>
+                    Total Amount/Costs
+                </strong>
+            </div>
+            <div class="span4 control-group text-right">
+                <label class="control-label" for="basedOnSelect">Based on:</label>
+                <select id="basedOnSelect" data-ng-model="account.basedOn" data-ng-options="value for value in account.basedOnValues" data-ng-change="updateCalendarIndex()"></select>
+            </div>
+        </div>
+        <div>
+            <div id="account-calendar" data-ui-calendar="calendarData.options" class="calendar" data-ng-model="calendarData.sources" data-equals-tracker="calendarData.index"></div>
+        </div>
+        <div data-pls-month-picker data-linking-element=".fc-header-title" data-current-month-year="currentMonthYear" data-callback-function="updateCalendar"></div>
+    </div>
+    <div id="detailsDialog" data-pls-modal="detailsDialog.shouldBeOpen" data-close="detailsDialog.close()"
+         class="modalWidth12" data-enter="detailsDialog.close()">
+
+        <div class="modal-header">
+            <h4>Calendar Shipment Details</h4>
+        </div>
+
+        <div class="modal-body">
+            <div data-ng-include="'pages/content/account/account-calendar-details.html'"></div>
+        </div>
+
+        <div class="modal-footer">
+            <button type="button" class="btn a_closeButton" data-ng-click="detailsDialog.close()">Close</button>
+        </div>
+    </div>
+    <div data-ng-include="'pages/content/quotes/shipment-details.html'"></div>
+</div>

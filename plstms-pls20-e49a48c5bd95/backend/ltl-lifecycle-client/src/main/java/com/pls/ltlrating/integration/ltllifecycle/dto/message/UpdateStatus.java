@@ -1,0 +1,24 @@
+package com.pls.ltlrating.integration.ltllifecycle.dto.message;
+
+public enum UpdateStatus {
+
+    IN_TRANSIT,
+    AT_PICKUP,
+    AT_TERMINAL,
+    AT_DELIVERY,
+    OUT_TO_STOP,
+    OUT_FOR_DELIVERY,
+    DELIVERED,
+    CANCELED,
+    DELIVERED_EXCEPTION,
+    TRACK_TIMEOUT,
+    INFO,
+    INFO_DELAYED,
+    INFO_DELIVERY,
+    INFO_MISSED_DELIVERY,
+    INFO_DEPARTURE,
+    INFO_MISSED_DEPARTURE,
+    INFO_PICKUP,
+    INFO_MISSED_PICKUP,
+    INFO_DELIVERY_APPOINTMENT
+}

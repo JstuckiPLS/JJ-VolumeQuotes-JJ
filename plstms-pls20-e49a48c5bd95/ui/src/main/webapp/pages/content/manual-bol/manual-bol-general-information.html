@@ -1,0 +1,104 @@
+<div data-pls-ignore-location-change-check="{{isFormClean}}" data-pls-input-cleaning>
+    <div class="row-fluid">
+        <h4 class="span2 text-center">Create Manual BOL:</h4>
+
+        <div class="span10">
+            <data-pls-breadcrumb data-all-pages="generalInfoPage.bolModel.steps" data-current-page="general-information"></data-pls-breadcrumb>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span3 form-horizontal">
+            <span class="span4 text-right"><strong>Type:</strong></span>
+            <span class="span8"><strong>LTL</strong></span>
+        </div>
+        <div class="span9">
+            <div class="form-inline control-group row-fluid">
+                <div class="span2 text-right">
+                    <label class="control-label" for="pickupDate">Pickup Date:</label>
+                </div>
+                <div class="span1">
+                    <label class="control-label input-small" for="pickupDate">
+                        <strong>{{parseISODate(generalInfoPage.bolModel.shipment.finishOrder.pickupDate) | date:'EEEE'}}</strong>
+                    </label>
+                </div>
+                <div class="span3">
+                    <div class="input-append">
+                        <input name="dateField" type="text" id="pickupDate"
+                               data-ng-model="generalInfoPage.bolModel.shipment.finishOrder.pickupDate"
+                               data-pls-datepicker
+                               data-max-date="generalInfoPage.maxPickupDate"
+                               class="input-small a_pickupDate"
+                               data-ng-required="true"/>
+                        <button type="button" class="btn" data-toggle="datepicker">
+                            <i class="icon-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="row-fluid">
+                <div class="span4 text-right"><strong>Status:</strong></div>
+                <div class="span8">
+                    <label>Customer Truck</label>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span4 text-right"><strong>Customer:</strong></div>
+                <div class="span8">
+                    <div data-pls-customer-lookup="generalInfoPage.bolModel.selectedCustomer" data-pls-customer-lookup-required></div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span4 text-right"><strong>Carrier:</strong></div>
+                <div class="span6">
+                    <input id="inputSCAC" class="span12 a_carrier" data-ng-required="generalInfoPage.bolModel.shipment.status !== 'OPEN'"
+                           data-pls-scac-search="generalInfoPage.bolModel.carrierTuple"/>
+                </div>
+                <div class="span2">
+                    <button type="button" class="btn span12" data-ng-click="openTerminalInfoModalDialog()" data-not-disable-me
+                            title="Select Carrier, Origin and Destination to see Carrier Terminal Information"
+                            data-ng-disabled="!generalInfoPage.bolModel.carrierTuple || !generalInfoPage.bolModel.shipment.selectedProposition.carrier || !generalInfoPage.bolModel.shipment.selectedProposition.carrier.scac || !generalInfoPage.bolModel.shipment.originDetails.zip || !generalInfoPage.bolModel.shipment.originDetails.zip || !generalInfoPage.bolModel.shipment.destinationDetails.zip || !generalInfoPage.bolModel.shipment.destinationDetails.zip.zip">
+                        <i class="icon-road"></i>
+                    </button>
+                </div>
+                <div data-ng-include="'pages/content/trackingBoard/terminal-info.html'"></div>
+            </div>
+
+            <div class="row-fluid">
+                <strong class="span4 label-middle text-right">Freight Bill Pay To:</strong>
+
+                <div data-pls-freight-bill-pay-to data-selected-customer="generalInfoPage.bolModel.selectedCustomer" data-is-manual-bol="true"
+                     data-shipment="generalInfoPage.bolModel.shipment" class="span8">
+                </div>
+            </div>
+        </div>
+        <div class="span9">
+            <div class="row-fluid a_products">
+                <div data-pls-quote-products="generalInfoPage.bolModel.shipment" data-rate-quote-dictionary="generalInfoPage.dictionary"
+                     data-selected-customer="generalInfoPage.bolModel.selectedCustomer" data-parent-dialog="parentDialog"
+                     data-description-required="true"></div>
+            </div>
+            <br/>
+
+            <div class="row-fluid">
+                <strong>Line Items :</strong> {{generalInfoPage.bolModel.shipment.finishOrder.quoteMaterials.length}} of {{maxCountOfProducts}}
+            </div>
+        </div>
+    </div>
+
+    <div data-pls-add-edit-product data-selected-customer="generalInfoPage.bolModel.selectedCustomer"></div>
+
+    <div class="row-fluid">
+        <div class="offset10 span2">
+            <button type="button" class="span6 btn" data-ng-click="clearAll();">Clear All</button>
+            <button type="button" class="span6 btn" data-ng-click="navigateTo()" data-ng-disabled="!canNextStep()">Next
+                <i class="icon-chevron-right"></i>
+            </button>
+        </div>
+    </div>
+</div>

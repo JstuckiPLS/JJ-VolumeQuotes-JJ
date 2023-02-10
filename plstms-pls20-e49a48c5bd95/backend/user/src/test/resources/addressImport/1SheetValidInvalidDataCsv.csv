@@ -1,0 +1,5 @@
+Name,Code,Contact Name,Country Code,Address 1,Address 2,City,St/Province,Zip/Postal Code,Phone,Fax,E-mail,Shared (yes or no)
+TestAddress1,9874563211,Name1,USA,address11,address21,city1,NY,65445,1(23)4567890,9(87)6543210,a@a.com,yes
+TestAddress2,9874563212,,USA,address12,,,,65445,,7894560,a@a.com,yes
+TestAddress3,,Name3,USA,address13,address23,city3,NY,65445,7(89)4561320,,a@a.com,no
+TestAddress4,9874563214,Name4,USA,address14,,city4,NY,65445,,7894560,a@a.com,no

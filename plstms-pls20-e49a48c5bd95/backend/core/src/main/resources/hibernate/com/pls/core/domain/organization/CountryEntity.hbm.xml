@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.core.domain.organization.CountryEntity.Q_GET_ALL_BY_STATUS">
+        <![CDATA[
+                select c from CountryEntity c where c.status = :status
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.organization.CountryEntity.Q_GET_ID_BY_SHORT_CODE">
+        <![CDATA[
+                select id from CountryEntity where shortCountryCode = :shortCountryCode
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.organization.CountryEntity.Q_GET_SHORT_CODE_BY_ID">
+        <![CDATA[
+                select shortCountryCode from CountryEntity where id = :fullCountryCode
+        ]]>
+    </query>
+</hibernate-mapping>

@@ -1,0 +1,93 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--Created with Liquid XML 2015 Designer Edition 13.1.0.5909 (http://www.liquid-technologies.com)-->
+<xsd:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://com.pls.load" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:include schemaLocation="EDI204.xsd" />
+    <xsd:include schemaLocation="EDI214.xsd" />
+    <xsd:include schemaLocation="EDI990.xsd" />
+    <xsd:include schemaLocation="EDI997.xsd" />
+    <xsd:include schemaLocation="LOAD_UPDATE.xsd" />
+    <xsd:element name="LtlLoadMessageRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="LtlLoadMessage" xmlns:q1="http://com.pls.load" type="q1:LtlLoadMessage" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="LtlLoadMessageResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Response" type="xsd:string" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="LtlLoadTrackingRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="LtlLoadTracking" xmlns:q2="http://com.pls.load" type="q2:LTLLoadTracking" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="LtlLoadTrackingResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Response" type="xsd:string" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="LtlLoadTenderAckRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="LtlLoadTenderAck" xmlns:q3="http://com.pls.load" type="q3:LTLLoadTenderAck" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="LtlLoadTenderAckResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Response" type="xsd:string" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="LtlAcknowledgementRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="LtlAcknowledgment" xmlns:q4="http://com.pls.load" type="q4:LTLAcknowledgement" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="LtlAcknowledgementResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Response" type="xsd:string" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="LtlVendorInvoiceRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="LtlVendorInvoice" xmlns:q5="http://com.pls.load" type="q5:LtlLoadMessage"/>
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="LtlVendorInvoiceResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Response" type="xsd:string" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="LtlLoadUpdateRequest">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="LtlLoadUpdates" xmlns:q6="http://com.pls.load" type="q6:LtlLoadUpdates" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+    <xsd:element name="LtlLoadUpdateResponse">
+        <xsd:complexType>
+            <xsd:sequence>
+                <xsd:element name="Response" type="xsd:string" />
+            </xsd:sequence>
+        </xsd:complexType>
+    </xsd:element>
+</xsd:schema>

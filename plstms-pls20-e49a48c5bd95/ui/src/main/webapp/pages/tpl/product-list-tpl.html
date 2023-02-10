@@ -1,0 +1,10 @@
+<div id="productList" class="input-append span12">
+    <input type="text" data-ng-required="mandatory" class="span11" data-ng-model="selectedProduct"  data-ng-disabled="!customerId" data-typeahead-min-length="2"
+           data-pls-typeahead="product as product.label for product in findProducts(customerId, $viewValue, commodityClass, hazmatOnly)"
+           tabindex="{{getProductListIndex()}}"/>
+    <div class="btn-group">
+        <button type="button" class="btn span12" data-ng-click="showTypeaheadList();" data-ng-disabled="!customerId" tabindex="{{getProductListIndex()}}">
+           <i class="icon-arrow-down"></i>
+        </button>
+    </div>
+</div>

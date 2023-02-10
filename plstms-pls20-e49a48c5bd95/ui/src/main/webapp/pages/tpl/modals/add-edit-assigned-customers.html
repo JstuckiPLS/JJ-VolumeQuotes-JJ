@@ -1,0 +1,52 @@
+<div data-pls-modal="isAssignedCustomersDialogOpen" data-close="cancel()" class="modalWidth6">
+    <div class="modal-header">
+        <h4>Add Customers</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row-fluid">
+            <input name="searchField" class="span6" type="text" placeholder="Search" data-ng-model="customerFilter"/>
+        </div>
+
+        <div class="row-fluid">
+            <div class="span6">
+                <div class="row-fluid">
+                    <div data-ng-grid="customerListGrid" data-ng-dblclick="addCustomer()"
+                     class="gridStyle gridHeight3 pls-grid-responsive span12"></div>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="row-fluid">
+                    <div data-ng-grid="applicableCustomerListGrid" data-ng-dblclick="removeCustomer()"
+                         class="gridStyle gridHeight3 pls-grid-responsive span12"></div>
+                </div>
+            </div>
+        </div>
+        <br/>
+
+        <div class="row-fluid">
+            <div class="span3">
+                <button type="button" class="btn" data-ng-click="addAllCustomers()" data-ng-disabled="customerList.length === 0">Add All</button>
+            </div>
+            <div class="span3 text-right">
+                <button data-ng-click="addCustomer()" data-ng-disabled="customerList.length === 0 || selectedCustomers.length === 0" type="button"
+                        class="btn">Add
+                    <i class="icon-arrow-right"></i>
+                </button>
+            </div>
+            <div class="span3">
+                <button type="button" class="btn" data-ng-click="removeAllCustomers()" data-ng-disabled="applicableCustomers.length === 0">Remove All
+                </button>
+            </div>
+            <div class="span3 text-right">
+                <button data-ng-disabled="applicableCustomers.length === 0 || selectedApplicableCustomers.length === 0" type="button" class="btn"
+                        data-ng-click="removeCustomer()">Remove
+                    <i class="icon-trash"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn cancel" data-ng-click="cancel()">Cancel</button>
+        <button type="button" class="btn btn-primary save" data-ng-click="save()">Ok</button>
+    </div>
+</div>

@@ -1,0 +1,15 @@
+<div class="row-fluid">
+    <span class="text-info">Double click on the cell to edit "Job #"</span>
+</div>
+<div data-pls-job-numbers class="row-fluid">
+    <div data-ng-grid="jobGrid" data-ng-class="{'pls-required': required && !shipment.finishOrder.jobNumbers.length}"
+         class="pls-grid-responsive gridStyle gridHeight1_2 span8 text-center"></div>
+
+    <div class="span4">
+        <button type="button" data-ng-click="addJob()" data-ng-disabled="!shipment.billTo || disabledIdentifier" class="btn btn-block span12">
+            Add</button>
+        <button type="button" data-ng-click="removeJobs()" data-ng-disabled="!shipment.billTo || disabledIdentifier"
+                class="btn btn-block span12 pls-margin-left-0">Delete
+        </button>
+    </div>
+</div>

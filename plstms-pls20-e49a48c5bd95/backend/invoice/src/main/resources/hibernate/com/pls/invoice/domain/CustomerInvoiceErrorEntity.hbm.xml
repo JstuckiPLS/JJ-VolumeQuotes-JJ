@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.invoice.domain.CustomerInvoiceErrorEntity.Q_ACTIVE_ERRORS_QUERY">
+        <![CDATA[
+                from CustomerInvoiceErrorEntity where status='A'
+        ]]>
+    </query>
+    <query name="com.pls.invoice.domain.CustomerInvoiceErrorEntity.Q_ACTIVE_ERRORS_COUNT_QUERY">
+        <![CDATA[
+                select count(e) from CustomerInvoiceErrorEntity e where e.status='A'
+        ]]>
+    </query>
+    <query name="com.pls.invoice.domain.CustomerInvoiceErrorEntity.Q_INVOICE_DETAILS">
+        <![CDATA[
+                select distinct hist.invoiceType as invoiceType,
+                    coalesce(a.groupInvoiceNumber, cd.groupInvoiceNumber) as invoiceNumber
+                from CustomerInvoiceErrorEntity e
+                join e.invoiceHistoryItems hist with hist.releaseStatus = 'S' or hist.releaseStatus = 'R'
+                left join hist.adjustment a
+                left join hist.load l
+                left join l.activeCostDetails cd
+                where e.id = :errorId
+                    and e.status='A'
+                    and coalesce(e.sentEmail, 'N') = 'N'
+                    and coalesce(a.groupInvoiceNumber, cd.groupInvoiceNumber) is not null
+        ]]>
+    </query>
+</hibernate-mapping>

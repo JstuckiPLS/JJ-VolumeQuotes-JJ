@@ -1,0 +1,125 @@
+<div class="row-fluid">
+    <div class="span4">
+        <div class="row-fluid">
+            <span class="span4 text-right">Customer:</span>
+            <span class="span8" data-ng-bind="customerName"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Carrier:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.carrier.name"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Carrier ID:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.carrier.id"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Actual Pickup Date:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.actualPickupDate | date:$root.wideAppDateFormat"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Est. Delivery Date:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.estimatedDeliveryDate | date:$root.wideAppDateFormat"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Actual Delivery Date:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.actualDeliveryDate | date:$root.wideAppDateFormat"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Vendor Bill #:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.vendorBillNumber"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Vendor Bill Date:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.vendorBillDate | date:$root.wideAppDateFormat"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Amount:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.amount | plsCurrency"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Pay Terms:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.payTerm | paymentTerms"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Origin Name:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.originAddress.name"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">City, ST, ZIP:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.originAddress.zip | zip"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Origin Address:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.originAddress.address1"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Destination Name:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.destinationAddress.name"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">City, ST, ZIP:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.destinationAddress.zip | zip"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Destination Address:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.destinationAddress.address1"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">BOL:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.bol"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Pro#:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.pro"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">PO #:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.po"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">PU #:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.pu"></span>
+        </div>
+        <div class="row-fluid">
+            <span class="span4 text-right">Shipper Ref #:</span>
+            <span class="span8" data-ng-bind="vendorBillModel.vendorBill.quoteId"></span>
+        </div>
+    </div>
+    <div class="span8">
+        <div class="row-fluid" data-ng-show="vendorBillModel.showControls">
+            <div class="span12">
+                <span class="span7"></span>
+                <button type="button" class="btn span3" data-ng-click="vendorBillModel.detachVendorBill()" data-ng-disabled="vendorBillModel.allowChangeVednorBill"
+                    data-ng-show="vendorBillModel.detachAllowed">Detach Vendor Bill</button>
+                <span class="span3" data-ng-hide="vendorBillModel.detachAllowed"></span>
+                <button type="button" class="btn span2" data-ng-disabled="vendorBillModel.shipmentStatus === 'OPEN' || vendorBillModel.allowChangeVednorBill"
+                    data-ng-show="$root.isFieldRequired('BOARD_CAN_ADD_VENDOR_BILL')" data-ng-click="vendorBillModel.addVendorBill()">Add Vendor Bill</button>
+            </div>
+        </div>
+        <div class="row-fluid"><span>&nbsp;</span></div>
+        <div class="row-fluid">
+            <div class="gridStyle span12 gridHeight2" data-ng-grid="lineItemsGridOptions"></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span9">
+               Total Weight: {{totals.weight | number}} lbs
+            </div>
+            <div class="span3">
+               Q-Ty: {{totals.quantity}}
+            </div>
+        </div>
+        <div class="row-fluid">
+            <strong>Line Items :</strong> {{vendorBillModel.vendorBill.lineItems ? vendorBillModel.vendorBill.lineItems.length : 0}}
+        </div>
+        <div class="row-fluid"><span>&nbsp;</span></div>
+        <div class="row-fluid">
+            <div class="gridStyle pull-right span8 gridHeight1" data-ng-grid="costItemsGridOptions"></div>
+        </div>
+        <div class="row-fluid"><span>&nbsp;</span></div>
+        <div class="row-fluid">
+            <div class="text-right">
+                <strong>Total Cost:</strong> {{vendorBillModel.totalCost | plsCurrency}}
+            </div>
+        </div>
+    </div>
+</div>

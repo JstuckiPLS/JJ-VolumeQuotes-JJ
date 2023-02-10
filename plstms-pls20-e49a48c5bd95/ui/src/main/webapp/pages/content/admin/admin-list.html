@@ -1,0 +1,109 @@
+<div id="dataList" data-ng-controller="AdminController">
+            <div class="tabbable tabbable-bordered">
+            <ul class="nav nav-tabs">
+                <li class="pls-menu-item"><a href="#/admin/logs">B2Bi Logs</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active"><div class="row-fluid">
+     <div class="form-inline" data-ng-form="plsLogSearchForm">
+            <div class="span12">
+                <div class="span12 well well-small" data-pls-input-cleaning>
+                    <div class="span2">
+                        <div class="row-fluid">
+                            <label class="control-label span4 label-middle" for="loadIdInput">Load ID: </label>
+                            <input type="text" id="loadIdInput" class="span8" data-ng-model="loadId" >
+                        </div>
+                        <div class="row-fluid">
+                            <label class="control-label span4 label-middle" for="bolNumberInput">BOL: </label>
+                            <div class="span8">
+                                <input type="text" class="span10" id="bolNumberInput" data-ng-model="bolNumber">
+                        
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="span2">
+                       <div class="row-fluid">
+                            <label class="control-label span5 label-middle" for="shipmentNumInput">Shipment Num: </label>
+                            <input type="text" id="shipmentNumInput" class="span7" data-ng-model="shipmentNum">
+                        </div>
+                        <div class="row-fluid">
+                            <label class="control-label span5 label-middle" for="customerNameInput">Customer: </label>
+                            <div class="span7">
+                                <div data-pls-customer-lookup="customer" id="customerInput" data-count="5" data-show-all-statuses="true"></div>
+                            </div>
+                        </div>
+                        
+                    </div>
+                    <div class="span2">
+                        <div class="row-fluid">
+                            <label class="control-label span4 label-middle" for="messageTypeInput">Message Type: </label>
+                            <select id="messageTypeInput" class="span8" data-ng-model="messageType" >
+                                <option data-ng-repeat="item in items" value="{{item.type}}">{{item.desc}}</option>
+                                <option value=""></option>
+                            </select>
+                        </div>
+                        <div class="row-fluid">
+                            <label class="control-label span4 label-middle" for="carrierIdInput">Carrier: </label>
+                            <input id="carrierInput" class="span8" data-pls-scac-search="carrier"/>
+                        </div>
+                    </div>                    
+                    <div class="span6">
+                        <div class="row-fluid">
+                            <div class="control-group form-inline">
+                                <label class="control-label span2 label-middle">Created Date:</label>
+                                <div class="controls span8">
+                                    <label class="control-label inline label-middle" for="inputFromDate">From:</label>
+                                    <div class="input-append">
+                                        <input name="dateField" type="text" id="inputFromDate" data-ng-model="fromDate" data-date-format="mm/dd/yy"
+                                            data-ng-required="toDate || (selectedCustomer && !invoiceNumber && !bolNumber && !proNumber && !loadId)"
+                                            data-min-date="minFromDate" data-max-date="maxFromDate" data-pls-datepicker class="input-small"/>
+                                        <button type="button" class="btn" data-toggle="datepicker" data-ng-required="true">
+                                            <i class="icon-calendar"></i>
+                                        </button>
+                                    </div>
+                                    &nbsp;&nbsp;
+                                    <label class="control-label label-middle" for="inputToDate">To:</label>
+                                    <div class="input-append">
+                                        <input name="dateField" type="text" id="inputToDate" data-ng-model="toDate" data-date-format="mm/dd/yy"
+                                            data-ng-required="fromDate || (selectedCustomer && !invoiceNumber && !bolNumber && !proNumber && !loadId)"
+                                            data-min-date="minToDate" data-max-date="maxToDate" data-pls-datepicker class="input-small"/>
+                                        <button type="button" class="btn" data-toggle="datepicker" data-ng-required="true">
+                                            <i class="icon-calendar"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn span2" data-ng-click="refreshTable()" data-ng-disabled="!isSearchAvailable()">Search</button>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+
+                            <div class="span10">
+                                
+                            </div>
+                            <button type="button" class="btn span2" data-ng-click="resetSearch()">Clear</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> 
+
+                    <div class="row-fluid">
+                        <div class="offset11">
+                           <button type="button" class="btn offset 8" data-ng-click="viewMessage()" data-ng-disabled="selectedLog.length != 1">Open Message</button>
+                        </div>                 
+                        <br>
+                        <div class="row-fluid">
+                            <div class="gridStyle span12 gridHeight4 a_customersGrid"
+                                data-ng-grid="adminGrid"
+                                data-ng-model="logData">
+                            </div>
+                        </div>
+                        <div data-ng-include="'pages/content/admin/log-message.html'"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

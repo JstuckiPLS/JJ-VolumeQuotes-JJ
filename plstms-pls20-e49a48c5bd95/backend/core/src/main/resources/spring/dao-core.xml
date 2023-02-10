@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xmlns:util="http://www.springframework.org/schema/util" xmlns:tx="http://www.springframework.org/schema/tx"
+    xsi:schemaLocation="
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+           http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <context:component-scan base-package="com.pls.**.dao" />
+
+    <import resource="classpath*:spring/aop-${logging.performanceInfo.enabled:false}.xml" />
+
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="nullValue" value="null" />
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="ignoreResourceNotFound" value="true" />
+        <property name="locations">
+            <list>
+                <value>classpath*:spring/*.properties</value>
+                <value>file:///${catalina.home:.}/conf/plsapp.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <util:properties id="hibernateConfiguration" location="classpath:spring/hibernate.properties" />
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+        <property name="driverClass" value="${db.driverClass}" />
+        <property name="jdbcUrl" value="${db.url}" />
+        <property name="user" value="${db.username}" />
+        <property name="password" value="${db.password}" />
+
+        <!-- These are c3p0 properties -->
+        <property name="minPoolSize" value="${c3p0.minPoolSize}" />
+        <property name="maxPoolSize" value="${c3p0.maxPoolSize}" />
+        <property name="numHelperThreads" value="${c3p0.numHelperThreads}" />
+        <property name="maxStatementsPerConnection" value="${c3p0.maxStatementsPerConnection}" />
+        <property name="statementCacheNumDeferredCloseThreads" value="${c3p0.statementCacheNumDeferredCloseThreads}" />
+        <property name="unreturnedConnectionTimeout" value="${c3p0.unreturnedConnectionTimeout}" />
+        <property name="debugUnreturnedConnectionStackTraces" value="${c3p0.debugUnreturnedConnectionStackTraces}" />
+    </bean>
+
+    <bean id="transactionAwareDataSource" class="org.springframework.jdbc.datasource.TransactionAwareDataSourceProxy">
+        <constructor-arg ref="dataSource" />
+    </bean>
+
+    <bean id="sessionFactory" class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+        <property name="dataSource" ref="transactionAwareDataSource" />
+        <property name="packagesToScan" value="com.pls" />
+        <property name="hibernateProperties" ref="hibernateConfiguration" />
+        <property name="entityInterceptor" ref="modificationsInfoInterceptor" />
+        <property name="mappingLocations" value="classpath*:hibernate/com/pls/**/*.hbm.xml" />
+    </bean>
+
+    <bean id="transactionManager" class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+        <property name="sessionFactory" ref="sessionFactory" />
+    </bean>
+
+    <tx:annotation-driven />
+</beans>

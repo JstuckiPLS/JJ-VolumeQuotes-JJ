@@ -1,0 +1,258 @@
+<div class="row-fluid" data-ng-if="!hideCarrierName">
+    <div class="span6">Carrier:&nbsp;
+        <span id="carrierName" class="controls ng-binding" data-ng-bind="shipment.selectedProposition.carrier.name"></span>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span6 well well-small" id="notificationDiv">
+        <h5>Notifications</h5>
+        <hr/>
+
+        <div class="row-fluid">
+            <div class="span9">
+                <span class="control-label">Notify:</span>
+            </div>
+            <div class="span3">
+                <span class="control-label">Settings:</span>
+            </div>
+        </div>
+
+        <div class="row-fluid">
+            <div class="{{readOnly ? 'span9' : 'span7'}}">
+                <div data-ng-hide="readOnly" class="controls" data-ng-form="newEmailForm" data-ng-model="newEmailFormArea" id="newEmailFormArea">
+                    <input type="email" name="newEmailInp" class="input-block-level" placeholder="Email" maxlength="255"
+                           data-ng-pattern="/^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[_A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/"
+                           data-ng-change="selectEmailAddress(pageModel.editedEmail)" data-ng-model="pageModel.editedEmail"
+                           data-ng-paste="selectEmailAddressPaste()">
+                </div>
+                <div class="controls">
+                    <select class="input-block-level a_emails" size="3" data-pls-onchange="selectEmailAddress" data-not-disable-me>
+                        <option data-ng-repeat="email in getEmails()" data-not-disable-me
+                                data-ng-click="selectEmailAddress(email)" data-ng-selected="email == pageModel.editedEmail"
+                                value="{{email}}" label="{{email}}">{{email}}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="span2" data-ng-hide="readOnly">
+                <button type="button" class="btn btn-block a_addButton" data-ng-click="addEmailNotifications()"
+                        data-ng-disabled="newEmailFormArea.$invalid || !pageModel.editedEmail || !isNewNotification() || !isAnyNotificationSelected()">
+                    Add
+                </button>
+                <button type="button" class="btn btn-block" data-ng-click="openAddressesListDialog()">Select to Notify</button>
+                <button type="button" class="btn btn-block a_removeButton" data-ng-disabled="!pageModel.editedEmail || isNewNotification()"
+                        data-ng-click="removeEmailNotifications()">Remove
+                </button>
+            </div>
+
+            <div class="span3" data-ng-hide="readOnly">
+                <div class="form-inline min-width-130" data-ng-repeat="notificationType in pageModel.notificationTypes">
+                    <input type="checkbox" data-ng-attr-id="id_{{notificationType.label.split(' ').join('_') | lowercase}}" style="min-height: 0;"
+                           class="a_{{notificationType.label.split(' ').join('_') | lowercase}}" data-ng-disabled="!pageModel.editedEmail"
+                           data-ng-model="notificationType.selected" data-ng-change="changeNotificationType(notificationType)">
+                    <label for="id_{{notificationType.label.split(' ').join('_') | lowercase}}" class="pls-margin-bottom-0">{{notificationType.label}}
+                        <i data-ng-if="notificationType.value === 'DETAILS'" class="icon-info-sign"
+                           data-pls-popover="higherEmailsVolume" data-placement="top"></i>
+                    </label>
+
+                    <div data-ng-if="notificationType.value === 'DETAILS'" class="container-fluid" id="higherEmailsVolume">
+                        Selecting this notification will generate higher volume of emails
+                    </div>
+                </div>
+            </div>
+
+            <div class="span3" data-ng-show="readOnly">
+                <div data-ng-repeat="notificationType in pageModel.notificationTypes">
+                    <span data-pls-selected-item="notificationType.selected" data-label="{{notificationType.label}}"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="span6">
+        <div class="row-fluid">
+            <div class="span12 well well-small" id="notesDiv">
+                <div class="span4">
+                    <label for="pickupNotes" class="control-label">Load Specific Pickup Notes:</label>
+                        <textarea id="pickupNotes" data-ng-model="shipment.finishOrder.pickupNotes" style="width: 90%" rows="8"
+                                  maxlength="3000"></textarea>
+                </div>
+                <div class="span4">
+                    <label for="deliveryNotes" class="control-label">Load Specific Delivery Notes:</label>
+                        <textarea id="deliveryNotes" data-ng-model="shipment.finishOrder.deliveryNotes" style="width: 90%" rows="8"
+                                  maxlength="3000"></textarea>
+                </div>
+                <div class="span4">
+                    <label for="shippingLabelNotes" class="control-label">Shipping Label Notes:</label>
+                        <textarea id="shippingLabelNotes" data-ng-model="shipment.finishOrder.shippingLabelNotes" style="width: 90%" rows="8"
+                                  maxlength="2000"></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div id="refsDiv" data-ng-if="!salesOrder" class="span6 well well-small form-inline">
+        <h5 class="pls-inline-block">Identifiers</h5>
+        <hr/>
+
+        <div class="row-fluid">
+            <div data-ng-class="{'span3': !$root.isBrandOrAluma(selectedCustomer.id), 'span7': $root.isBrandOrAluma(selectedCustomer.id)}">
+                <div data-pls-identifier="BOL" data-shipment="shipment" data-invalid-identifier="invalidIdentifier.bol" class="row-fluid"></div>
+
+                <div data-pls-identifier="SO" data-shipment="shipment" data-invalid-identifier="invalidIdentifier.so" class="row-fluid"></div>
+
+                <div data-pls-identifier="PO" data-shipment="shipment" data-invalid-identifier="invalidIdentifier.po" class="row-fluid"></div>
+
+                <div data-pls-identifier="PU" data-shipment="shipment" data-invalid-identifier="invalidIdentifier.pu" class="row-fluid"></div>
+            </div>
+
+            <div class="span5">
+                <div data-pls-identifier="SR" data-shipment="shipment" data-invalid-identifier="invalidIdentifier.sr" class="row-fluid"></div>
+
+                <div data-pls-identifier="TR" data-shipment="shipment" data-invalid-identifier="invalidIdentifier.tr" class="row-fluid"></div>
+
+                <div data-pls-identifier="CARGO" data-shipment="shipment" data-invalid-identifier="invalidIdentifier.cargo" class="row-fluid"></div>
+
+                <div data-pls-identifier="GL" data-shipment="shipment" data-ng-if="!$root.isBrandOrAluma(selectedCustomer.id)"
+                     data-is-shipment-details="true" data-customer-id="selectedCustomer.id"
+                     data-invalid-identifier="invalidIdentifier.gl" class="row-fluid"></div>
+            </div>
+
+            <div data-pls-identifier="JOB" data-shipment="shipment" data-customer-id="selectedCustomer.id"
+                 data-invalid-identifier="invalidIdentifier.job" class="span4" data-ng-if="!$root.isBrandOrAluma(selectedCustomer.id)"></div>
+        </div>
+
+        <div data-brand-industrial-identifiers data-shipment="shipment" data-ng-if="$root.isBrandOrAluma(selectedCustomer.id)"
+             data-customer-id="selectedCustomer.id" data-invalid-identifier-gl="invalidIdentifier.gl" data-invalid-identifier-opbol="invalidIdentifier.opbol"></div>
+
+        <div data-pls-identifier="RB" data-shipment="shipment" data-invalid-identifier="invalidIdentifier.rb" class="row-fluid"></div>
+    </div>
+
+    <div id="refsDiv" data-ng-if="salesOrder" class="span6 well well-small form-inline">
+        <div>
+            <h5 class="pls-inline-block">Identifiers</h5>
+            <hr/>
+
+            <div class="row-fluid">
+                <div data-ng-class="{'span3': !$root.isBrandOrAluma(selectedCustomer.id), 'span7': $root.isBrandOrAluma(selectedCustomer.id)}">
+                    <div data-pls-identifier="BOL" data-shipment="shipment"
+                         data-invalid-identifier="invalidIdentifier.bol" class="row-fluid"></div>
+
+                    <div data-pls-identifier="SO" data-shipment="shipment"
+                         data-invalid-identifier="invalidIdentifier.so" class="row-fluid"></div>
+
+                    <div data-pls-identifier="PO" data-shipment="shipment"
+                         data-invalid-identifier="invalidIdentifier.po" class="row-fluid"></div>
+
+                    <div data-pls-identifier="PU" data-shipment="shipment"
+                         data-invalid-identifier="invalidIdentifier.pu" class="row-fluid"></div>
+
+                    <div data-pls-identifier="PRO" data-shipment="shipment"
+                         data-invalid-identifier="invalidIdentifier.pro"  class="row-fluid"></div>
+                </div>
+
+                <div class="span5">
+                    <div data-pls-identifier="SR" data-shipment="shipment"
+                         data-invalid-identifier="invalidIdentifier.sr" class="row-fluid"></div>
+
+                    <div data-pls-identifier="TR" data-shipment="shipment"
+                         data-invalid-identifier="invalidIdentifier.tr" class="row-fluid"></div>
+
+                    <div data-pls-identifier="CARGO" data-shipment="shipment"
+                         data-invalid-identifier="invalidIdentifier.cargo" class="row-fluid"></div>
+
+                    <div data-pls-identifier="GL" data-shipment="shipment"
+                         data-ng-if="!readOnly && !$root.isBrandOrAluma(selectedCustomer.id)" data-is-shipment-details="true" data-customer-id="selectedCustomer.id"
+                         data-invalid-identifier="invalidIdentifier.gl" class="row-fluid"></div>
+                    <div data-ng-if="readOnly && !$root.isBrandOrAluma(selectedCustomer.id)" class="row-fluid">
+                        <div class="span3 text-left">GL #:</div>
+                        <div class="span9 text-clipping" data-ng-bind="shipment.finishOrder.glNumber"></div>
+                    </div>
+                </div>
+
+                <div data-pls-identifier="JOB" data-shipment="shipment" data-customer-id="selectedCustomer.id"
+                     data-invalid-identifier="invalidIdentifier.job" class="span4" data-ng-if="!$root.isBrandOrAluma(selectedCustomer.id)"></div>
+            </div>
+
+            <div data-brand-industrial-identifiers data-shipment="shipment" data-ng-if="$root.isBrandOrAluma(selectedCustomer.id)"
+                 data-customer-id="selectedCustomer.id" data-invalid-identifier-gl="invalidIdentifier.gl" data-invalid-identifier-opbol="invalidIdentifier.opbol"></div>
+
+            <div data-pls-identifier="RB" data-shipment="shipment" data-invalid-identifier="invalidIdentifier.rb" class="row-fluid"></div>
+        </div>
+    </div>
+
+    <div class="span3">
+        <div class="well well-small">
+            <div class="row-fluid">
+                <span class="control-label span5"><strong>Pickup Date:</strong></span>
+                <span class="controls span7 a_pickupDate"
+                      data-ng-bind="$root.parseISODate(shipment.finishOrder.pickupDate) | date:$root.wideAppDateFormat"></span>
+            </div>
+
+            <div class="row-fluid">
+                <div data-ng-init="shipment.finishOrder.pickupWindowFrom">
+                    <div class="span5">
+                        <label class="control-label span11" for="fromTime"><strong>Shipping hours of operation:</strong></label>
+                    </div>
+                    <div class="span2">
+                        <label for="fromTime" class="control-label span4 text-right padding5">From:</label>
+                    </div>
+                    <div class="span5">
+                        <input id="fromTime" data-pls-pickup-window="shipment.finishOrder.pickupWindowFrom" data-typeahead-min-length="2"
+                               class="input-mini span12 a_pickupWindowFrom"
+                               data-pls-pickup-window-required="true" placeholder="HH:MM AM/PM">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div data-ng-init="shipment.finishOrder.pickupWindowTo">
+                    <div class="offset5 span2">
+                        <label for="toTime" class="control-label span4 text-right padding5">To:</label>
+                    </div>
+                    <div class="span5">
+                        <input id="toTime" data-pls-pickup-window="shipment.finishOrder.pickupWindowTo" data-typeahead-min-length="2"
+                               class="input-mini span12 a_pickupWindowTo"
+                               data-pls-pickup-window-required="true" placeholder="HH:MM AM/PM">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div data-ng-init="shipment.finishOrder.deliveryWindowFrom">
+                    <div class="span5">
+                        <label class="control-label span11" for="deliveryFromTime"><strong>Receiving hours of operation:</strong></label>
+                    </div>
+                    <div class="span2">
+                        <label for="deliveryFromTime" class="control-label span4 text-right padding5">From:</label>
+                    </div>
+                    <div class="span5">
+                        <input id="deliveryFromTime" data-pls-pickup-window="shipment.finishOrder.deliveryWindowFrom"
+                               data-typeahead-min-length="2"
+                               class="input-mini span12"
+                               data-pls-pickup-window-required="false" placeholder="HH:MM AM/PM">
+                    </div>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div data-ng-init="shipment.finishOrder.deliveryWindowTo">
+                    <div class="offset5 span2">
+                        <label for="deliveryToTime" class="control-label span4 text-right padding5">To:</label>
+                    </div>
+                    <div class="span5">
+                        <input id="deliveryToTime" data-pls-pickup-window="shipment.finishOrder.deliveryWindowTo" data-typeahead-min-length="2"
+                               class="input-mini span12"
+                               data-pls-pickup-window-required="false" placeholder="HH:MM AM/PM">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="span3" id="costsDiv" data-pls-quote-price-info="shipment" data-view-id="priceInfoPanel" data-parent-view-id="finish-order"></div>
+</div>

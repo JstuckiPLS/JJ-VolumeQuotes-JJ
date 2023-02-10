@@ -1,0 +1,22 @@
+<div class="row-fluid">
+    <div class="logo logo-small">
+        <img id="logoSmallImg" data-ng-src="{{customerLogoUrl}}" src=""/>
+    </div>
+    <div class="span6">
+        <br/>
+        <div class="form-inline">
+            <input type="checkbox" id="displayOnBol" data-ng-model="displayOnBol" data-ng-disabled="!customerLogoUrl">
+            <label for="displayOnBol" class="control-label">Display Logo on BOL</label>
+        </div>
+        <div class="form-inline">
+            <input type="checkbox" id="displayOnShipLabel" data-ng-model="displayOnShipLabel" data-ng-disabled="!customerLogoUrl">
+            <label for="displayOnShipLabel" class="control-label">Display Logo on Ship Label</label>
+        </div>
+        <br/>
+        <button class="btn" type="button" data-ng-click="showUploadDialog()" data-ng-disabled="browseDisabled">
+            Browse...
+        </button>
+    </div>
+</div>
+
+

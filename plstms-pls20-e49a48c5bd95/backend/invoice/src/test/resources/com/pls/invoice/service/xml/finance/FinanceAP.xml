@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="ISO-8859-1" standalone="yes"?>
+<!DOCTYPE VendorInvoice>
+<VendorInvoice xmlns:ns2="http://com.pls.load">
+    <Operation>CREATE</Operation>
+    <Approved>Yes</Approved>
+    <Currency>USD</Currency>
+    <BusinessUnit>FS</BusinessUnit>
+    <CostCenter>Dall1</CostCenter>
+    <Department>SL</Department>
+    <FrtBillRecvDate>2015-05-01</FrtBillRecvDate>
+    <ShipmentNum>79999999</ShipmentNum>
+    <LoadNumber>89999999</LoadNumber>
+    <ApTerms>NET28</ApTerms>
+    <AdjDate>2015-02-20</AdjDate>
+    <Scac>GWDT</Scac>
+    <DestCity>New York</DestCity>
+    <DestState>NY</DestState>
+    <DestCountry>USA</DestCountry>
+    <GlDate>2015-02-20</GlDate>
+    <InvoiceNum>89999999</InvoiceNum>
+    <NetworkId>A1</NetworkId>
+    <OriginCity>Pittsburgh</OriginCity>
+    <OriginState>PA</OriginState>
+    <OriginCountry>USA</OriginCountry>
+    <PoNumber>CUST-123456</PoNumber>
+    <ProNumber>89999999</ProNumber>
+    <ShipDate>2015-02-20</ShipDate>
+    <CarrierName>GREATWIDE DEDICATED TRANSPORT</CarrierName>
+    <BillerType>BILLER1</BillerType>
+    <LoadId>10627392</LoadId>
+    <FaaDetailId>7435263</FaaDetailId>
+    <RequestId>213425</RequestId>
+    <VendInvoiceLineItem>
+        <ItemType>LH</ItemType>
+        <UnitCost>234</UnitCost>
+        <Total>234</Total>
+        <UnitType>FL</UnitType>
+        <Quantity>1</Quantity>
+        <Comments>Linehaul</Comments>
+    </VendInvoiceLineItem>
+    <VendInvoiceLineItem>
+        <ItemType>FS</ItemType>
+        <UnitCost>234</UnitCost>
+        <Total>234</Total>
+        <UnitType>FL</UnitType>
+        <Quantity>1</Quantity>
+        <Comments>Accessorial</Comments>
+    </VendInvoiceLineItem>
+</VendorInvoice>

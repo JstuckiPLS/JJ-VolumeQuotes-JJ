@@ -1,0 +1,8 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <!-- Security group for testing and development purpose. Users in this group have all PLS2.0 capabilities -->
+    <FLATBED.GROUPS GROUP_ID="1" NAME="TestGroupWithAllPrivilegies" STATUS="A" CREATED_BY="-1" MODIFIED_BY="-1" VERSION="1" />
+    <FLATBED.GROUPS GROUP_ID="2" NAME="Group Not Assigned" STATUS="A" CREATED_BY="-1" MODIFIED_BY="-1" VERSION="1" />
+    <FLATBED.GROUPS GROUP_ID="3" NAME="Inactive Group" STATUS="I" CREATED_BY="-1" MODIFIED_BY="-1" VERSION="1" />
+    <FLATBED.GROUPS GROUP_ID="4" NAME="TestGroupForCustomerUser" STATUS="A" CREATED_BY="-1" MODIFIED_BY="-1" VERSION="1" />
+</dataset>

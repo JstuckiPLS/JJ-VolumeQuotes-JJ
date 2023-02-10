@@ -1,0 +1,182 @@
+<div class="row-fluid" data-ng-controller="ReportsController" data-pls-ignore-location-change-check="true" data-ng-init="init()">
+    <div class="span12">
+        <div class="span2">
+            <div class="well" style="background-color: #A4CFE8">
+                 <div class="control-group">
+                    <label class="span10 section-header">Report Name:</label>
+                    <div>
+                        <select id="reportName" class="span12"
+                            data-ng-init= "selectedReportName"
+                            data-ng-model="selectedReportName"
+                            data-ng-options="item.name as item.value for item in reportNames" required>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group" data-ng-show="isSelectedReportName() && showCarrierInput()">
+                    <label class="span10 section-header">Carrier:</label>
+                        <input id="carrier"
+                            data-pls-scac-search="selectedCarrier"
+                            data-ng-required="true">
+                </div>
+                <div class="control-group">
+                    <label class="span10 section-header">Customer:</label>
+                        <input id="customer"
+                            data-pls-customer-lookup="selectedCustomer"
+                            data-count="5" 
+                            data-ng-required="_.isUndefined(businessUnitName) && selectedReportName !== 'Carrier'"
+                            data-customer-disabled="!_.isUndefined(businessUnitName)">
+                </div>
+                <div data-ng-show="isSelectedReportName()">
+                <div class="control-group" data-ng-show="showBusinessUnitInput()">
+                    <label class="span10 section-header">Business Unit:</label>
+                    <div>
+                        <select id="businessUnitName"
+                            class="controls span12"
+                            data-ng-model="businessUnitName"
+                            data-ng-disabled="!_.isUndefined(selectedCustomer)"
+                            data-ng-required="_.isUndefined(selectedCustomer)"
+                            data-ng-options="item.value as item.name for item in businessUnitNameList | filter : businessUnitNameListFilter">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group" data-ng-show="hideCompanyCode && isSelectedUnbilledReport()">
+                    <label class="span10 section-header">Company Code:</label>
+                    <div>
+                        <select id="selectedCountryCode" class="span12"
+                            data-ng-init= "selectedCountryCode"
+                            data-ng-model="selectedCountryCode"
+                            data-ng-options="item.name as item.value for item in countryCodes" required>
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+                <div data-ng-show="isSelectedActivityRpt()" class="control-group">
+                    <div>
+                        <select id="reportName" class="span12"
+                            data-ng-init= "reportDateTypeSelection"
+                            data-ng-model="reportDateTypeSelection"
+                            data-ng-options="item.name as item.value for item in reportDateTypes" required>
+                        </select>
+                    </div>
+                </div>
+                <div data-ng-show="isSelectedLostSavOppReport()" class="control-group">
+                    <label class="span10 section-header">Start Date:</label>
+                    <div class="input-append">
+                        <input name="dateField" type="text"
+                            id="startDateInputLSO"
+                            data-ng-model="startDate"
+                            data-date-format="mm/dd/yy"
+                            data-min-date="minStartFromDate"
+                            data-max-date="maxStartFromDate"
+                            data-pls-datepicker
+                            required
+                            class="input-small a_fromDate span9"
+                            style="min-width: 19px" 
+                            data-ng-change = "setMinEndFromDate()" />
+                        <button type="button" class="btn"
+                            data-toggle="datepicker"
+                            style="height: 30px">
+                            <i class="icon-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="control-group" data-ng-show="!isSelectedUnbilledReport() && !isSelectedLostSavOppReport()
+                 && isSelectedReportName()">
+                        <label class="span10 section-header"> Start Date:</label>
+                        <div class="input-append">
+                            <input name="dateField" type="text"
+                                id="startDateInput"
+                                data-ng-model="startDate"
+                                data-date-format="mm/dd/yy"
+                                data-min-date="minStartDate"
+                                data-max-date="maxStartDate"
+                                data-pls-datepicker
+                                required
+                                class="input-small a_fromDate span9"
+                                style="min-width: 19px"
+                                data-ng-change = "setMinFromDate()" />
+                            <button type="button" class="btn"
+                                data-toggle="datepicker"
+                                style="height: 30px">
+                                <i class="icon-calendar"></i>
+                            </button>
+                        </div>
+                </div>
+                <div data-ng-show="!isSelectedLostSavOppReport() && isSelectedReportName()" class="control-group">
+                    <label class="span10 section-header"></span> End Date:</label>
+                    <div class="input-append">
+                        <input name="dateField" type="text"
+                            id="endDateInputUB"
+                            data-ng-model="endDate"
+                            data-date-format="mm/dd/yy"
+                            data-min-date="minFromDate"
+                            data-max-date="maxFromDate"
+                            data-pls-datepicker
+                            required
+                            class="input-small a_fromDate span9"
+                            style="min-width: 19px" />
+                        <button type="button" class="btn"
+                            data-toggle="datepicker"
+                            style="height: 30px">
+                            <i class="icon-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+                 <div data-ng-show="isSelectedLostSavOppReport()" class="control-group">
+                    <label class="span10 section-header">End Date:</label>
+                    <div class="input-append">
+                        <input name="dateField" type="text"
+                            id="endDateInputLSO"
+                            data-ng-model="endDate"
+                            data-date-format="mm/dd/yy"
+                            data-min-date="minEndFromDate"
+                            data-max-date="maxEndFromDate"
+                            data-pls-datepicker
+                            required
+                            class="input-small a_fromDate span9"
+                            style="min-width: 19px" />
+                        <button type="button" class="btn"
+                            data-toggle="datepicker"
+                            style="height: 30px">
+                            <i class="icon-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+                <div data-ng-show="isSelectedLostSavOppReport()" class="control-group">
+                    <label class="span10 section-header">Sort Order:</label>
+                    <div>
+                        <select id="sortOrder" required
+                            class="controls span12"
+                            data-ng-model = "selectedSortOrder"
+                            data-ng-options="item.name as item.value for item in sortOrderList">
+                            <option value=""></option>
+                        </select>
+                    </div>
+                </div>
+                <div data-ng-show="isSelectedShipCreationRpt()" class="control-group">
+                    <div class="checkbox">
+                        <input type="checkbox" data-ng-model="invoicedShipmentsOnly">
+                        Invoiced Only
+                    </div>
+                </div>
+                </div>
+                <div class="control-group">
+                    <button type="button" class="btn" data-ng-disabled="disableExportButton" data-ng-show="!showInvoiceReportButton"
+                            data-ng-click="exportToExcel()">Export to Excel</button>
+                </div>
+                <div class="control-group">
+                    <button type="button" class="btn" data-ng-show="showInvoiceReportButton"
+                            data-ng-click="createBatchedInvoicedReport()">Generate Report</button>
+                </div>
+            </div>
+        </div>
+        <div class="span10 well" style="height: 450px;">
+            <div id="batchedInvoiceReportContainer" data-ng-show="showInvoiceReportButton">
+            </div>
+            <div class="control-group" style="width:615px;">
+                <button type="button" class="btn pull-right" data-ng-show="showExportJasperReportButton && showInvoiceReportButton" data-ng-click="exportBatchedInvoiceReport()">Export</button>
+            </div>
+        </div>
+    </div>
+</div>

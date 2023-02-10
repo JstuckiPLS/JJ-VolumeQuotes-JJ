@@ -1,0 +1,71 @@
+<div class="row-fluid">
+    <!--FIRST COLUMN -->
+    <div data-ng-controller="ProhibitedLiabilityCtrl">
+       <div class="row-fluid ">
+        <div class="span12">
+            <div class="span4">
+                <div class="control-group">
+                    <label class="span3 control-label" for="inputProhibitedCopyFrom"><b>Copy from:</b></label>
+                    <div class="controls">
+                        <select id="inputProhibitedCopyFrom" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                            data-ng-model="selectedProhibited" data-ng-change="showCopyCommoditiesDialog()"
+                            data-ng-options="list.rateName for list in copyProfiles">
+                            </select>
+                            
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="prohibitedCommodities">Prohibited Commodities:</label>
+                    <div class="controls">
+                        <textarea id="prohibitedCommodities" rows="3" class="input-xlarge" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                            data-ng-model="profileDetails.prohibitedCommodities"></textarea>
+                    </div>
+                </div>
+            </div>
+            <div class="span5">
+                <div class="form-horizontal">
+                    <label class="control-label"
+                        for="inputLiabilitiesCopyFrom"><b>Copy from:</b></label>
+                    <div class="controls">
+                        <select id="inputLiabilitiesCopyFrom" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                            data-ng-model="selectedLiabilities" data-ng-change="showCopyLiabilitiesDialog()"
+                            data-ng-options="list.rateName for list in copyProfiles">
+                        </select>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="liabilityGrid">Carrier Liability:</label>
+                    <div class="controls">
+                        <div class="gridHeight2" data-ng-grid="gridOptions" id="liabilityGrid"></div>
+                    </div>
+                </div>
+            </div>
+            <div class="span3">             
+                <div class="control-group">
+                    <label class="control-label" for="externalNotes">External Notes:</label>
+                    <div class="controls">
+                        <textarea id="externalNotes" rows="3" class="input-xlarge" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                            data-ng-model="profileDetails.extNotes"></textarea>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="internalNotes">Internal Notes:</label>
+                    <div class="controls">
+                        <textarea id="internalNotes" rows="3" class="input-xlarge" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                            data-ng-model="profileDetails.intNotes"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+        <div>&nbsp;</div>
+        <div class="row-fluid">
+            <div class="offset8">
+                <button class="btn span3" type="button" data-ng-click="reset()"
+                    data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">Reset</button>
+                <button class="btn btn-primary span3" type="button" data-ng-click="submit()"
+                    data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

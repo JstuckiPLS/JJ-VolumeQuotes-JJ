@@ -1,0 +1,34 @@
+<div class="row-fluid">
+    <div class="span12">
+        <div class="tabbable tabbable-bordered" data-ng-controller="FinancialBoardController">
+            <ul class="nav nav-tabs">
+                <li class="pls-menu-item">
+                    <a href="#/financialBoard/transactional">Transactional Invoices</a>
+                </li>
+                <li class="pls-menu-item">
+                    <a href="#/financialBoard/consolidated">Consolidated Invoices</a>
+                </li>
+                <li class="pls-menu-item">
+                    <a href="#/financialBoard/audit">Invoice Audit</a>
+                </li>
+                <li class="pls-menu-item">
+                    <a href="#/financialBoard/price">Billing Hold</a>
+                </li>
+                <li class="pls-menu-item">
+                    <a href="#/financialBoard/errors">Invoice Errors</a>
+                    <span class="badge badge-important pls-badge" data-ng-controller="FinancialBoardErrorsSchedulerController"
+                        data-ng-init="initErrorsScheduler()"> {{errorsCount}} </span>
+                </li>
+                <li class="pls-menu-item">
+                    <a href="#/financialBoard/history">Invoice History</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="boardTab">
+                    <div data-ng-include="route.current.financialTab"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,66 @@
+<form name="addBillToForm" novalidate class="margin0">
+    <div id="addBillToDialog" data-pls-modal="showAddBillToDialog" data-close="closeBillToDialog()"
+         class="billToModalSize" data-enter-allowed="{{addBillToForm.$valid}}" data-enter="saveBillTo()">
+        <div class="modal-header">
+            <h4>Add Bill To</h4>
+        </div>
+        <div class="modal-body" data-ng-if="showAddBillToDialog">
+            <p class="form-inline">
+                <label class="input-mini" for="addressNameInp"><strong>Name:</strong></label>
+                <input id="addressNameInp" type="text" class="input-xlarge" data-ng-model="billToModel.billTo.address.addressName" required
+                       maxlength="50">
+            </p>
+
+            <div class="row-fluid">
+                <ul class="breadcrumb span12">
+                    <li data-ng-repeat="breadCrumb in billToModel.breadCrumbs.list"
+                        data-ng-class="{active: billToModel.selectedTab != breadCrumb.id}">
+                        <strong data-ng-if="billToModel.selectedTab == breadCrumb.id"><span data-ng-bind="breadCrumb.label"></span></strong>
+                        <span data-ng-if="billToModel.selectedTab != breadCrumb.id" data-ng-bind="breadCrumb.label"></span>
+                        <span data-ng-if="breadCrumb.next" class="divider">/</span>
+                    </li>
+                </ul>
+            </div>
+            <div class="row-fluid">
+                <div data-ng-switch="billToModel.selectedTab">
+                    <div data-ng-switch-when="address">
+                        <div data-ng-include="'pages/content/customer/billTo/edit/billto-edit-address.html'"></div>
+                    </div>
+                    <div data-ng-switch-when="invoice_preferences">
+                        <div data-ng-include="'pages/content/customer/billTo/edit/billto-edit-invoice-preferences.html'"></div>
+                    </div>
+                    <div data-ng-switch-when="edi_settings">
+                        <div data-ng-include="'pages/content/customer/billTo/edit/billto-edit-edi-settings.html'"></div>
+                    </div>
+
+                    <div data-ng-switch-when="req_fields">
+                        <div data-pls-bill-to-req-fields data-bill-to="billToModel.billTo" data-customer-id="editCustomerModel.customerId"
+                             data-parent-dialog-id="addBillToDialog"></div>
+                    </div>
+
+                    <div data-ng-switch-when="default_values">
+                        <div data-pls-bill-to-default-values data-bill-to="billToModel.billTo"></div>
+                    </div>
+
+                    <div data-ng-switch-when="req_docs">
+                        <div data-ng-include="'pages/content/customer/billTo/edit/billto-edit-req-docs.html'"></div>
+                    </div>
+                    <div data-ng-switch-when="audit_preferences">
+                        <div data-ng-include="'pages/content/customer/billTo/edit/billto-edit-audit-preferences.html'"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-navbar" data-ng-click="closeBillToDialog()">Cancel</button>
+            <button type="button" class="btn btn-navbar" data-ng-click="prevStep()"
+                    data-ng-hide="billToModel.selectedTab=='address'"><i class="icon-chevron-left"></i>Back
+            </button>
+            <button type="button" class="btn btn-navbar" data-ng-click="nextStep()" data-ng-disabled="addBillToForm.$invalid"
+                    data-ng-hide="billToModel.selectedTab=='audit_preferences'">Next<i class="icon-chevron-right"></i></button>
+            <button type="button" class="btn btn-primary" data-ng-click="saveBillTo()" data-ng-disabled="addBillToForm.$invalid"
+                    data-ng-show="billToModel.selectedTab=='audit_preferences'">Done
+            </button>
+        </div>
+    </div>
+</form>

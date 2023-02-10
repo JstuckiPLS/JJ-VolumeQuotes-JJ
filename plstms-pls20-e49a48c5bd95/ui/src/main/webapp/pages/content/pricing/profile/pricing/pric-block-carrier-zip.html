@@ -1,0 +1,84 @@
+<div class="row-fluid" data-ng-controller="BlockCarrierZipCtrl">
+    <form name="formArea" novalidate>
+	    <!--FIRST COLUMN -->
+	    <div class="span6 green-block">
+	
+	        <div class="span12">
+	
+	            <!-- Copy From Controls -->
+	            <div class="form-horizontal" data-ng-hide="_.contains(['BLANKET_CSP', 'MARGIN'], profileDetails.pricingType.ltlPricingType)">
+	                <label class="control-label" for="inputCopyFrom"><b>Copy from:</b></label>
+	                <div class="controls" >
+	                    <select class="span9" id="inputCopyFrom"
+	                        data-ng-change="openDialog()"
+	                        data-ng-model="selectedRateToCopy"
+	                        data-ng-options="prof.id as prof.rateName for prof in copyProfiles">
+	                    </select>
+	                </div>
+	            </div>
+	            <br/>
+	            <div class="row-fluid span12 control-group">
+	                <b>Block Carrier Zip:</b>
+	            </div>
+	            <div class="row-fluid control-group span12">
+	                <div class="span12 well well-small">
+	                    <label for="origin">Origin Zip:</label>
+	                    <textarea id="origin" rows="5" class="input-block-level" data-ng-model="editOrigin" required
+	                        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"></textarea>
+	                    <br> <label for="destination">Destination Zip:</label>
+	                    <textarea id="destination" rows="5" class="input-block-level" data-ng-model="editDestination" required
+	                        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"></textarea>
+                        <br> <label for="notes">Notes:</label>
+                        <textarea id="notes" rows="5" maxlength="500" class="input-block-level" data-ng-model="notes"
+                            data-ng-disabled="profileDetails.pricingType.ltlPricingType === 'BLANKET_CSP'">
+                        </textarea>
+                    </div>
+	            </div>
+	            <div class="row-fluid">
+	                <div class="span5">&nbsp;</div>
+	                    <button type="button" class="btn btn-block span2" data-ng-click="clear()"
+	                        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">Clear</button>
+	                    <button class="btn btn-primary span3" type="button" data-ng-click="saveAsNew()"
+	                        data-ng-disabled="!isEditCarrierZip || _.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType) || formArea.$invalid">Save as New</button>
+	                    <button type="button" class="btn btn-primary span2" data-ng-click="setZips()"
+	                        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType) || formArea.$invalid">Save</button>
+	            </div>
+	
+	        </div>
+	    </div>
+	    <!-- END OF FIRST COLUMN -->
+	    
+	    <!--SECCOND COLUMN -->
+	    <div class="span6">
+	        <!--TABS -->
+	        <div class="tabbable tabbable-bordered span12">
+	            <ul class="nav nav-tabs">
+	                <li class="active"><a href="" data-toggle="tab"
+	                    data-ng-click="loadGeo(true)">Active</a></li>
+	                <li><a href="" data-toggle="tab" data-ng-click="loadGeo(false)">Archived</a></li>
+	            </ul>
+	            <div class="tab-content">
+	                <div class="tab-pane active" id="tab1">
+	                    <div class="span10">
+	                        <div class="gridStyle gridHeight3 span12" data-ng-grid="addressGrid" data-ng-dblclick="edit()"></div>
+	                    </div>
+	                    <div class="span2">
+	                        <div class="row-fluid">
+	                            <button class="btn btn-block" type="button" data-ng-click="edit()" 
+	                               data-ng-disabled="selectedItems.length != 1 || statusFlag != 'ACTIVE' || _.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">Edit</button>
+	                        </div>
+	                        <br>
+	                        <div class="row-fluid">
+	                            <button class="btn btn-block" type="button" data-ng-click="changeGeoStatus()" 
+	                               data-ng-disabled="selectedItems.length == 0 || _.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">{{nextStatusAction}}</button>
+	                        </div>
+	                    </div>
+	                </div>
+	                
+	            </div>
+	        </div>
+	        <!--END TABS -->
+	    </div>
+    </form>
+    <!--END SECCOND COLUMN -->
+</div>

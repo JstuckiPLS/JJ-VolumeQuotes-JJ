@@ -1,0 +1,399 @@
+/*
+    Css file to hold all custom styles retaled to Jasper Reports.
+*/
+
+.jasperReport {
+    height: 500px;
+    overflow-y: auto;
+}
+
+.jasperReportMyShipments {
+    height: 250px;
+    overflow-y: auto;
+    min-width: 650px;
+}
+
+.jasperReportLeaderTop {
+    height: 160px;
+    min-width: 650px;
+}
+
+.jasperReportLeaderBottom {
+    height: 340px;
+    overflow-y: auto;
+    min-width: 650px;
+}
+
+.jasperHalfScreenReport {
+    min-width: 680px;
+    width:50%;
+}
+
+.jasperListReport {
+    height: 430px;
+    margin-top: 36px;
+    overflow-y: auto;
+}
+
+.jasper3ColumnReport {
+    min-width: 440px;
+    padding: 5px;
+    height: 370px;
+    border: 1px solid grey;
+    margin-top: -1px;
+    margin-right: -1px;
+}
+
+.jasperKPI {
+    border: 1px solid grey;
+}
+
+.jasper3ColumnReport .text-center h4 {
+    display: inline;
+    font-size: 20px;
+    font-family: Roboto;
+    font-weight: normal;
+}
+
+.jasper3ColumnReport i.fa-info-circle {
+    font-size: 10px;
+    color: #606060;
+}
+
+.jasper3ColumnReportContent h3 {
+    color: #606060;
+    font-family: Roboto;
+    font-weight: normal;
+}
+
+.jasper3ColumnReportContent {
+    min-height: 320px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 400px;
+}
+
+#customer-statistics {
+    margin-bottom: 1px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 1360px;
+    height: 70px;
+}
+
+.locationsContainer {
+    height: 190px;
+    overflow-y: auto;
+}
+
+.locationsContainer a {
+    display: block;
+}
+
+#load-info-map-container {
+    min-width: 1000px;
+}
+#revenue-sales-container {
+    min-width: 1300px;
+}
+#good-health-container, #poor-health-container{
+    min-width: 650px;
+}
+#batchedInvoiceReportContainer{
+    width: 615px;
+    max-height: 400px;
+    overflow-y: auto;
+}
+.pls-control-group {
+    margin-top: 4px;
+    margin-bottom: 20px;
+}
+
+.pls-control-group label.control-label {
+    width: 100px;
+}
+
+.pls-control-group div.controls {
+    margin-left: 120px;
+}
+.loadingFuelReport {
+    opacity: 0.7;
+    text-align: center;
+    vertical-align: middle;
+    font-family: Roboto;
+}
+
+.loadingReport {
+    opacity: 0.7;
+    background: gray;
+    text-align: center;
+    vertical-align: middle;
+    color: white;
+    font-family: Roboto;
+}
+
+@media screen and (max-width: 980px) {
+    .jasper3ColumnReport {
+        width:calc(100% - 12px);
+    }
+
+    #customer-statistics {
+        width: auto;
+    }
+}
+
+@media screen and (min-width: 981px) and (max-width: 1429px) {
+    .jasper3ColumnReport {
+        width:calc(50% - 11px);
+    }
+
+    .jasper2ColumnLeftReport {
+        width:calc(50% - 12px);
+    }
+
+    #customer-statistics {
+        width: auto;
+    }
+    
+    .fuel-graph-tab {
+        max-height: 300px;
+    }
+}
+
+@media screen and (min-width: 1430px) {
+    .jasper3ColumnReport {
+        width:calc(33% - 10px);
+    }
+
+    .jasper3ColumnLeftReport {
+        width:calc(34% - 14px);
+    }
+
+    .fuel-graph-tab {
+        max-height: 400px;
+    }
+}
+
+#ae-statistics {
+    margin-bottom: 1px;
+    margin-left: auto;
+    margin-right: auto;
+    width: 1336px;
+    height: 90px;
+}
+
+.ae-statistics-header {
+    margin-left: auto;
+    margin-right: auto;
+    width: 1338px;
+}
+
+.jasperAE1ColumnReport {
+    padding: 6px;
+    height: 435px;
+    border: 1px solid grey;
+    margin-top: -2px;
+    margin-right: -4px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.jasperAE2ColumnReport {
+    padding: 6px;
+    height: 435px;
+    border: 1px solid grey;
+    margin-top: -2px;
+    margin-left: -1px;
+    margin-right: -3px;
+    display: inline-block;
+    vertical-align: top;
+}
+
+.jasperAE1ColumnReport .text-center h4,
+.jasperAE2ColumnReport .text-center h4 {
+    display: inline;
+    font-size: 20px;
+    font-family: Roboto;
+    font-weight: normal;
+}
+
+.jasperAE1ColumnReport h3 {
+    color: #606060;
+    font-family: Roboto;
+    font-weight: normal;
+    line-height: 10px;
+}
+
+.jasperAE1ColumnReportContent {
+    min-height: 405px;
+    margin-left: auto;
+    margin-right: auto;
+    max-width: 640px;
+}
+
+.jasperAELoadStatusLeftContent {
+    margin-left: auto;
+    margin-right: auto;
+    width: 160px;
+    height: 405px;
+}
+
+.jasperAELoadStatusRightContent {
+    margin-right: auto;
+    margin-left: auto;
+    overflow-y: auto;
+    overflow-x: auto;
+    max-height: 405px;
+}
+
+.jasperAELoadStatusRightLoading {
+    margin-right: auto;
+    margin-left: auto;
+    height: 405px;
+    width:calc(600*0.75px);
+}
+
+.jasperAE2ColumnReportContent {
+    height: 415px;
+    width: 325px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.jasperAECreditReport, .jasperAECashReport {
+    width: 320px;
+    overflow-y: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.jasperAECreditReport {
+    height: 224px;
+}
+
+.jasperAECashReport {
+    height: 164px;
+}
+
+.jasperAELoadStatusReportContent {
+    position: relative;
+    float: left;
+    top: 48%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 640px;
+}
+
+.jasperAECustomerTrendContent {
+    height: 300px;
+    max-width: 315px;
+    overflow-y: auto;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.jasperAEStatisticsGraphContent {
+    height: 370px;
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.jasperAETimePeriodColumn {
+    width: 200px;
+    height: 80px;
+    margin-left: auto;
+    margin-right: auto;
+}
+.jasperAESalesStatisticColumn {
+    width: 200px;
+    height: 80px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.fadeOut1, .fadeOut0 {
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    position: relative;
+}
+.fadeOut1:after, .fadeOut0:after {
+    content: '';
+    position: absolute;
+    right: 0; top: 0;
+    width: 30px;
+    height: 97%;
+}
+.fadeOut1:after {
+    background: -webkit-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    background: -moz-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    background: -ms-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    background: -o-linear-gradient(right, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+    background: linear-gradient(to left, rgba(255, 255, 255, 1), rgba(255, 255, 255, 0));
+}
+.fadeOut0:after {
+    background: -webkit-linear-gradient(right, rgba(223, 223, 223, 1), rgba(223, 223, 223, 0));
+    background: -moz-linear-gradient(right, rgba(223, 223, 223, 1), rgba(223, 223, 223, 0));
+    background: -ms-linear-gradient(right, rgba(223, 223, 223, 1), rgba(223, 223, 223, 0));
+    background: -o-linear-gradient(right, rgba(223, 223, 223, 1), rgba(223, 223, 223, 0));
+    background: linear-gradient(to left, rgba(223, 223, 223, 1), rgba(223, 223, 223, 0));
+}
+
+.loadStatusVerticalLine {
+    border-left: 2px solid #DFDFDF;
+    height: 385px;
+    float: left;
+    padding-right: 4px;
+}
+
+.creditCashDividingLine {
+    border: 1px solid grey;
+    margin-top: 7px;
+    margin-bottom: 4px;
+}
+@media screen and (max-width: 1180px) {
+    .jasperAE1ColumnReport {
+        width:calc(100% - 12px);
+    }
+
+    .jasperAE2ColumnReport {
+        width:calc(50% - 13px);
+    }
+
+    #ae-statistics {
+        width: auto;
+    }
+
+    .ae-statistics-header {
+        width: auto;
+    }
+}
+
+@media screen and (min-width: 1386px) {
+    .jasperAE1ColumnReport {
+        width: 640px;
+    }
+
+    .jasperAE2ColumnReport {
+        width: 328px;
+    }
+}
+
+@media screen and (min-width: 1180px) and (max-width: 1386px) {
+    .jasperAE1ColumnReport {
+        width:calc(50% - 15px);
+    }
+
+    .jasperAE2ColumnReport {
+        width:calc(25% - 12px);
+    }
+
+    #ae-statistics {
+        width: auto;
+    }
+
+    .ae-statistics-header {
+        width: auto;
+    }
+}

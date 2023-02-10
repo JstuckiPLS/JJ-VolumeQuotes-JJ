@@ -1,0 +1,161 @@
+<div data-ng-if="billToListModel.selectedBillTos.length" class="row-fluid">
+    <div class="span4">
+        <div class="pls-font-bold">Credit Limit:</div>
+        <div data-ng-bind="billToListModel.selectedBillTos[0].creditLimit | plsCurrency" class="span12"></div>
+    </div>
+    <div class="span4">
+        <div class="pls-font-bold">Unpaid Amount:</div>
+        <div data-ng-bind="billToListModel.selectedBillTos[0].unpaidAmount | plsCurrency" class="span12"></div>
+    </div>
+    <div class="span4">
+        <div class="pls-font-bold">Available Credit Amount:</div>
+        <div data-ng-bind="billToListModel.selectedBillTos[0].availableAmount | plsCurrency" class="span12"></div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span4">
+        <div class="form-inline">
+            <input data-ng-model="billToListModel.selectedBillTos[0].creditHold" type="checkbox" class="checkbox inline" disabled/>
+            <span class="checkbox inline">Credit Hold</span>
+        </div>
+    </div>
+    <div class="span4">
+        <div class="form-inline">
+            <input data-ng-model="billToListModel.selectedBillTos[0].overrideCreditHold" type="checkbox" class="checkbox inline"
+                   disabled/>
+            <span class="checkbox inline">Override Credit Limit Settings</span>
+        </div>
+    </div>
+    <div class="span4">
+        <div class="form-inline">
+            <input data-ng-model="billToListModel.selectedBillTos[0].autoCreditHold" type="checkbox" class="checkbox inline"
+                   disabled/>
+            <span class="checkbox inline">Auto Set Credit Hold</span>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span4">
+        <div class="pls-font-bold">Currency Code:</div>
+        <div data-ng-bind="billToListModel.selectedBillTos[0].currency" class="span12"></div>
+    </div>
+    <div class="span4">
+        <div class="pls-font-bold">Payments Term:</div>
+        <div data-ng-bind="getPayTermsDescription(billToListModel.selectedBillTos[0].payTermsId)" class="span12"></div>
+    </div>
+     <div class="span4" data-ng-if="billToListModel.selectedBillTos[0].paymentMethod">
+        <div class="pls-font-bold">Payments Method:</div>
+        <div data-ng-bind="getPayMethodDescription(billToListModel.selectedBillTos[0].paymentMethod)" class="span12"></div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span4">
+        <span class="pls-font-bold">Invoice Type:</span>
+        <span data-ng-bind="billToListModel.selectedBillTos[0].invoicePreferences.invoiceType | invoiceType" class="span8" id="invoiceType"></span>
+    </div>
+    <div class="span8" data-ng-if="billToListModel.selectedBillTos[0].invoicePreferences.invoiceType === 'CBI'">
+            <span class="pls-font-bold">CBI Invoice Type:</span>
+            <span data-ng-bind="billToListModel.selectedBillTos[0].invoicePreferences.cbiInvoiceType | cbiInvoiceType" class="span8" id="cbiInvoiceType"></span>
+    </div>
+     <div class="span8" data-ng-if="billToListModel.selectedBillTos[0].creditCardEmail">
+        <div class="pls-font-bold">Email for Credit Card Communication:</div>
+        <div data-ng-bind="billToListModel.selectedBillTos[0].creditCardEmail" class="span12"></div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span12">
+        <div class="form-inline nowrap">
+            <input data-ng-model="billToListModel.selectedBillTos[0].invoicePreferences.gainshareOnly" type="checkbox"
+                   name="viewGainshareOnly" class="checkbox inline" disabled/>
+            <span class="checkbox inline">Include Carrier Cost-Gainshare accounts only</span>
+        </div>
+    </div>
+</div>
+
+<div data-ng-if="billToListModel.selectedBillTos[0].invoicePreferences.cbiInvoiceType !== 'FIN'" class="row-fluid">
+    <div class="span4">
+        <div class="form-inline">
+            <input data-ng-model="billToListModel.selectedBillTos[0].invoicePreferences.notSplitRecipients"
+                   name="viewNotSplitRecipients" type="checkbox" class="checkbox inline" disabled/>
+            <span class="checkbox inline">Send 1 email to all receivers</span>
+        </div>
+    </div>
+    <div class="span8">
+        <div class="form-inline">
+            <input data-ng-model="billToListModel.selectedBillTos[0].invoicePreferences.ediInvoice" name="viewEdiInvoice"
+                   type="checkbox" class="checkbox inline" disabled/>
+            <span class="checkbox inline">EDI Invoice</span>
+            <span class="text-warning checkbox inline pls-font-bold">Requires external integration system configuration</span>
+        </div>
+    </div>
+</div>
+
+<div data-ng-if="billToListModel.selectedBillTos[0].invoicePreferences.invoiceType === 'CBI' && billToListModel.selectedBillTos[0].invoicePreferences.cbiInvoiceType !== 'FIN'"
+     class="row-fluid">
+    <div class="span4">
+        <div class="row-fluid">
+            <span class="pls-font-bold">Excel Options:</span>
+            <span class="span12" data-ng-bind="getDocumentLabel(billToListModel.xlsDocuments)"></span>
+        </div>
+    </div>
+    <div class="span4">
+        <div class="row-fluid">
+            <span class="pls-font-bold">PDF Options:</span>
+            <span class="span12" data-ng-bind="getDocumentLabel(billToListModel.pdfDocuments)"></span>
+        </div>
+    </div>
+    <div class="span4">
+        <div class="row-fluid">
+            <span class="pls-font-bold">Sort by:</span>
+            <span class="span12" data-ng-bind="getSortTypeValue(billToListModel.selectedBillTos[0].invoicePreferences.sortType)"></span>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div data-ng-if="billToListModel.selectedBillTos[0].invoicePreferences.invoiceType === 'CBI'" class="span4">
+        <div class="pls-font-bold">Processing Type:</div>
+        <div data-ng-bind="billToListModel.selectedBillTos[0].invoicePreferences.processingType | invoiceProcessingType" class="span12"></div>
+    </div>
+    <div data-ng-if="billToListModel.selectedBillTos[0].invoicePreferences.processingType === 'AUTOMATIC'" class="span8">
+        <div data-ng-if="billToListModel.selectedBillTos[0].invoicePreferences.invoiceType === 'CBI'" class="span6">
+            <div class="span12">
+                <div class="pls-font-bold">Processing Period:</div>
+                <div data-ng-bind="billToListModel.selectedBillTos[0].invoicePreferences.processingPeriod | processingPeriod" class="span12"></div>
+                <div data-ng-if="billToListModel.selectedBillTos[0].invoicePreferences.processingPeriod === 'WEEKLY'" class="span12 nowrap">
+                    Process Time: 5:00 AM (EST)
+                </div>
+            </div>
+        </div>
+        <div data-ng-if="billToListModel.selectedBillTos[0].invoicePreferences.invoiceType === 'CBI' && billToListModel.selectedBillTos[0].invoicePreferences.processingPeriod === 'WEEKLY'"
+             class="span6">
+            <div class="pls-font-bold">Invoice Day:</div>
+            <div data-ng-bind="billToListModel.selectedBillTos[0].invoicePreferences.processingDayOfWeek" class="span12"></div>
+        </div>
+        <div data-ng-if="billToListModel.selectedBillTos[0].invoicePreferences.processingPeriod !== 'WEEKLY'" class="span6">
+            <div data-ng-if="billToListModel.selectedBillTos[0].invoicePreferences.invoiceType === 'CBI'" class="pls-font-bold">Process Time:
+            </div>
+            <div data-ng-if="billToListModel.selectedBillTos[0].invoicePreferences.invoiceType !== 'CBI'" class="nowrap pls-font-bold">
+                Process on Schedule Time:
+            </div>
+            <div class="span12 nowrap">
+                {{convertTime(billToListModel.selectedBillTos[0].invoicePreferences.processingTimeInMinutes) | pickupWindowTime}}
+                {{billToListModel.selectedBillTos[0].invoicePreferences.processingTimezone.code}}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div data-ng-if="billToListModel.selectedBillTos[0].invoicePreferences.invoiceType === 'CBI' && billToListModel.selectedBillTos[0].invoicePreferences.processingPeriod === 'WEEKLY'"
+         class="span12">
+            <span class="pls-font-bold">Release all Shipments Equal or Prior to:</span>
+            <span class="span8">{{billToListModel.selectedBillTos[0].invoicePreferences.releaseDayOfWeek}}
+                <b class="text-warning padding-left20">Also used to determine GL Date</b>
+            </span>
+    </div>
+</div>

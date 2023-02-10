@@ -1,0 +1,137 @@
+<div class="row-fluid" data-ng-controller="CustomersTabCtrl">
+    <div class="span3 form-inline well well-small">
+        <div class="row-fluid">
+            <label class="span3" for="inputCustName">Name:</label>
+            <div class="span9">
+                <input id="inputCustName" type="text" class="span12" data-ng-model="criteria.name" data-ng-change="searchByCustomerName()">
+            </div>
+        </div>
+        <div class="row-fluid">
+            <label class="span3" for="inputAccExec">Account Exec:</label>
+            <div class="span9">
+                    <input id="inputAccExec" class="span12" data-pls-account-executive="criteria.accountExecutive">
+            </div>
+        </div>
+        <div class="row-fluid">
+            <label class="span3" for="inputRange">Range:</label>
+            <div class="span9">
+                <select id="inputRange" class="span12" data-ng-model="criteria.dateRange" data-ng-change="searchCustomers()">
+                    <option value="TODAY">Today</option>
+                    <option value="WEEK">This week</option>
+                    <option value="MONTH">This Month</option>
+                    <option value="YEAR">This Year</option>
+                    <option value="DEFAULT">Manual Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="row-fluid offset3">
+            <div class="row-fluid">
+                <label class="control-label span2" for="inputFrom">From:</label>
+                <div class="input-append">
+                    <input name="dateField" type="text" id="inputFrom"
+                    data-ng-model="criteria.fromDate"
+                    data-ng-disabled="criteria.dateRange!='DEFAULT'"
+                    data-date-format="yy-mm-dd"
+                    data-max-date="criteria.toDate"
+                    data-pls-datepicker
+                    disabled="disabled"
+                    class="input-small" data-ng-change="searchCustomers()"/>
+                    <button type="button" class="btn" data-toggle="datepicker" data-ng-disabled="criteria.dateRange!='DEFAULT'" disabled="disabled">
+                        <i class="icon-calendar"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="control-label span2" for="inputTo">To:</label>
+                <div class="input-append">
+                    <input name="dateField" type="text" id="inputTo"
+                    data-ng-model="criteria.toDate"
+                    data-ng-disabled="criteria.dateRange!='DEFAULT'"
+                    data-date-format="yy-mm-dd"
+                    data-min-date="criteria.fromDate"
+                    data-pls-datepicker
+                    disabled="disabled"
+                    class="input-small" data-ng-change="searchCustomers()"/>
+                    <button type="button" class="btn" data-toggle="datepicker" data-ng-disabled="criteria.dateRange!='DEFAULT'" disabled="disabled">
+                        <i class="icon-calendar"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <label class="span3" for="inputLoadRange">Load Range:</label>
+            <div class="span9">
+                <select id="inputLoadRange" class="span12" data-ng-model="criteria.loadDateRange" data-ng-change="searchCustomers()">
+                    <option value="TODAY">Today</option>
+                    <option value="WEEK">This week</option>
+                    <option value="MONTH">This Month</option>
+                    <option value="QUARTER">This Quarter</option>
+                    <option value="YEAR">This Year</option>
+                    <option value="DEFAULT">Manual Select</option>
+                </select>
+            </div>
+        </div>
+        <div class="row-fluid offset3">
+            <div class="row-fluid">
+                <label class="control-label span2" for="inputLoadFrom">From:</label>
+                <div class="input-append">
+                    <input name="dateField" type="text" id="inputLoadFrom"
+                    data-ng-model="criteria.loadFromDate"
+                    data-ng-disabled="criteria.loadDateRange!='DEFAULT'"
+                    data-max-date="criteria.loadToDate"
+                    data-date-format="yy-mm-dd"
+                    data-pls-datepicker
+                    disabled="disabled"
+                    class="input-small" data-ng-change="searchCustomers()"/>
+                    <button type="button" class="btn" data-toggle="datepicker" 
+                            data-ng-disabled="criteria.loadDateRange!='DEFAULT'" disabled="disabled">
+                        <i class="icon-calendar"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="control-label span2" for="inputLoadTo">To:</label>
+                <div class="input-append">
+                    <input name="dateField" type="text" id="inputLoadTo"
+                    data-ng-model="criteria.loadToDate"
+                    data-ng-disabled="criteria.loadDateRange!='DEFAULT'"
+                    data-min-date="criteria.loadFromDate"
+                    data-date-format="yy-mm-dd"
+                    data-pls-datepicker
+                    disabled="disabled"
+                    class="input-small" data-ng-change="searchCustomers()"/>
+                    <button type="button" class="btn" data-toggle="datepicker" 
+                            data-ng-disabled="criteria.loadDateRange!='DEFAULT'" disabled="disabled">
+                        <i class="icon-calendar"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <button class="btn" data-ng-click="clearSearchCriteria()">Clear</button>
+    </div>
+    <div class="span9">
+        <div class="tabbable tabbable-bordered">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="" data-toggle="tab" data-ng-click="changeStatus('A')">Active</a></li>
+                <li><a href="" data-toggle="tab" data-ng-click="changeStatus('I')">Archived</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab1">
+                    <div class="span10">
+                        <div class="gridStyle gridHeight4 span12" data-ng-grid="gridOptions" data-ng-dblclick="displayCustProf()"></div>
+                    </div>
+                    <div class="span2">
+                        <button class="btn btn-block"
+                                type="button" data-ng-click="displayCustProf()"
+                                data-ng-disabled="selectedItems.length!=1">Customer Pricing</button>
+                    </div>
+                    <div class="span2">
+                        <button class="btn btn-block"
+                                type="button" data-ng-click="displayCustP44Config()"
+                                data-ng-disabled="selectedItems.length!=1">Customer P44 Config</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,160 @@
+<div class="span3" data-ng-if="!selectedProposition.hideCostDetails || $root.isFieldRequired('CAN_VIEW_HIDDEN_RATES')">
+    <div class="row-fluid" data-ng-if="isRevenueAndCost()">
+        <span class="span12 label-middle">Profile ID: {{selectedProposition.pricingProfileId}}
+         ({{selectedProposition.ratingCarrierType == 'LTLLC' ? selectedProposition.carrierQuoteNumber : selectedProposition.tariffName}})
+	        <i class="pls-integration-ltllc-icon" data-ng-show="selectedProposition.ratingCarrierType == 'LTLLC' && authData.plsUser"></i>
+	        <i class="pls-vltl-icon" data-ng-show="selectedProposition.shipmentType==='VLTL'"></i>
+        </span>
+    </div>
+    <div class="row-fluid">
+        <div class="well well-small">
+            <div class="row-fluid">
+                <div class="span12">
+                    <span class="span6">Item</span>
+                    <span data-ng-if="isBenchmarkCost()" class="span3 text-right">Benchmark Cost</span>
+                    <span data-ng-class="{span3: isBenchmarkCost(), span6: !isBenchmarkCost()}"
+                          data-ng-if="isRevenueAndCost()" class="text-right">Revenue / Cost</span>
+                    <span data-ng-if="isRevenueOnly()" class="text-right span6">Cost</span>
+                </div>
+            </div>
+            <hr data-ng-if="isRevenueAndCost()">
+            <div class="row-fluid" data-ng-if="isRevenueAndCost()">
+                <div class="span12">
+                    <span class="pull-left">Initial Cost:</span>
+                    <span class="pull-right">
+                        {{selectedProposition.shipperInitialCost | plsCurrency}} /
+                        {{selectedProposition.carrierInitialCost | plsCurrency}}
+                    </span>
+                </div>
+            </div>
+            <div class="row-fluid" data-ng-if="isRevenueAndCost()">
+                <div class="span12">
+                    <span class="pull-left">Discount:</span>
+                    <span class="pull-right">
+                        {{selectedProposition.shipperDiscount | plsCurrency}} /
+                        {{selectedProposition.carrierDiscount | plsCurrency}}
+                    </span>
+                </div>
+            </div>
+
+            <div>
+                <hr>
+                <div class="row-fluid" data-ng-if="isCostDetailsVisible()">
+                    <div class="span12">
+                        <span class="span6">Base Rate:</span>
+                        <span data-ng-if="isBenchmarkCost()" class="span3 text-right">
+                            {{getBaseRate(selectedProposition, 'B') | plsCurrency}}
+                        </span>
+                        <span data-ng-class="{span3: isBenchmarkCost(), span6: !isBenchmarkCost()}"
+                              data-ng-if="isRevenueAndCost()" class="text-right">
+                            {{getBaseRate(selectedProposition, 'S') | plsCurrency}} /
+                            {{getBaseRate(selectedProposition, 'C') | plsCurrency}}
+                        </span>
+                        <span data-ng-if="isRevenueOnly()" class="pull-right">
+                            {{getBaseRate(selectedProposition, 'S') | plsCurrency}}
+                        </span>
+                    </div>
+                </div>
+
+                <div data-ng-if="isCostDetailsVisible()" class="row-fluid"
+                     data-ng-repeat="refType in getAccessorialsRefType(selectedProposition)">
+                    <div class="span12">
+                       <span class="span6 nowrap">{{refType | ref}}
+                            <wbr>
+                            <strong data-ng-if="refType === 'GD'">
+                                (by {{getGuranteedBy(selectedProposition, shipment.guaranteedBy) | longTime}})
+                            </strong>:
+                            <i data-ng-if="getNote(selectedProposition, refType)" data-rel="popover"
+                               data-trigger="hover" data-animation="false" class="icon-info-sign"
+                               data-content="{{getNote(selectedProposition, refType)}}"></i>
+                        </span>
+
+                        <span data-ng-if="isBenchmarkCost() && refType !== 'GD'" class="span3 text-right">
+                            {{getItemCost(selectedProposition, refType, 'B') | plsCurrency}}
+                        </span>
+                        <span data-ng-if="isBenchmarkCost() && refType === 'GD'" class="span3 text-right">
+                            {{getMostSuitableGuaranteed('B') | plsCurrency}}
+                        </span>
+
+                        <span data-ng-if="isRevenueAndCost() && refType !== 'GD'"
+                              data-ng-class="{span3: isBenchmarkCost(), span6: !isBenchmarkCost()}" class="text-right">
+                            {{getItemCost(selectedProposition, refType, 'S') | plsCurrency}} /
+                            {{getItemCost(selectedProposition, refType, 'C') | plsCurrency}}
+                        </span>
+                        <span data-ng-if="isRevenueAndCost() && refType === 'GD'"
+                              data-ng-class="{span3: isBenchmarkCost(), span6: !isBenchmarkCost()}" class="text-right">
+                            {{getMostSuitableGuaranteed('S') | plsCurrency}} /
+                            {{getMostSuitableGuaranteed('C') | plsCurrency}}
+                        </span>
+
+                        <span data-ng-if="isRevenueOnly() && refType !== 'GD'" class="text-right span6">
+                            {{getItemCost(selectedProposition, refType, 'S') | plsCurrency}}
+                        </span>
+                        <span data-ng-if="isRevenueOnly() && refType === 'GD'" class="text-right span6">
+                            {{getMostSuitableGuaranteed('S') | plsCurrency}}
+                        </span>
+                    </div>
+                </div>
+
+                <div class="row-fluid">
+                    <strong class="span6">Total:</strong>
+                    <strong data-ng-if="isBenchmarkCost()" class="span3 text-right">
+                        {{calculateCost(selectedProposition, shipment.guaranteedBy, 'B') | plsCurrency}}
+                    </strong>
+                    <strong data-ng-if="isRevenueAndCost()" class="text-right"
+                            data-ng-class="{span3: isBenchmarkCost(), span6: !isBenchmarkCost()}">
+                        {{getTotalCost(selectedProposition, shipment.guaranteedBy) | plsCurrency}} /
+                        {{getCarrierTotalCost(selectedProposition, shipment.guaranteedBy) | plsCurrency}}
+                    </strong>
+                    <strong data-ng-if="isRevenueOnly()" class="span6 text-right">
+                        {{getTotalCost(selectedProposition, shipment.guaranteedBy) | plsCurrency}}
+                    </strong>
+                </div>
+                <div data-ng-if="shipment.billTo.paymentMethod === 'PREPAID_ONLY'" class="row-fluid">
+                    <div data-pls-prepaid-amount data-prepaid-details="shipment.prepaidDetails" class="span12"
+                         data-total-revenue="getTotalCost(selectedProposition, shipment.guaranteedBy)"></div>
+                </div>
+            </div>
+
+            <div class="row-fluid" data-ng-show="!isCostDetailsVisible()">
+                <div class="span12">
+                    <a data-ng-click="model.showCostDetails = true">Cost Details {{showCostDetails}}</a>
+                </div>
+            </div>
+            
+            <div class="row-fluid" data-ng-if="selectedProposition.serviceLevelCode">
+                <div class="span12">
+                    {{selectedProposition.serviceLevelCode}} <span data-ng-if="selectedProposition.serviceLevelDescription">({{selectedProposition.serviceLevelDescription}})</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-pls-modal="model.showCostDetails" class="modalWidth6 modalHeight7"
+         data-enter="model.showCostDetails = false" data-close="model.showCostDetails = false">
+        <div class="modal-header">
+            <h4>Cost Details</h4>
+        </div>
+        <div class="modal-body">
+            <div class="row-fluid">
+                <span class="span6">Item</span>
+            </div>
+            <hr>
+            <div class="row-fluid">
+                <span class="span12">Base Rate</span>
+            </div>
+            <div class="row-fluid"
+                 data-ng-repeat="refType in getAccessorialsRefType(selectedProposition)">
+                <span class="span12">{{refType | ref}}
+                    <strong data-ng-if="refType === 'GD'">
+                        (by {{getGuranteedBy(selectedProposition, shipment.guaranteedBy) | longTime}})
+                    </strong>
+                </span>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="text-center">
+                <button class="btn" type="button" data-ng-click="model.showCostDetails = false">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

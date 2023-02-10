@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:batch="http://www.springframework.org/schema/batch"
+       xmlns:jdbc="http://www.springframework.org/schema/jdbc"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+               http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+               http://www.springframework.org/schema/jdbc http://www.springframework.org/schema/jdbc/spring-jdbc.xsd
+               http://www.springframework.org/schema/batch http://www.springframework.org/schema/batch/spring-batch.xsd
+               http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <context:component-scan base-package="com.pls.ltlrating.soap" />
+
+    <jdbc:initialize-database enabled="true" data-source="transactionAwareDataSource" ignore-failures="ALL">
+        <jdbc:script location="classpath:org/springframework/batch/core/schema-drop-postgresql.sql"/>
+        <jdbc:script location="classpath:org/springframework/batch/core/schema-postgresql.sql"/>
+    </jdbc:initialize-database>
+
+    <import resource="classpath:spring/dao-core.xml"/>
+
+    <bean id="jobRepository" class="org.springframework.batch.core.repository.support.JobRepositoryFactoryBean">
+        <property name="dataSource" ref="transactionAwareDataSource"/>
+        <property name="transactionManager" ref="transactionManager"/>
+        <property name="validateTransactionState" value="false"/>
+        <property name="isolationLevelForCreate" value="ISOLATION_READ_COMMITTED"/>
+    </bean>
+
+    <bean id="migrationTaskExecutor" class="org.springframework.core.task.SimpleAsyncTaskExecutor">
+        <property name="concurrencyLimit" value="5"/>
+    </bean>
+
+    <bean id="migrationJobLauncher" class="org.springframework.batch.core.launch.support.SimpleJobLauncher">
+        <property name="jobRepository" ref="jobRepository"/>
+        <property name="taskExecutor" ref="migrationTaskExecutor"/>
+    </bean>
+
+    <bean id="migrationPropertiesList" class="java.lang.String">
+        <constructor-arg
+                value="profileId, profileDetailId, customer, itemType, itemId, status, rateName, profilePriceType, profileDetailType, scac, smc3TariffName, itemName, costType, unitCost, costApplMinWt, costApplMaxWt, costApplMinDist, costApplMaxDist, minCost, maxCost, marginType, unitMargin, marginPercent, marginDollarAmt, effectiveFrom, effectiveTo, serviceType, movementType, origin, destination, ac50, ac55, ac60, ac65, ac70, ac77, ac85, ac92, ac100, ac110, ac125, ac150, ac175, ac200, ac250, ac300, ac400, ac500"/>
+    </bean>
+
+    <batch:job id="exportPrices" restartable="true">
+        <batch:step id="export">
+            <batch:tasklet>
+                <batch:chunk commit-interval="100">
+                    <batch:reader>
+                        <bean class="com.pls.ltlrating.batch.migration.LtlPricingItemExportReader" scope="step">
+                            <property name="name" value="priceExportItemReader"/>
+                            <property name="pageSize" value="1000"/>
+                        </bean>
+                    </batch:reader>
+                    <batch:writer>
+                        <bean class="com.pls.ltlrating.batch.migration.LtlPricingItemExportWriter" scope="step">
+                            <property name="name" value="priceExportItemWriter"/>
+                            <property name="resource" value="#{jobParameters['pricing.export.file']}"/>
+                            <property name="headers"
+                                      value="Profile ID, Detail ID, Customer, Item Type, Item ID, Status, Rate Name, Price Type, Detail Type, SCAC, SMC3 Tariff Name, Item Name, Cost Type, Unit Cost, Cost Apply Min Weight, Cost Apply Max Weight, Cost Apply Min Distance, Cost Apply Max Distance, Min Cost, Max Cost, Margin Type, Margin, Margin Percent, Margin Dollar Amount, Effective From, Effective To, Service Type, Movement Type, Origin, Destination, ac50, ac55, ac60, ac65, ac70, ac77, ac85, ac92, ac100, ac110, ac125, ac150, ac175, ac200, ac250, ac300, ac400, ac500"/>
+                            <property name="names" ref="migrationPropertiesList"/>
+                        </bean>
+                    </batch:writer>
+                </batch:chunk>
+            </batch:tasklet>
+        </batch:step>
+    </batch:job>
+
+    <bean id="tariffMatcher" class="com.pls.ltlrating.batch.migration.TariffMatcher"/>
+
+    <batch:job id="importPrices" restartable="true">
+        <batch:step id="import">
+            <batch:tasklet>
+                <batch:chunk commit-interval="100">
+                    <batch:reader>
+                        <bean class="com.pls.ltlrating.batch.migration.LtlPricingItemImportReader" scope="step">
+                            <property name="name" value="pricingImportItemReader"/>
+                            <property name="resource" value="#{jobParameters['pricing.import.file']}"/>
+                            <property name="pageSize" value="10000"/>
+                            <property name="rowMapper">
+                                <bean class="com.pls.ltlrating.batch.migration.LtlPricingItemRowMapper">
+                                    <property name="propertiesToPopulate" ref="migrationPropertiesList" />
+                                </bean>
+                            </property>
+                        </bean>
+                    </batch:reader>
+                    <batch:processor>
+                        <bean class="com.pls.ltlrating.batch.migration.LtlPricingImportValidatorProcessor"/>
+                    </batch:processor>
+                    <batch:writer>
+                        <bean class="com.pls.ltlrating.batch.migration.LtlPricingItemPersister" scope="step">
+                            <property name="itemProcessors">
+                                <list value-type="com.pls.ltlrating.batch.migration.processor.PriceItemProcessable">
+                                    <bean class="com.pls.ltlrating.batch.migration.processor.impl.PriceDetailProcessor" scope="prototype"/>
+                                    <bean class="com.pls.ltlrating.batch.migration.processor.impl.AccessorialProcessor" scope="prototype"/>
+                                    <bean class="com.pls.ltlrating.batch.migration.processor.impl.FuelSurchargeProcessor" scope="prototype"/>
+                                    <bean class="com.pls.ltlrating.batch.migration.processor.impl.PalletPriceProcessor" scope="prototype"/>
+                                </list>
+                            </property>
+                        </bean>
+                    </batch:writer>
+                    <batch:skip-policy>
+                        <bean class="org.springframework.batch.core.step.skip.AlwaysSkipItemSkipPolicy"/>
+                    </batch:skip-policy>
+                    <batch:listeners>
+                        <batch:listener>
+                            <bean class="com.pls.ltlrating.batch.migration.LtlPricingItemSkipListener" scope="step">
+                                <property name="resource" value="#{jobParameters['pricing.import.wrong.file']}"/>
+                                <property name="errorMsgColumnNumber" value="48"/>
+                                <property name="headers"
+                                          value="Profile ID, Detail ID, Customer, Item Type, Item ID, Status, Rate Name, Price Type, Detail Type, SCAC, SMC3 Tariff Name, Item Name, Cost Type, Unit Cost, Cost Apply Min Weight, Cost Apply Max Weight, Cost Apply Min Distance, Cost Apply Max Distance, Min Cost, Max Cost, Margin Type, Margin, Margin Percent, Margin Dollar Amount, Effective From, Effective To, Service Type, Movement Type, Origin, Destination, ac50, ac55, ac60, ac65, ac70, ac77, ac85, ac92, ac100, ac110, ac125, ac150, ac175, ac200, ac250, ac300, ac400, ac500, Error message"/>
+                            </bean>
+                        </batch:listener>
+                    </batch:listeners>
+                </batch:chunk>
+                <batch:no-rollback-exception-classes>
+                    <batch:include class="java.lang.Exception"/>
+                </batch:no-rollback-exception-classes>
+            </batch:tasklet>
+        </batch:step>
+        <batch:listeners>
+            <batch:listener ref="tariffMatcher"/>
+        </batch:listeners>
+    </batch:job>
+
+    <amq:queue id="PLS.AnalysisQueue" physicalName="PLS.AnalysisQueue"/>
+    <amq:redeliveryPolicy id="analysisRedeliveryPolicy" destination="#PLS.AnalysisQueue"
+        useExponentialBackOff="true"
+        backOffMultiplier="3"
+        maximumRedeliveries="4"
+        initialRedeliveryDelay="3000"/>
+    <amq:connectionFactory id="analysisConnectionFactory" brokerURL="${activeMQ.brokerURL}"
+        redeliveryPolicy="#analysisRedeliveryPolicy" trustAllPackages="true" nonBlockingRedelivery="true"/>
+    <bean id="analysisCachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory" >
+        <property name="targetConnectionFactory" ref="analysisConnectionFactory" />
+        <property name="sessionCacheSize" value="10" />
+        <property name="exceptionListener" ref="analysisCachingConnectionFactory"/>
+    </bean>
+    <bean id="analysisJMSTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="analysisCachingConnectionFactory" />
+        <property name="defaultDestination" ref="PLS.AnalysisQueue" />
+        <property name="sessionTransacted" value="true" />
+        <qualifier value="analysisTemplate"/>
+    </bean>
+</beans>

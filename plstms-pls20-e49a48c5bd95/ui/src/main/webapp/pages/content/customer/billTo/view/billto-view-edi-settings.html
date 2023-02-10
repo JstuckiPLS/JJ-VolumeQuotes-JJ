@@ -1,0 +1,32 @@
+<div>
+    <div class="span4">
+        <label data-ng-repeat="type in billToListModel.ediSettings.ediTypes">
+          <input type="checkbox"
+              data-checklist-model="getEDISettings().ediType"
+              data-checklist-value="type[0]"
+              disabled
+              class="checkbox-label-spacing"/>{{type[1]}}
+        </label>
+    </div>
+    <div class="span11"><strong>Status updates:</strong></div>
+    <div class="span4">
+        <label data-ng-repeat="status in billToListModel.ediSettings.ediStatuses">
+            <input type="checkbox"
+                data-checklist-model="getEDISettings().ediStatus"
+                data-checklist-value="status[0]"
+                disabled
+                class="checkbox-label-spacing"/>{{status[1]}}
+        </label>
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="form-inline">
+                <input type="checkbox" class="checkbox inline" name="bolUnique" id="bolUnique"
+                       data-ng-model="billToListModel.selectedBillTos[0].ediSettings.bolUnique"
+                       disabled />
+                <label class="checkbox inline" for="bolUnique">Shipper Ref# + BOL must be unique for 204 updates</label>
+                <div><p class="text-warning">If not checked only Shipper Ref# will be used for uniqueness</p></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,186 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.ltlrating.domain.LtlAccessorialsEntity.INACTIVATE_ACTIVE_EFF_BY_PROFILE_ID">
+        <![CDATA[
+                UPDATE LtlAccessorialsEntity SET status = 'I', modification.modifiedDate = LOCALTIMESTAMP, modification.modifiedBy = :modifiedBy
+                WHERE ltlPricProfDetailId = :id AND status = 'A'
+                    AND (expDate is null OR expDate >= LOCALTIMESTAMP)
+                    AND (effDate is null OR effDate < LOCALTIMESTAMP)
+        ]]>
+    </query>
+    <query name="com.pls.ltlrating.domain.LtlAccessorialsEntity.UPDATE_STATUSES_STATEMENT">
+        <![CDATA[
+                UPDATE LtlAccessorialsEntity SET status = :status, modification.modifiedDate = LOCALTIMESTAMP, modification.modifiedBy = :modifiedBy
+                WHERE id in :ids
+        ]]>
+    </query>
+    <query name="com.pls.ltlrating.domain.LtlAccessorialsEntity.EXPIRE_BY_IDS">
+        <![CDATA[
+                UPDATE LtlAccessorialsEntity SET expDate = current_date, modification.modifiedDate = LOCALTIMESTAMP, modification.modifiedBy = :modifiedBy
+                WHERE id IN (:ids)
+        ]]>
+    </query>
+    <sql-query name="com.pls.ltlrating.domain.LtlAccessorialsEntity.FIND_CSP_ACC_BY_COPIED_FROM">
+        <return class="com.pls.ltlrating.domain.LtlAccessorialsEntity"/>
+        <![CDATA[
+                SELECT acc.*
+                FROM ltl_accessorials acc
+                JOIN ltl_pricing_profile_details ppd ON ppd.ltl_pric_prof_detail_id = acc.ltl_pric_prof_detail_id
+                JOIN ltl_pricing_profile pp ON pp.ltl_pricing_profile_id = ppd.ltl_pricing_profile_id AND pp.ltl_pricing_type = 'BLANKET_CSP'
+                WHERE acc.copied_from = :id
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.ltlrating.domain.LtlAccessorialsEntity.EXPIRATE_CPS_BY_COPIED_FROM_STATEMENT">
+        <![CDATA[
+                UPDATE ltl_accessorials lacc
+                SET exp_date = current_date, modified_by = :modifiedBy, date_modified = LOCALTIMESTAMP
+                WHERE lacc.ltl_accessorial_id IN (
+                SELECT acc.ltl_accessorial_id
+                FROM ltl_accessorials acc
+                JOIN ltl_pricing_profile_details ppd ON ppd.ltl_pric_prof_detail_id = acc.ltl_pric_prof_detail_id
+                JOIN ltl_pricing_profile pp ON pp.ltl_pricing_profile_id = ppd.ltl_pricing_profile_id AND pp.ltl_pricing_type = 'BLANKET_CSP'
+                WHERE acc.copied_from IN (:ownerIds))
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.ltlrating.domain.LtlAccessorialsEntity.UPDATE_CSP_STATUS_STATEMENT">
+        <![CDATA[
+                UPDATE ltl_accessorials lacc
+                SET status = :status, modified_by = :modifiedBy, date_modified = LOCALTIMESTAMP
+                WHERE lacc.ltl_accessorial_id IN (
+                SELECT acc.ltl_accessorial_id
+                FROM ltl_accessorials acc
+                JOIN ltl_pricing_profile_details ppd ON ppd.ltl_pric_prof_detail_id = acc.ltl_pric_prof_detail_id
+                JOIN ltl_pricing_profile pp ON pp.ltl_pricing_profile_id = ppd.ltl_pricing_profile_id AND pp.ltl_pricing_type = 'BLANKET_CSP'
+                WHERE acc.copied_from IN (:ownerIds))
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.ltlrating.domain.LtlAccessorialsEntity.INACTIVATE_CSP_BY_DETAIL_ID">
+        <![CDATA[
+                UPDATE LTL_ACCESSORIALS lac SET status = 'I', modified_by = :modifiedBy, date_modified = LOCALTIMESTAMP
+                WHERE lac.ltl_pric_prof_detail_id IN (SELECT pd.ltl_pric_prof_detail_id
+                FROM ltl_pricing_profile p
+                JOIN ltl_pricing_profile_details pd ON pd.ltl_pricing_profile_id = p.ltl_pricing_profile_id
+                WHERE p.ltl_pricing_type = 'BLANKET_CSP' AND p.copied_from = (SELECT pp.ltl_pricing_profile_id
+                FROM ltl_pricing_profile pp
+                JOIN ltl_pricing_profile_details ppd ON ppd.ltl_pricing_profile_id = pp.ltl_pricing_profile_id
+                AND ppd.ltl_pric_prof_detail_id = :ownerId))
+        ]]>
+    </sql-query>
+    <query name="com.pls.ltlrating.domain.LtlAccessorialsEntity.Q_ALL_ACTIVE_AND_EFFECTIVE_FOR_PROFILE">
+        <![CDATA[
+               SELECT lae FROM LtlAccessorialsEntity lae WHERE lae.status = 'A' and
+                (lae.expDate is null or lae.expDate > LOCALTIMESTAMP) and
+                 lae.ltlPricProfDetailId = :profileDetailId
+        ]]>
+    </query>
+    <sql-query name="com.pls.ltlrating.domain.LtlAccessorialsEntity.Q_ALL_ACTIVE_BY_PROFILE_ID">
+        <return-scalar column="type" type="string"/>
+        <return-scalar column="destination" type="string"/>
+        <return-scalar column="origin" type="string"/>
+        <return-scalar column="id" type="long"/>
+        <return-scalar column="minCost" type="java.math.BigDecimal"/>
+        <return-scalar column="status" type="string"/>
+        <![CDATA[
+            SELECT lae.ltl_accessorial_id as id, lae.status, lae.min_cost as minCost, at.description as type,
+                (select string_agg(orig.geo_value, ', ')
+                 from (
+                    select orig_geo.geo_value
+                    from ltl_acc_geo_serv_dtls orig_geo
+                    where orig_geo.ltl_acc_geo_service_id in
+                        (select lags.ltl_acc_geo_service_id from ltl_acc_geo_services lags where lags.ltl_accessorial_id = lae.ltl_accessorial_id)
+                        and orig_geo.geo_type = 1
+                    ORDER BY orig_geo.geo_value
+                    LIMIT 100) orig
+                ) origin,
+                (select string_agg(dest.geo_value, ', ')
+                from (
+                    select dest_geo.geo_value
+                    from ltl_acc_geo_serv_dtls dest_geo
+                    where dest_geo.ltl_acc_geo_service_id in
+                        (select lags.ltl_acc_geo_service_id from ltl_acc_geo_services lags where lags.ltl_accessorial_id = lae.ltl_accessorial_id)
+                        and dest_geo.geo_type = 2
+                    ORDER BY dest_geo.geo_value
+                    LIMIT 100) dest
+                ) destination
+            FROM ltl_accessorials lae
+            JOIN rater.accessorial_types at on lae.accessorial_type = at.accessorial_type_code
+            WHERE lae.ltl_pric_prof_detail_id = :profileDetailId and lae.status = 'A' and
+                (lae.exp_date is not null and lae.exp_date <= LOCALTIMESTAMP)
+            ORDER BY lae.ltl_accessorial_id
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.ltlrating.domain.LtlAccessorialsEntity.Q_ALL_ACTIVE_AND_EFFECTIVE_BY_PROFILE_ID">
+        <return-scalar column="type" type="string"/>
+        <return-scalar column="destination" type="string"/>
+        <return-scalar column="origin" type="string"/>
+        <return-scalar column="id" type="long"/>
+        <return-scalar column="minCost" type="java.math.BigDecimal"/>
+        <return-scalar column="status" type="string"/>
+        <![CDATA[
+            SELECT lae.ltl_accessorial_id as id, lae.status, lae.min_cost as minCost, at.description as type,
+                (select string_agg(orig.geo_value, ', ')
+                 from (
+                    select orig_geo.geo_value
+                    from ltl_acc_geo_serv_dtls orig_geo
+                    where orig_geo.ltl_acc_geo_service_id in
+                        (select lags.ltl_acc_geo_service_id from ltl_acc_geo_services lags where lags.ltl_accessorial_id = lae.ltl_accessorial_id)
+                        and orig_geo.geo_type = 1
+                    ORDER BY orig_geo.geo_value
+                    LIMIT 100) orig
+                ) origin,
+                (select string_agg(dest.geo_value, ', ')
+                from (
+                    select dest_geo.geo_value
+                    from ltl_acc_geo_serv_dtls dest_geo
+                    where dest_geo.ltl_acc_geo_service_id in
+                        (select lags.ltl_acc_geo_service_id from ltl_acc_geo_services lags where lags.ltl_accessorial_id = lae.ltl_accessorial_id)
+                        and dest_geo.geo_type = 2
+                    ORDER BY dest_geo.geo_value
+                    LIMIT 100) dest
+                ) destination
+            FROM ltl_accessorials lae
+            JOIN rater.accessorial_types at on lae.accessorial_type = at.accessorial_type_code
+            WHERE lae.ltl_pric_prof_detail_id = :profileDetailId and lae.status = 'A' and
+                (lae.exp_date is null or lae.exp_date > LOCALTIMESTAMP)
+            ORDER BY lae.ltl_accessorial_id
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.ltlrating.domain.LtlAccessorialsEntity.Q_FIND_BY_STATUS_AND_PROFILE_ID">
+        <return-scalar column="type" type="string"/>
+        <return-scalar column="destination" type="string"/>
+        <return-scalar column="origin" type="string"/>
+        <return-scalar column="id" type="long"/>
+        <return-scalar column="minCost" type="java.math.BigDecimal"/>
+        <return-scalar column="status" type="string"/>
+        <![CDATA[
+            SELECT lae.ltl_accessorial_id as id, lae.status, lae.min_cost as minCost, at.description as type,
+                (select string_agg(orig.geo_value, ', ')
+                 from (
+                    select orig_geo.geo_value
+                    from ltl_acc_geo_serv_dtls orig_geo
+                    where orig_geo.ltl_acc_geo_service_id in
+                        (select lags.ltl_acc_geo_service_id from ltl_acc_geo_services lags where lags.ltl_accessorial_id = lae.ltl_accessorial_id)
+                        and orig_geo.geo_type = 1
+                    ORDER BY orig_geo.geo_value
+                    LIMIT 100) orig
+                ) origin,
+                (select string_agg(dest.geo_value, ', ')
+                from (
+                    select dest_geo.geo_value
+                    from ltl_acc_geo_serv_dtls dest_geo
+                    where dest_geo.ltl_acc_geo_service_id in
+                        (select lags.ltl_acc_geo_service_id from ltl_acc_geo_services lags where lags.ltl_accessorial_id = lae.ltl_accessorial_id)
+                        and dest_geo.geo_type = 2
+                    ORDER BY dest_geo.geo_value
+                    LIMIT 100) dest
+                ) destination
+            FROM ltl_accessorials lae
+            JOIN rater.accessorial_types at on lae.accessorial_type = at.accessorial_type_code
+            WHERE lae.ltl_pric_prof_detail_id = :profileDetailId and lae.status = :status
+            ORDER BY lae.ltl_accessorial_id
+        ]]>
+    </sql-query>
+</hibernate-mapping>

@@ -1,0 +1,83 @@
+<project
+    xmlns="http://maven.apache.org/POM/4.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+	
+    <artifactId>pls20</artifactId>
+	  <groupId>com.pls</groupId>
+	  <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+	
+	  <name>PLS20 WAR Prep</name>
+    <description>Parent POM for Deployments</description>
+
+    <properties>
+      <docker.repo.name>us.gcr.io/pls-logistics-services/pls20-scheduler</docker.repo.name>
+      <docker.namespace>development</docker.namespace>
+      <dockerfile.tag>local</dockerfile.tag>
+    </properties>
+    <build>
+        <extensions>
+            <extension>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-extension</artifactId>
+                <version>1.4.9</version>
+            </extension>
+            <extension>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.8</version>
+            </extension>
+        </extensions>
+        <plugins>
+        	<plugin>
+                  <groupId>org.apache.maven.plugins</groupId>
+                  <artifactId>maven-antrun-plugin</artifactId>
+                  <version>1.8</version>
+                  <executions>
+                     <execution>
+                     	<phase>package</phase>
+                        <goals>
+                           <goal>run</goal>
+                        </goals>
+                        <configuration>
+                           <target>
+						                  <echo message="Deleting dist/conf"/>
+							                <delete dir="${basedir}/dist/conf" includeemptydirs="true" failonerror="false" />
+                              <echo>Copying wars</echo>
+                              <copy file="restful/rest-services/target/restful.war" tofile="dist/wars/restful.war"/>
+                              <copy file="ui/target/my-freight.war" tofile="dist/wars/ROOT.war"/>
+                              <copy file="activemq/target/activemq.war" tofile="dist/wars/activemq.war"/>
+                              <echo>Copying configuration for: ${docker.namespace}</echo>
+                              <copy file="scheduler/config/tomcat/tomcat-users-${docker.namespace}.xml" tofile="dist/conf/tomcat-users.xml" overwrite="true"/>
+                              <copy file="scheduler/config/profiles/pls-${docker.namespace}.properties" tofile="dist/conf/plsapp.properties" overwrite="true"/>                            
+                           </target>
+                        </configuration>
+                     </execution>
+                  </executions>
+               </plugin>          
+			   <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.9</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <id>default</id>
+                        <goals>
+                            <goal>build</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <repository>${docker.repo.name}</repository>
+                    <tag>${dockerfile.tag}</tag>
+                    <dockerfile>Dockerfile</dockerfile>
+                    <buildArgs>
+                   <configuration>"${docker.namespace}"</configuration>
+               </buildArgs>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

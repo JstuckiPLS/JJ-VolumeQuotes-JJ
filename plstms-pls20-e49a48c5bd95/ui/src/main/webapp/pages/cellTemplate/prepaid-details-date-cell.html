@@ -1,0 +1,8 @@
+<div data-ng-class="{'input-append': mode === 'editable'}">
+    <input id="prepaidDater" name="dateField" type="text" pls-datepicker ng-input="row.entity.date" ng-model="row.entity.date"
+           data-ng-disabled="mode !== 'editable'" required class="input-small"/>
+
+    <button type="button" data-ng-show="mode === 'editable'" data-toggle="datepicker" class="btn">
+        <i class="icon-calendar"></i>
+    </button>
+</div>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.ltlrating.domain.LtlPricingNotesEntity.FIND_BY_PROFILE_ID">
+        <![CDATA[
+                from LtlPricingNotesEntity lpne where lpne.pricingProfileId = :priceProfileId order by lpne.createdDate
+        ]]>
+    </query>
+</hibernate-mapping>

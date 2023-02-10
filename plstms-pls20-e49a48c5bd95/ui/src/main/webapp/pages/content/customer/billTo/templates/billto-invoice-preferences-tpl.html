@@ -1,0 +1,198 @@
+<div class="span12">
+    <div data-ng-if="billTo" class="row-fluid">
+        <div class="span4">
+            <span><b>Credit Limit:</b>  {{billTo.creditLimit | plsCurrency}}</span>
+        </div>
+        <div class="span4">
+            <span><b>Unpaid Amount:</b>  {{billTo.unpaidAmount | plsCurrency}}</span>
+        </div>
+        <div class="span4">
+            <span><b>Available Credit Amount:</b>  {{billTo.availableAmount | plsCurrency}}</span>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span4">
+            <div class="form-inline">
+                <input data-ng-model="billTo.creditHold" data-ng-disabled="!$root.isFieldRequired('SET_BILL_TO_CREDIT_LIMIT')" type="checkbox"
+                       id="creditHoldInp" class="checkbox inline"/>
+                <label for="creditHoldInp" class="checkbox inline">Credit Hold</label>
+            </div>
+        </div>
+        <div class="span4">
+            <div class="form-inline">
+                <input data-ng-model="billTo.overrideCreditHold" data-ng-disabled="!$root.isFieldRequired('SET_BILL_TO_CREDIT_LIMIT')" type="checkbox"
+                       data-ng-change="updateAutoCreditHoldValue()" id="creditOverrideInp" class="checkbox inline"/>
+                <label for="creditOverrideInp" class="checkbox inline">Override Credit Limit Settings</label>
+            </div>
+        </div>
+        <div class="span4">
+            <div class="form-inline">
+                <input data-ng-disabled="!$root.isFieldRequired('SET_BILL_TO_CREDIT_LIMIT') || !billTo.overrideCreditHold" type="checkbox"
+                       data-ng-model="billTo.autoCreditHold" id="creditAutoSetInp" class="checkbox inline"/>
+                <label for="creditAutoSetInp" class="checkbox inline">Auto Set Credit Hold</label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span4">
+            <label for="currencyCode" class="pls-font-bold">Currency Code:</label>
+            <select data-ng-model="billTo.currency" data-ng-options="currencyCode | currencyCode for currencyCode in currencyCodes" id="currencyCode"
+                    class="span8 a_currencyCode" required></select>
+        </div>
+        <div class="span4">
+            <label class="pls-font-bold">Payments Term:</label>
+            <select data-ng-model="billTo.payTermsId" data-ng-options="payTerm.key as payTerm.value for payTerm in payTerms"
+                    data-ng-disabled="!$root.isFieldRequired('CAN_EDIT_CUSTOMER_PAYMENTS_TERMS')" class="span8"></select>
+        </div>
+        <div class="span4">
+            <label class="pls-font-bold">Payments Method:</label>
+            <select data-ng-model="billTo.paymentMethod" data-ng-options="payMethod.value as payMethod.label for payMethod in payMethods"
+            data-ng-change="setPaymentMethod(billTo.paymentMethod)"
+            class="span8"></select>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span4">
+            <label for="invoiceType" class="pls-font-bold">Invoice Type:</label>
+            <select data-ng-model="billTo.invoicePreferences.invoiceType" data-ng-change="setInvoiceType(billTo.invoicePreferences.invoiceType)"
+                    id="invoiceType" name='invoiceTypeAddEdit' class="span8">
+                <option value="TRANSACTIONAL">Transactional</option>
+                <option value="CBI">CBI</option>
+            </select>
+        </div>
+        <div class="span4">
+             <div data-ng-if="billTo.invoicePreferences.invoiceType === 'CBI'">
+                <label for="cbiInvoiceType" class="pls-font-bold">CBI Invoice Type:</label>
+                <select data-ng-model="billTo.invoicePreferences.cbiInvoiceType" id="cbiInvoiceType" name="cbiInvoiceTypeAddEdit"
+                        data-ng-change="setCbiInvoiceType(billTo.invoicePreferences.cbiInvoiceType)" class="span8">
+                    <option value="PLS">Invoice in PLS 2.0</option>
+                    <option value="FIN">Invoice in Financials</option>
+                </select>
+            </div>
+        </div>
+        <div class="span4" data-ng-if="billTo.invoicePreferences.invoiceType !== 'CBI'">
+            <label class="pls-font-bold">Email for Credit Card Communication:</label>
+                <input class="span12" data-ng-required = "billTo.paymentMethod === 'PREPAID_ONLY'" 
+                type = "email" data-pls-emails-separated-list maxlength="254" data-ng-model="billTo.creditCardEmail">
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span4">
+            <div class="form-inline">
+                <input data-ng-model="billTo.invoicePreferences.gainshareOnly" id="gainshareOnly" name="gainshareOnly" type="checkbox"
+                       class="checkbox inline"/>
+                <label for="gainshareOnly" class="checkbox inline">Include Carrier Cost-Gainshare accounts only</label>
+            </div>
+        </div>
+        <div class="span8" data-ng-if="billTo.invoicePreferences.cbiInvoiceType !== 'FIN'">
+            <div class="form-inline">
+                <input data-ng-model="billTo.invoicePreferences.noInvoiceDocument" name="noInvoiceDocument" type="checkbox"
+                       data-ng-change="noInvoiceDocumentSelected()"
+                       class="checkbox inline"/>
+                <label for="noInvoiceDocument" class="checkbox inline">No Invoice Document</label>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span4" data-ng-if="billTo.invoicePreferences.cbiInvoiceType !== 'FIN'" >
+            <div class="form-inline">
+                <input data-ng-model="billTo.invoicePreferences.notSplitRecipients" id="notSplitRecipients" name="notSplitRecipients" type="checkbox"
+                       class="checkbox inline" data-ng-disabled="billTo.invoicePreferences.noInvoiceDocument"/>
+                <label for="notSplitRecipients" class="checkbox inline">Send 1 email to all receivers</label>
+            </div>
+        </div>
+        <div class="span8" data-ng-if="billTo.invoicePreferences.cbiInvoiceType !== 'FIN'" >
+            <div class="form-inline">
+                <input data-ng-model="billTo.invoicePreferences.ediInvoice" data-ng-disabled="!$root.isFieldRequired('SELECT_EDI_INVOICE_ON_BILL_TO')"
+                       id="ediInvoice" name="ediInvoice" type="checkbox" class="checkbox inline"/>
+                <label class="checkbox inline" for="ediInvoice">EDI Invoice
+                    <b class="text-warning padding-left20">Requires external integration system configuration</b>
+                </label>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid" data-ng-if="billTo.invoicePreferences.invoiceType === 'CBI' && billTo.invoicePreferences.cbiInvoiceType !== 'FIN'">
+        <div class="span12">
+            <div class="span4">
+                <label class="pls-font-bold">Excel Options:</label>
+                <select data-ng-model="preferencesModel.xlsSelectedDocument" 
+                        data-pls-custom-validate="billTo.invoicePreferences.noInvoiceDocument || isValidDocument()" id="xlsDocument"
+                        data-ng-options="document.value as document.label for document in xlsDocuments" data-ng-change="documentsChanged()"
+                        data-ng-disabled="billTo.invoicePreferences.noInvoiceDocument"
+                        class="span8"></select>
+            </div>
+            <div class="span4">
+                <label class="pls-font-bold">PDF Options:</label>
+                <select data-ng-model="preferencesModel.pdfSelectedDocument" 
+                        data-pls-custom-validate="billTo.invoicePreferences.noInvoiceDocument || isValidDocument()" id="pdfDocument"
+                        data-ng-options="document.value as document.label for document in pdfDocuments" data-ng-change="documentsChanged()"
+                        data-ng-disabled="billTo.invoicePreferences.noInvoiceDocument"
+                        class="span8"></select>
+            </div>
+            <div class="span4">
+                <label class="pls-font-bold">Sort by:</label>
+                <select data-ng-model="billTo.invoicePreferences.sortType" data-ng-options="sortType.id as sortType.value for sortType in sortTypes"
+                        id="sortType" class="span8"></select>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="span12">
+            <div data-ng-if="billTo.invoicePreferences.invoiceType === 'CBI'" class="span4">
+                <label for="processingType" class="pls-font-bold">Processing Type:</label>
+                <select data-ng-model="billTo.invoicePreferences.processingType" data-ng-change="processingTypeChanged()" required
+                        data-ng-options="processingType | invoiceProcessingType for processingType in invoiceProcessingTypes"
+                        id="processingType" class="span8 a_processingType"></select>
+            </div>
+            <div data-ng-if="billTo.invoicePreferences.invoiceType === 'CBI' && billTo.invoicePreferences.processingType === 'AUTOMATIC'" class="span4">
+                <label for="processingPeriod" class="pls-font-bold">Processing Period:</label>
+                <select data-ng-model="billTo.invoicePreferences.processingPeriod" data-ng-change="processingPeriodChanged()" required
+                        data-ng-options="period | processingPeriod for period in processingPeriodValues" id="processingPeriod"
+                        class="span8 a_processingPeriod"></select>
+                <div data-ng-if="billTo.invoicePreferences.processingPeriod === 'WEEKLY'" class="row-fluid">
+                    <label>Process Time: 5:00 AM (EST)</label>
+                </div>
+            </div>
+            <div data-ng-if="isWeeklyProcessing()" class="span4">
+                <label for="invoiceDay" class="pls-font-bold">Invoice Day:</label>
+                <select id="invoiceDay" class="span8 a_processingDayOfWeek" data-ng-model="billTo.invoicePreferences.processingDayOfWeek"
+                        data-ng-options="dayToSend for dayToSend in daysOfWeek" required> </select>
+            </div>
+            <div data-ng-if="isProcessOnTime()" class="span4">
+                <label data-ng-if="billTo.invoicePreferences.invoiceType === 'CBI'" class="pls-font-bold">Process Time:</label>
+                <label data-ng-if="billTo.invoicePreferences.invoiceType !== 'CBI'" class="pls-font-bold">Process on Schedule Time:</label>
+
+                <div class="row-fluid">
+                    <div class="span4">
+                        <input data-pls-pickup-window="preferencesModel.pickupWindow" data-pls-pickup-window-required="true"
+                               class="span12 a_processTime">
+                    </div>
+                    <div class="span4">
+                        <select data-ng-model="billTo.invoicePreferences.processingTimezone.localOffset" class="span12 a_localOffset"
+                                data-ng-options="timeZone.localOffset as timeZone.code for timeZone in timezones" required></select>
+                    </div>
+                </div>
+                <br/>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div data-ng-if="billTo.invoicePreferences.invoiceType === 'CBI' && billTo.invoicePreferences.processingPeriod === 'WEEKLY'"
+             class="span12">
+            <div class="span8">
+                <label for="releaseDay" class="pls-font-bold">Release all Shipments Equal or Prior to:</label>
+                <select data-ng-model="billTo.invoicePreferences.releaseDayOfWeek" data-ng-options="dayToSend for dayToSend in daysOfWeek" required
+                        id="releaseDay" class="pls-pull-left span4"></select>
+    
+                <div class="span8 text-warning pls-font-bold label-middle">Also used to determine GL Date</div>
+            </div>
+        </div>
+    </div>
+</div>

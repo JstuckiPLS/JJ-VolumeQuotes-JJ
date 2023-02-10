@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.core.domain.organization.LtlPricNwDfltMarginEntity.Q_BY_NETWORK_ID">
+        <![CDATA[
+                from LtlPricNwDfltMarginEntity where nwEntity.id = :networkId
+        ]]>
+    </query>
+</hibernate-mapping>

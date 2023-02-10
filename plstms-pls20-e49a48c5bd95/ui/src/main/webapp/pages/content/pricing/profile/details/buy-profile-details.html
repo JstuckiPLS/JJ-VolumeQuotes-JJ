@@ -1,0 +1,109 @@
+<div data-ng-show="_.contains(['BUY_SELL'], profileDetails.ltlPricingType) ">
+    <div class="control-group">
+        <label class="control-label">Detail Id:</label>
+        <div class="controls customer-label" data-ng-bind="profileDetails.profileDetails[0].id"></div>
+    </div>
+    <div class="control-group row-fluid">
+        <label class="control-label" for="inputActive">Use Blanket</label>
+        <div class="controls">
+            <input type="checkbox" id="useBlanketAsBuy"
+                data-ng-disabled="profileDetails.profileDetails.useBlanketAsSell || isCarrierAPISelectedForBuySell()"
+                data-ng-model="profileDetails.profileDetails.useBlanketAsBuy" /> 
+        </div>
+    </div>
+</div>
+<div data-ng-hide="_.contains(['MARGIN'], profileDetails.ltlPricingType)">
+    <div class="control-group">
+        <label class="control-label" for="inputCarrierType">Carrier Rating Type:</label>
+        <div class="controls" >
+            <select id="inputCarrierType" class="span12"
+                data-ng-change="getCarrierAPIDetails(profileDetails.profileDetails[0]); clearSMC3TariffsForCarrierAPI()"
+                data-ng-model="profileDetails.profileDetails[0].carrierType"
+                data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.ltlPricingType)"
+                data-ng-options="type.ltlRatingCarrierType as type.description for type in profileDictionary.carrierTypes" required>
+            </select>
+        </div>
+    </div>
+</div>
+<div class="control-group" 
+    data-ng-show="_.contains(['SMC3','MANUAL', 'CARRIER_API', 'LTLLC'], profileDetails.profileDetails[0].carrierType) && !_.contains(['MARGIN'], profileDetails.ltlPricingType)">
+    <label class="control-label" for="inputMileageCalc">Mileage Calc:</label>
+    <div class="controls" >
+        <select id="inputMileageCalc"
+        class="span12"
+        data-ng-model="profileDetails.profileDetails[0].mileageCalc"
+        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.ltlPricingType)"
+        data-ng-options="type.id as type.description + ' ' + type.id.mileageVersion for type in profileDictionary.mileageTypes" required></select>
+    </div>
+</div>
+<!-- NOT USED ANYWHERE in the SYSTEM. HENCE COMMENTING IT -->
+<!-- 
+<div data-ng-hide="_.contains(['MARGIN'], profileDetails.ltlPricingType)">
+    <div class="control-group" data-ng-show="_.contains(['SMC3'], profileDetails.profileDetails[0].carrierType)">
+        <label class="control-label" for="inputCarrierConnect">Carrier Connect:</label>
+        <div class="controls" >
+            <select id="inputCarrierConnect"
+            data-ng-model="profileDetails.profileDetails[0].smc3Carrier"
+            data-ng-options="carrier.scac as carrier.name for carrier in smc3Carriers" required></select>
+        </div>
+    </div>
+</div>
+-->
+<div class="control-group" 
+    data-ng-show="_.contains(['SMC3'], profileDetails.profileDetails[0].carrierType) && !_.contains(['MARGIN'], profileDetails.ltlPricingType)">
+    <label class="control-label" for="inputRatingModule">SMC3 Tariff:</label>
+    <div class="controls">
+        <select id="inputRatingModule"
+        class="span12"
+        data-ng-model="profileDetails.profileDetails[0].smc3Tariff"
+        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.ltlPricingType)"
+        data-ng-options="tariff.tariffName as tariff.description for tariff in profileDictionary.smc3Tariffs" required></select>
+    </div>
+</div>
+<!-- 
+<div class="control-group" data-ng-show="_.contains(['SMC3','MANUAL'], profileDetails.profileDetails[0].carrierType) || _.contains(['MARGIN'], profileDetails.ltlPricingType)">
+    <label class="control-label" for="inputMScale">M Scale:</label>
+    <div class="controls" >
+        <select id="inputMScale" data-ng-model="profileDetails.profileDetails[0].mscale" 
+         data-ng-options="mscale.ltlLookupValue as mscale.ltlLookupValue+'-'+mscale.description for mscale in profileDictionary.mscaleValues"></select>
+    </div>
+</div>
+ -->
+<!-- profileDetails.defaultPricingTypeDetails.carrierType == 'SMC3' -->
+
+<div data-ng-show="_.contains(['API'], profileDetails.profileDetails[0].carrierType)">
+    <div class="control-group row-fluid">
+        <label class="control-label span6" >API Name:</label>
+        <label class="control-label text-left span6" >{{profileDetails.profileDetails[0].carrierAPIDetails.apiName}}</label>
+    </div>
+    <!-- 
+    <div class="control-group">
+        <label class="control-label" for="inputLogin">Login:</label>
+        <div class="controls" >
+            <input type="text" id="inputLogin" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputPassword">Password:</label>
+        <div class="controls" >
+            <input type="password" id="inputPassword" />
+        </div>
+    </div>
+    <div class="control-group">
+        <label class="control-label" for="inputKeyToken">Key/Token:</label>
+        <div class="controls  controls-row" >
+            <input type="text" id="inputKeyToken" />
+            <button class="btn btn-small" type="button">
+                Verify
+            </button>
+        </div>
+    </div>
+    
+    <div class="form-horizontal">
+        <div class="span3">&nbsp;</div>
+        <button class="btn btn-small" type="button">Verify</button>
+    </div>
+     -->
+</div>
+<!-- profileDetails.profileDetails[0].carrierType == 'API' -->
+

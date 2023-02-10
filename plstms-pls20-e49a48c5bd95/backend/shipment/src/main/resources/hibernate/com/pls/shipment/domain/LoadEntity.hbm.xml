@@ -1,0 +1,1430 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.ltlrating.domain.AnalysisEntity.Q_GET_ITEMS">
+        <![CDATA[
+                select 1 from LoadEntity where id=cast(:analysisId as long)
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_LOAD_BY_ORG_ID_AND_SHIPMENT_NO_AND_BOL">
+        <![CDATA[
+                select l from LoadEntity l inner join l.organization o
+                where l.numbers.refNumber=:ref and o.id=:id and l.numbers.bolNumber = :bol
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_LOAD_BY_ID">
+        <![CDATA[
+                select load from LoadEntity load
+                left outer join fetch load.origin o
+                left outer join fetch o.loadMaterials lm
+                left outer join fetch lm.packageType pt
+                left outer join fetch o.address oa
+                left outer join fetch oa.country oac
+                left outer join fetch oa.state oas
+                left outer join fetch load.destination d
+                left outer join fetch load.location l
+                left outer join fetch d.address da
+                left outer join fetch da.country dac
+                left outer join fetch da.state das
+                left outer join fetch load.billTo bt
+                left outer join fetch bt.billingInvoiceNode bin
+                left outer join fetch bin.address ba
+                left outer join fetch ba.country bac
+                left outer join fetch ba.state bas
+                left outer join fetch bin.phone bp
+                left outer join fetch bin.fax bf
+                left outer join fetch bt.invoiceSettings bis
+                left outer join fetch bis.processingTimeTimezone tz
+                left outer join fetch load.ltlAccessorials la
+                left outer join fetch la.accessorial a
+                left outer join fetch load.activeCostDetails acd
+                left outer join fetch acd.costDetailItems lcdi
+                left outer join fetch load.vendorBillDetails.carrierInvoiceDetails cid
+                left outer join fetch cid.originAddress cido
+                left outer join fetch cid.destinationAddress cidd
+                left outer join fetch load.allFinancialAccessorials afa
+                left outer join fetch afa.costDetailItems acdi
+                left outer join fetch load.specialMessage sm
+                left outer join fetch load.organization customer
+                left outer join fetch customer.phone cup
+                left outer join fetch customer.fax cuf
+                left outer join fetch load.carrier carrier
+                left outer join fetch carrier.orgServiceEntity os
+                left outer join fetch carrier.phone cp
+                left outer join fetch carrier.fax cf
+                left outer join fetch load.loadNotifications ln
+                left outer join fetch ln.notificationType nt
+                left outer join fetch load.freightBillPayTo fbpt
+                left outer join fetch fbpt.address fbpta
+                left outer join fetch fbpta.country fbptac
+                left outer join fetch fbpta.state fbptas
+                left outer join fetch fbpt.phone fbptp
+                left outer join fetch load.loadAdditionalInfo lai
+                left outer join fetch load.numbers.jobNumbers jobs
+                where load.id=:id
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_UNBILLED_LOADS_BY_AE">
+        <![CDATA[
+                select l.id as shipmentId,
+                    l.numbers.bolNumber as bolNumber,
+                    l.numbers.soNumber as soNumber,
+                    l.numbers.glNumber as glNumber,
+                    l.numbers.proNumber as proNumber,
+                    l.numbers.refNumber as refNumber,
+                    l.numbers.poNumber as poNumber,
+                    l.numbers.puNumber as puNumber,
+                    l.numbers.trailerNumber as trailer,
+                    customer.network.name as network,
+                    originAddress.city as originCity,
+                    originAddress.stateCode as originState,
+                    originAddress.zip as originZip,
+                    destinationAddress.city as destinationCity,
+                    destinationAddress.stateCode as destinationState,
+                    destinationAddress.zip as destinationZip,
+                    carrier.name as carrier,
+                    customer.name as customerName,
+                    activeCostDetails.totalRevenue as revenue,
+                    activeCostDetails.totalCost as total,
+                    activeCostDetails.totalRevenue - activeCostDetails.totalCost as margin,
+                    destination.departure as deliveryDate,
+                    l.status as status,
+                    origin.contact as shipper,
+                    destination.contact as consignee,
+                    l.modification.createdDate as createdDate,
+                    cru.login as createdBy,
+                    origin.arrivalWindowEnd as arrivalWindowEnd,
+                    case when l.vendorBillDetails.frtBillRecvFlag = 'Y' then 1 else 0 end as billToRecieved,
+                    TRIM(both ', ' from
+                            (case when l.hazmat=true then 'H, ' else '' end) ||
+                            (case when activeCostDetails.guaranteedBy is not null then 'GD, ' else '' end) ||
+                            (case when exists (from l.documents doc where doc.documentType = 'FREIGHT_PICTURE' and doc.status = 'A') then 'FP, ' else '' end) ||
+                            (case when exists (from l.documents doc where doc.documentType = 'CERTIFICATE_OF_INS' and doc.status = 'A') then 'CF, ' else '' end)
+                        ) as indicators,
+                    aeU.firstName || ' ' || aeU.lastName as accountExecutive,
+                    l.pieces as pieces,
+                    l.weight as weight
+                from LoadEntity l
+                inner join l.origin origin with origin.departure is not null
+                inner join origin.address as originAddress
+                inner join l.destination as destination
+                inner join destination.address as destinationAddress
+                left  join l.carrier as carrier
+                left  join l.activeCostDetails as activeCostDetails
+                inner join l.organization as customer
+                left  join l.modification.createdUser cru
+                left  join l.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+                left  join customer.network n
+                left  join n.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+                left  join l.location loc
+                left  join loc.accountExecutives ae with ae.status = 'A' and LOCALTIMESTAMP between ae.effectiveDate and ae.expirationDate
+                left  join ae.user aeU
+                where
+                    l.status = :status
+                    and l.finalizationStatus = 'NF'
+                    and (cu.personId is not null or nu.id is not null)
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_LOADS_FOR_MATCHED_VENDOR_BILL">
+        <![CDATA[
+                select l
+                from LoadEntity l
+                inner join l.origin origin
+                inner join origin.address as originAddress
+                inner join l.destination as destination
+                inner join destination.address as destinationAddress
+                left  join l.carrier as carrier
+                left  join l.activeCostDetails as activeCostDetails
+                inner join l.organization as customer
+                left  join l.modification.createdUser cru
+                left join l.vendorBillDetails.carrierInvoiceDetails cid
+                where
+                    l.status = 'CD'
+                    and l.finalizationStatus = 'NF'
+                    and cid.status = 'A'
+                    and current_timestamp - destination.departure > make_interval(0,0,0,3)
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_LAST_N_LOADS_BY_USER">
+        <![CDATA[
+                select l.id as shipmentId,
+                    l.numbers.bolNumber as bolNumber,
+                    l.numbers.proNumber as proNumber,
+                    l.numbers.refNumber as refNumber,
+                    l.numbers.poNumber as poNumber,
+                    l.numbers.puNumber as puNumber,
+                    originAddress.city as originCity,
+                    originAddress.stateCode as originState,
+                    originAddress.zip as originZip,
+                    destinationAddress.city as destinationCity,
+                    destinationAddress.stateCode as destinationState,
+                    destinationAddress.zip as destinationZip,
+                    carrier.name as carrier,
+                    activeCostDetails.totalRevenue as total,
+                    l.modification.createdDate as createdDate,
+                    l.status as status
+                from LoadEntity l
+                left outer join l.origin.address as originAddress
+                left outer join l.destination.address as destinationAddress
+                left outer join l.carrier as carrier
+                left outer join l.activeCostDetails as activeCostDetails
+                where l.organization.id = :customerId
+                order by l.modification.createdDate desc, l.id desc
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_LOAD_STATUS">
+        <![CDATA[
+                select status from LoadEntity where id = :shipmentId
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_CONSOLIDATED_INVOICES">
+        <![CDATA[
+                     select
+                     load.id as loadId,
+                     billTo.id as billToId,
+                     customer.name as customerName,
+                     billTo.name as billToName,
+                     billTo.currency as currency,
+                     load.shipmentDirection as shipmentDirection,
+                     load.paymentTerms as paymentTerms,
+                     dest.departure as deliveredDate,
+                     load.numbers.bolNumber as bolNumber,
+                     load.numbers.proNumber as proNumber,
+                     load.numbers.poNumber as poNumber,
+                     load.numbers.glNumber as glNumber,
+                     load.numbers.soNumber as soNumber,
+                     carrier.name as carrierName,
+                     actCost.totalCost as cost,
+                     actCost.totalRevenue as revenue,
+                     actCost.marginAmt as marginAmt,
+                     actCost.margin as margin,
+                     coalesce(fs.subtotal, 0) as fs,
+                     actCost.totalRevenue - coalesce(acc.subtotal, 0) - coalesce(fs.subtotal, 0) as acc,
+                     oa.city as origCity,
+                     oa.stateCode as origState,
+                     oa.zip as origZip,
+                     da.city as destCity,
+                     da.stateCode as destState,
+                     da.zip as destZip,
+                     case when load.invoiceApproved = 'Y' then TRUE else FALSE end as approved,
+                     n.name as networkName,
+                     case when 1=2 then FALSE else FALSE end as doNotInvoice,
+                     case when terms.id is null then TRUE else FALSE end as missingPaymentsTerms,
+                     coalesce(lar.amountApplied, 0) as paidAmount,
+                     sn2.note as noteComment,
+                     sn2.modification.createdDate as noteCreatedDate,
+                     sn2modu.firstName || ' ' || sn2modu.lastName as noteModifiedBy,
+                     count(distinct sn1.id) as numberOfNotes
+                 from LoadEntity load
+                 inner join load.billTo billTo
+                 left join billTo.plsCustomerTerms terms
+                 inner join load.organization customer
+                 inner join load.destination dest with dest.departure <= LOCALTIMESTAMP
+                 inner join dest.address da
+                 inner join load.origin orig
+                 inner join orig.address oa
+                 inner join load.activeCostDetails actCost with actCost.sentToFinance != 'Y'
+                 inner join actCost.costDetailItems
+                 inner join load.carrier carrier
+                 inner join billTo.invoiceSettings invs with invs.invoiceType = 'CBI'
+                 left join load.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+                 left join customer.network n
+                 left join n.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+                 left join actCost.costDetailItems fs with fs.owner = 'S' and fs.accessorialType = 'FS'
+                 left join actCost.costDetailItems acc with acc.owner = 'S' and acc.accessorialType = 'SRA'
+                 left join load.accountReceivables lar with lar.financialAccessorials.id is null
+                 left join load.shipmentNotes sn1 with sn1.status = 'A'
+                 left join load.shipmentNotes sn2 with sn2.status = 'A'
+                 left join sn2.modification.createdUser sn2modu with sn2modu.userStatus = 'A'
+                 where
+                     load.status = 'CD'
+                     and load.finalizationStatus = 'AB'
+                     and (cu.personId is not null or nu.id is not null)
+                     and (billTo.id in (:billToIds))
+                     and load.destination.scheduledArrival is not null
+                     and load.destination.departure is not null
+                     and load.origin.scheduledArrival is not null
+                     and load.origin.departure is not null
+                     and (sn2.id is null or sn2.id in (select max(id) as id from load.shipmentNotes))
+                 group by
+                     load.id, billTo.id, customer.name, billTo.name, billTo.currency, n.name, lar.amountApplied,
+                     dest.departure, load.numbers.bolNumber, load.numbers.proNumber, load.numbers.poNumber, load.numbers.glNumber, load.numbers.soNumber, carrier.name,
+                     actCost.totalCost, actCost.totalRevenue, actCost.marginAmt, actCost.margin, fs.subtotal,
+                     acc.subtotal, load.invoiceApproved, terms.id, oa.city, oa.stateCode, oa.zip, da.city, da.stateCode, load.shipmentDirection,
+                     load.paymentTerms, da.zip, sn2.note, sn2.modification.createdDate, sn2modu.firstName || ' ' || sn2modu.lastName
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_TRANSACTIONAL_INVOICES">
+        <![CDATA[
+                select
+                    load.id as loadId,
+                    billTo.id as billToId,
+                    customer.name as customerName,
+                    billTo.name as billToName,
+                    dest.departure as deliveredDate,
+                    load.numbers.bolNumber as bolNumber,
+                    load.numbers.proNumber as proNumber,
+                    carrier.name as carrierName,
+                    actCost.totalCost as cost,
+                    actCost.totalRevenue as revenue,
+                    actCost.marginAmt as marginAmt,
+                    actCost.margin as margin,
+                    coalesce(fs.subtotal, 0) as fs,
+                    actCost.totalRevenue - coalesce(acc.subtotal, 0) - coalesce(fs.subtotal, 0) as acc,
+                    case when load.invoiceApproved = 'Y' then TRUE else FALSE end as approved,
+                    n.name as networkName,
+                    case when 1=2 then FALSE else FALSE end as doNotInvoice,
+                    case when terms.id is null then TRUE else FALSE end as missingPaymentsTerms,
+                    coalesce(lar.amountApplied, 0) as paidAmount,
+                    sn2.note as noteComment,
+                    sn2.modification.createdDate as noteCreatedDate,
+                    sn2modu.firstName || ' ' || sn2modu.lastName as noteModifiedBy,
+                    count(distinct sn1.id) as numberOfNotes
+                from LoadEntity load
+                inner join load.billTo billTo
+                left join billTo.plsCustomerTerms terms
+                inner join load.organization customer
+                inner join load.destination dest with dest.departure <= LOCALTIMESTAMP
+                inner join load.activeCostDetails actCost with actCost.sentToFinance != 'Y'
+                inner join actCost.costDetailItems
+                inner join load.carrier carrier
+                inner join billTo.invoiceSettings invs with invs.invoiceType = 'TRANSACTIONAL'
+                left join load.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+                left join customer.network n
+                left join n.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+                left join actCost.costDetailItems fs with fs.owner = 'S' and fs.accessorialType = 'FS'
+                left join actCost.costDetailItems acc with acc.owner = 'S' and acc.accessorialType = 'SRA'
+                left join load.accountReceivables lar with lar.financialAccessorials.id is null
+                left join load.shipmentNotes sn1 with sn1.status = 'A'
+                left join load.shipmentNotes sn2 with sn2.status = 'A'
+                left join sn2.modification.createdUser sn2modu with sn2modu.userStatus = 'A'
+                where
+                    load.status = 'CD'
+                    and load.finalizationStatus = 'AB'
+                    and (cu.personId is not null or nu.id is not null)
+                    and load.destination.scheduledArrival is not null
+                    and load.destination.departure is not null
+                    and load.origin.scheduledArrival is not null
+                    and load.origin.departure is not null
+                    and (sn2.id is null or sn2.id in (select max(id) as id from load.shipmentNotes))
+                group by
+                    load.id, billTo.id, customer.name, billTo.name, n.name, lar.amountApplied,
+                    load.numbers.bolNumber, load.numbers.proNumber, carrier.name,
+                    actCost.totalCost, actCost.totalRevenue, actCost.marginAmt, actCost.margin, fs.subtotal,
+                    acc.subtotal, load.invoiceApproved, terms.id, dest.departure,
+                    sn2.note, sn2.modification.createdDate, sn2modu.firstName || ' ' || sn2modu.lastName
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_CBI_DATA_LOADS">
+        <![CDATA[
+                select
+                    bt.id as billToId,
+                    bt.name as billToName,
+                    bt.currency as currency,
+                    customer.id as customerId,
+                    customer.name as customerName,
+                    n.name as networkName,
+                    bis.processingType as processingType,
+                    bis.processingPeriod as processingPeriod,
+                    bis.processingTime as processingTime,
+                    bis.processingDayOfWeek as processingDayOfWeek,
+                    bis.gainshareOnly as includeCarrierRate,
+                    case when bis.ediInvoice = 'Y' then TRUE else FALSE end as edi,
+                    case when bis.documents is not null then TRUE else FALSE end as email,
+                    case when bis.cbiInvoiceType = 'FIN' then TRUE else FALSE end as invoiceInFinancials,
+                    case when bis.noInvoiceDocument = 'Y' then TRUE else FALSE end as noInvoiceDocument,
+                    tz.code as timeZone,
+                    sum(case when (coalesce(load.invoiceApproved, 'N') = 'Y') then cd.totalCost else 0 end) as totalCost,
+                    sum(case when (coalesce(load.invoiceApproved, 'N') = 'Y') then cd.totalRevenue else 0 end) as totalRevenue,
+                    sum(case when (coalesce(load.invoiceApproved, 'N') = 'Y') then 1 else 0 end) as approvedCount,
+                    count(*) as allCount
+                from LoadEntity load
+                join load.activeCostDetails cd with cd.sentToFinance != 'Y'
+                join load.destination dest with dest.departure <= LOCALTIMESTAMP
+                join load.organization customer
+                join load.billTo bt
+                join bt.invoiceSettings bis with bis.invoiceType = 'CBI'
+                left join bis.processingTimeTimezone tz
+                left join load.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+                left join customer.network n
+                left join n.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+                where
+                    load.status = 'CD'
+                    and load.finalizationStatus = 'AB'
+                    and (cu.personId is not null or nu.id is not null)
+                group by
+                    bt.id,
+                    bt.name,
+                    bt.currency,
+                    customer.id,
+                    customer.name,
+                    n.name,
+                    bis.processingType,
+                    bis.processingPeriod,
+                    bis.processingTime,
+                    bis.processingDayOfWeek,
+                    bis.gainshareOnly,
+                    bis.ediInvoice,
+                    bis.documents,
+                    bis.cbiInvoiceType,
+                    bis.noInvoiceDocument,
+                    tz.code
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_UPDATE_LOADS_INVOICE_APPROVED">
+        <![CDATA[
+                update versioned LoadEntity l set l.invoiceApproved = :invoiceApproved, l.modification.modifiedDate = LOCALTIMESTAMP,
+                l.modification.modifiedBy = :modifiedBy where l.id in :loadIds
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_UPDATE_LOADS_FINALIZATION_STATUS">
+        <![CDATA[
+                update versioned LoadEntity l set l.finalizationStatus = :status, l.modification.modifiedDate = LOCALTIMESTAMP,
+                l.modification.modifiedBy = :modifiedBy where l.id in :loadIds
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_UPDATE_INVOICED_LOADS">
+        <![CDATA[
+                update versioned LoadEntity l set
+                    l.finalizationStatus = :status,
+                    l.modification.modifiedDate = LOCALTIMESTAMP,
+                    l.modification.modifiedBy = :modifiedBy,
+                    l.glDate = :invoiceDate
+                where l.id in :loadIds
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_UPDATE_LOAD_WITH_VENDOR_BILL_INFO">
+        <![CDATA[
+                update LoadEntity l
+                set l.vendorBillDetails.frtBillNumber = :frtBillNumber,
+                    l.vendorBillDetails.frtBillRecvDate = :frtBillRecvDate,
+                    l.vendorBillDetails.frtBillAmount = :frtBillAmount,
+                    l.vendorBillDetails.frtBillRecvFlag = :frtBillRecvFlag,
+                    l.modification.modifiedDate = LOCALTIMESTAMP,
+                    l.modification.modifiedBy = :modifiedBy
+                where id = :id
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_LOAD_BY_SCAC_AND_BOL">
+        <![CDATA[
+                select l from LoadEntity l
+                join l.carrier c
+                where upper(l.numbers.bolNumber)=:bol and (c.scac=:scac OR c.actualScac=:scac)
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_LOAD_BY_ORG_ID_AND_SHIPMENT_NO">
+        <![CDATA[
+                select l from LoadEntity l inner join l.organization o
+                where l.numbers.refNumber=:ref and o.id=:id
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_LOAD_BY_SCAC_AND_PRO">
+        <![CDATA[
+                select l
+                from LoadEntity l
+                join l.carrier c with c.scac = :scac 
+                where upper(l.numbers.proNumber) = :pro
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_LOAD_BY_SCAC_AND_BOL_AND_ZIP">
+        <![CDATA[
+                select l
+                from LoadEntity l
+                join l.carrier c with c.scac = :scac 
+                join l.origin o
+                join o.address as oa with oa.zip = :originZip
+                join l.destination d
+                join d.address as da with da.zip = :destinationZip
+                where upper(l.numbers.bolNumber) = :bol and l.numbers.proNumber is null
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_LOAD_BY_SCAC_AND_BOL_AND_ADDRESSES">
+        <![CDATA[
+                select l
+                from LoadEntity l
+                join l.carrier c with c.scac = :scac 
+                join l.origin o
+                join o.address as oa with upper(oa.city) = :originCity and upper(oa.stateCode) = :originState
+                join l.destination d
+                join d.address as da with upper(da.city) = :destinationCity and upper(da.stateCode) = :destinationState
+                where upper(l.numbers.bolNumber) = :bol and l.numbers.proNumber is null
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_MATCHED_LOAD_INFO">
+        <![CDATA[
+                select l.id as shipmentId,
+                    l.numbers.proNumber as proNumber,
+                    l.numbers.bolNumber as bolNumber,
+                    l.numbers.refNumber as refNumber,
+                    l.numbers.poNumber as poNumber,
+                    l.numbers.puNumber as puNumber,
+                    originAddress.city as originCity,
+                    originAddress.stateCode as originState,
+                    originAddress.zip as originZip,
+                    destinationAddress.city as destinationCity,
+                    destinationAddress.stateCode as destinationState,
+                    destinationAddress.zip as destinationZip,
+                    l.carrier.name as carrier,
+                    l.carrier.scac as scac,
+                    l.organization.name as customerName,
+                    acd.totalCost as total,
+                    l.weight as weight,
+                    l.origin.departure as pickupDate
+                from LoadEntity l
+                left outer join l.origin.address as originAddress
+                left outer join l.destination.address as destinationAddress
+                left outer join l.activeCostDetails as acd
+                where l.status = :status
+                    and (:bol is null or :bol is not null and l.numbers.bolNumber like :bol)
+                    and (:pro is null or :pro is not null and l.numbers.proNumber = :pro)
+                    and (:originZip is null or :originZip is not null and originAddress.zip = :originZip)
+                    and (:destinationZip is null or :destinationZip is not null and destinationAddress.zip = :destinationZip)
+                    and (:carrierId is null or :carrierId is not null and l.carrier.id = :carrierId)
+                    and (cast(:actualPickupDate as date) is null or cast(:actualPickupDate as date) is not null
+                            and cast(l.origin.departure as date) = cast(:actualPickupDate as date))
+                    and l.finalizationStatus != 'FP'
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_TRACKING_BOARD_BOS_BY_CRITERIA">
+        <![CDATA[
+                select
+                    l.id as id,
+                    l.numbers.bolNumber as bol,
+                    l.numbers.soNumber as soNumber,
+                    l.numbers.refNumber as srNumber,
+                    l.numbers.poNumber as poNumber,
+                    l.numbers.puNumber as puNumber,
+                    l.numbers.proNumber as pro,
+                    l.numbers.glNumber as glNumber,
+                    l.numbers.trailerNumber as trailer,
+                    l.pieces as pieces,
+                    l.weight as weight,
+                    o.name as customerName,
+                    c.name as carrierName,
+                    activeCostDetails.totalRevenue as revenue,
+                    activeCostDetails.totalCost as cost,
+                    activeCostDetails.totalRevenue - activeCostDetails.totalCost as margin,
+                    coalesce(orig.departure, orig.earlyScheduledArrival) as pickupDate,
+                    orig.arrivalWindowStart as pickupWindowStart,
+                    orig.arrivalWindowEnd as pickupWindowEnd,
+                    tz.code as originTimezone,
+                    case when os.pickup is not null and os.pickup = 'API' then true else false end as apiCapable,
+                    l.status as status,
+                    coalesce(dest.departure, dest.scheduledArrival) as estimatedDelivery,
+                    oa.city || ', ' || oa.stateCode || ', ' || oa.zip as origin,
+                    da.city || ', ' || da.stateCode || ', ' || da.zip as destination,
+                    TRIM(both ', ' from
+                            (case when l.hazmat=true then 'H, ' else '' end) ||
+                            (case when activeCostDetails.guaranteedBy is not null then 'GD, ' else '' end) ||
+                            (case when exists (from l.documents doc where doc.documentType = 'FREIGHT_PICTURE' and doc.status = 'A') then 'FP, ' else '' end) ||
+                            (case when exists (from l.documents doc where doc.documentType = 'CERTIFICATE_OF_INS' and doc.status = 'A') then 'CF, ' else '' end)
+                        ) as indicators,
+                    orig.contact as shipper,
+                    dest.contact as consignee,
+                    l.modification.createdDate as createdDate,
+                    u.login as createdBy,
+                    coalesce(os.pickup, 'EDI') as integrationType,
+                    dispInf.modification.createdDate as dispatchedDate,
+                    n.name as network,
+                    aeU.firstName || ' ' || aeU.lastName as accountExecutive
+                from LoadEntity l
+                join l.organization o
+                left join l.carrier c
+                left join c.orgServiceEntity os
+                join l.origin orig
+                join orig.address oa
+                left join orig.earlyScheduledArrivalTimeZone tz
+                join l.destination dest
+                join dest.address da
+                join l.modification.createdUser u
+                left join l.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+                left join o.network n
+                left join n.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+                left outer join l.activeCostDetails as activeCostDetails
+                left join l.loadDispatchInformation dispInf
+                left join l.location loc
+                left join loc.accountExecutives ae with ae.status = 'A' and LOCALTIMESTAMP between ae.effectiveDate and ae.expirationDate
+                left join ae.user aeU
+                where
+                    l.status in (:statuses)
+                    and l.finalizationStatus <> 'FH'
+                    and (cu.personId is not null or nu.id is not null)
+                    and (cast(:fromDate as date) is null or coalesce(date_trunc('day', orig.departure), date_trunc('day', orig.earlyScheduledArrival)) >= date_trunc('day', cast(cast(:fromDate as date) as timestamp)))
+                    and (cast(:toDate as date) is null or coalesce(date_trunc('day', orig.departure), date_trunc('day', orig.earlyScheduledArrival)) <= date_trunc('day', cast(cast(:toDate as date) as timestamp)))
+                    and (:bol is null or upper(l.numbers.bolNumber) like upper(:bol))
+        ]]>
+    </query>
+
+    <query name="com.pls.shipment.domain.LoadEntity.Q_TRACKING_BOARD_BOOKED_AND_PEN_PAY">
+        <![CDATA[
+                select
+                    l.id as id,
+                    l.numbers.bolNumber as bol,
+                    o.name as customerName,
+                    c.name as carrierName,
+                    activeCostDetails.totalRevenue as revenue,
+                    coalesce(orig.departure, orig.earlyScheduledArrival) as pickupDate,
+                    oa.city || ', ' || oa.stateCode || ', ' || oa.zip as origin,
+                    da.city || ', ' || da.stateCode || ', ' || da.zip as destination,
+                    orig.contact as shipper,
+                    dest.contact as consignee,
+                    l.modification.createdDate as createdDate,
+                    u.login as createdBy,
+                    l.status as status,
+                    coalesce(os.pickup, 'EDI') as integrationType,
+                    orig.arrivalWindowStart as pickupWindowStart,
+                    orig.arrivalWindowEnd as pickupWindowEnd,
+                    case when l.status = 'PE' then (select sum(pde.amount) from l.prepaidDetails pde) else null end as prepaidTotalAmount,
+                    TRIM(both ', ' from
+                            (case when l.hazmat=true then 'H, ' else '' end) ||
+                            (case when activeCostDetails.guaranteedBy is not null then 'GD, ' else '' end) ||
+                            (case when exists (from l.documents doc where doc.documentType = 'FREIGHT_PICTURE' and doc.status = 'A') then 'FP, ' else '' end) ||
+                            (case when exists (from l.documents doc where doc.documentType = 'CERTIFICATE_OF_INS' and doc.status = 'A') then 'CF, ' else '' end)
+                        ) as indicators,
+                    n.name as network,
+                    aeUser.firstName || ' ' || aeUser.lastName as accountExecutive,
+                    l.pieces as pieces,
+                    l.weight as weight
+                from LoadEntity l
+                join l.organization o
+                join l.origin orig
+                join orig.address oa
+                join l.destination dest
+                join dest.address da
+                join l.modification.createdUser u
+                join l.carrier c
+                left join c.orgServiceEntity os
+                left join l.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+                left join o.network n
+                left join n.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+                left outer join l.activeCostDetails as activeCostDetails
+                left  join l.location loc
+                left  join loc.accountExecutives ae with ae.status = 'A' and LOCALTIMESTAMP between ae.effectiveDate and ae.expirationDate
+                left  join ae.user aeUser
+                where
+                    l.status in (:statuses)
+                    and l.finalizationStatus <> 'FH'
+                    and (cu.personId is not null or nu.id is not null)
+        ]]>
+    </query>
+
+    <query name="com.pls.shipment.domain.LoadEntity.Q_FIND_SHIPMENT_INFO">
+        <![CDATA[
+                select
+                    load.id as shipmentId,
+                    load.numbers.bolNumber as bolNumber,
+                    load.numbers.soNumber as soNumber,
+                    load.numbers.glNumber as glNumber,
+                    load.numbers.proNumber as proNumber,
+                    load.numbers.refNumber as refNumber,
+                    load.numbers.poNumber as poNumber,
+                    load.numbers.puNumber as puNumber,
+                    load.numbers.trailerNumber as trailer,
+                    origin.contact as shipper,
+                    destination.contact as consignee,
+                    load.organization.id as customerId,
+                    originAddress.city as originCity,
+                    originAddress.stateCode as originState,
+                    originAddress.zip as originZip,
+                    destinationAddress.city as destinationCity,
+                    destinationAddress.stateCode as destinationState,
+                    destinationAddress.zip as destinationZip,
+                    carrier.name as carrier,
+                    coalesce(origin.departure, origin.earlyScheduledArrival) as pickupDate,
+                    coalesce(destination.departure,destination.scheduledArrival) as deliveryDate,
+                    load.status as status,
+                    case when load.finalizationStatus = 'FH' then 'Hold' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'ABH' and alert.id is null then 'Invoice Audit' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'PAH' and alert.id is null then 'Billing Hold' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'FBH' and alert.id is null then 'Invoice Error' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'NF'  and alert.id is null then 'Waiting for Vendor Bill' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'FP'  and alert.id is null
+                        and activeCostDetails.invoicedInFinance = 'Y' and activeCostDetails.invoiceNumber is null then 'Sent to Financials' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'FP'  and alert.id is null
+                        and activeCostDetails.invoicedInFinance = 'Y' and activeCostDetails.invoiceNumber is not null then 'Invoiced in Financials' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'FP'  and alert.id is null then 'Invoiced' else
+                    case when load.status = 'CD' and invSet.invoiceType = 'TRANSACTIONAL' and alert.id is null then 'Transactional' else
+                    case when load.status = 'CD' and invSet.invoiceType = 'CBI' and alert.id is null then 'Consolidated' else
+                    case when load.status <> 'CD' and alert.id is not null then 'NONE' else 'NONE' end end end end end end end end end end end as billingStatus,
+                    case when load.finalizationStatus = 'AB' or load.finalizationStatus = 'ABH' then true else false end as requirePermissionChecking,
+                    case when load.status = 'CD' and load.finalizationStatus = 'FP' then true else false end as invoiced,
+                    activeCostDetails.totalCost as total,
+                    activeCostDetails.totalRevenue as revenue,
+                    activeCostDetails.totalRevenue - activeCostDetails.totalCost as margin,
+                    load.modification.createdDate as createdDate,
+                    max(jobs.jobNumber) as jobNumber,
+                    coalesce(orgService.pickup, 'EDI') as integrationType,
+                    TRIM(both ', ' from
+                            (case when load.hazmat=true then 'H, ' else '' end) ||
+                            (case when activeCostDetails.guaranteedBy is not null then 'GD, ' else '' end) ||
+                            (case when exists (from load.documents doc where doc.documentType = 'FREIGHT_PICTURE' and doc.status = 'A') then 'FP, ' else '' end) ||
+                            (case when exists (from load.documents doc where doc.documentType = 'CERTIFICATE_OF_INS' and doc.status = 'A') then 'CF, ' else '' end)
+                        ) as indicators,
+                    case when load.finalizationStatus = 'FP' and exists (from load.allFinancialAccessorials) then true else false end as adjustment,
+                    dispInf.modification.createdDate as dispatchedDate,
+                    network.name as network,
+                    aeUser.firstName || ' ' || aeUser.lastName as accountExecutive,
+                    load.pieces as pieces,
+                    load.weight as weight
+                from LoadEntity load
+                join load.origin as origin with :dateSearchField <> 'PICKUP'
+                            or ((date_trunc('day', cast(:dateFrom as timestamp)) is null or coalesce(date_trunc('day', origin.departure), date_trunc('day', origin.earlyScheduledArrival)) >= date_trunc('day', cast(:dateFrom as timestamp)))
+                            and (date_trunc('day', cast(:dateTo as timestamp)) is null or coalesce(date_trunc('day', origin.departure), date_trunc('day', origin.earlyScheduledArrival)) <= date_trunc('day', cast(:dateTo as timestamp))))
+                join load.destination as destination with :dateSearchField <> 'DELIVERY'
+                            or ((date_trunc('day', cast(:dateFrom as timestamp)) is null or coalesce(date_trunc('day', destination.departure), date_trunc('day', destination.scheduledArrival)) >= date_trunc('day', cast(:dateFrom as timestamp)))
+                            and (date_trunc('day', cast(:dateTo as timestamp)) is null or coalesce(date_trunc('day', destination.departure), date_trunc('day', destination.scheduledArrival)) <= date_trunc('day', cast(:dateTo as timestamp))))
+                join origin.address as originAddress with (:originZip is null or originAddress.zip = :originZip)
+                join destination.address as destinationAddress with (:destinationZip is null or destinationAddress.zip = :destinationZip)
+                join load.billTo billTo
+                left outer join load.activeCostDetails as activeCostDetails
+                left outer join load.carrier carrier
+                left outer join billTo.invoiceSettings invSet
+                left outer join load.alerts alert with alert.type = 'DWP'
+                left join load.organization customer
+                left join customer.network network
+                left join load.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+                left join network.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+                left outer join load.numbers.jobNumbers jobs
+                left outer join carrier.orgServiceEntity orgService
+                left join load.location l
+                left join l.accountExecutives ae with ae.status = 'A' and LOCALTIMESTAMP between ae.effectiveDate and ae.expirationDate
+                left join ae.user aeUser
+                left join load.loadDispatchInformation dispInf
+                where (:orgId is null or load.organization.id = :orgId)
+                    and (cu.personId is not null or nu.id is not null)
+                    and (load.status in (:statuses))
+                    and (:dateSearchField <> 'CREATED' or
+                        ((date_trunc('day', cast(:dateFrom as timestamp)) is null or date_trunc('day', load.modification.createdDate) >= date_trunc('day', cast(:dateFrom as timestamp)))
+                            and (date_trunc('day', cast(:dateTo as timestamp)) is null or date_trunc('day', load.modification.createdDate) <= date_trunc('day', cast(:dateTo as timestamp))))
+                    )
+                    and (:carrierId is null or carrier.id = :carrierId)
+                    and (:bol is null or upper(load.numbers.bolNumber) like upper(:bol))
+                    and (:pro is null or upper(load.numbers.proNumber) like upper(:pro))
+                    and (:job is null or upper(jobs.jobNumber) like upper(:job))
+                    and (:loadId is null or load.id = :loadId)
+                    and (:accountExecutive is null or ae.personId = :accountExecutive)
+                    and (:po is null or upper(load.numbers.poNumber) like upper(:po))
+                group by
+                    load.id, load.numbers.bolNumber, load.numbers.soNumber, load.numbers.glNumber, load.numbers.proNumber,
+                    load.numbers.refNumber, load.numbers.poNumber, load.numbers.puNumber, load.numbers.trailerNumber,
+                    origin.contact, destination.contact, load.organization.id, originAddress.city, originAddress.stateCode,
+                    originAddress.zip, destinationAddress.city, destinationAddress.stateCode, destinationAddress.zip,
+                    carrier.name, origin.departure, origin.earlyScheduledArrival, destination.departure, destination.scheduledArrival,
+                    load.status, activeCostDetails.totalCost, activeCostDetails.totalRevenue, activeCostDetails.totalCost,
+                    load.modification.createdDate, load.status, load.finalizationStatus, alert.id,
+                    activeCostDetails.invoicedInFinance, activeCostDetails.invoiceNumber, invSet.invoiceType, orgService.pickup,
+                    load.hazmat, activeCostDetails.guaranteedBy, dispInf.modification.createdDate, network.name, load.pieces,
+                    aeUser.firstName, aeUser.lastName, load.weight
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_FIND_SHIPMENT_INFO_BY_DATE_RANGE">
+        <![CDATA[
+                select
+                    load.id as shipmentId,
+                    load.numbers.bolNumber as bolNumber,
+                    load.numbers.soNumber as soNumber,
+                    load.numbers.glNumber as glNumber,
+                    load.numbers.proNumber as proNumber,
+                    load.numbers.refNumber as refNumber,
+                    load.numbers.poNumber as poNumber,
+                    load.numbers.puNumber as puNumber,
+                    load.numbers.trailerNumber as trailer,
+                    load.organization.id as customerId,
+                    originAddress.city as originCity,
+                    originAddress.stateCode as originState,
+                    originAddress.zip as originZip,
+                    destinationAddress.city as destinationCity,
+                    destinationAddress.stateCode as destinationState,
+                    destinationAddress.zip as destinationZip,
+                    load.carrier.name as carrier,
+                    coalesce(origin.departure, origin.earlyScheduledArrival) as pickupDate,
+                    coalesce(destination.departure,destination.scheduledArrival) as deliveryDate,
+                    load.status as status,
+                    activeCostDetails.totalRevenue as total,
+                    load.modification.createdDate as createdDate
+                from LoadEntity load
+                left outer join load.origin as origin
+                left outer join load.destination as destination
+                left outer join origin.address as originAddress
+                left outer join destination.address as destinationAddress
+                left outer join load.activeCostDetails as activeCostDetails
+                where load.organization.id = :orgId
+                    and (load.status in (:statuses))
+                    and (cast(:bookDateFrom as date) is null or load.modification.createdDate >= cast(:bookDateFrom as timestamp))
+                    and (cast(:bookDateTo as date) is null or load.modification.createdDate <= cast(:bookDateTo as timestamp))
+                    and (cast(:pickupDateFrom as date) is null or origin.departure >= cast(:pickupDateFrom as timestamp))
+                    and (cast(:pickupDateTo as date) is null or origin.departure <= cast(:pickupDateTo as timestamp))
+                    and (cast(:deliveryDateFrom as date) is null or destination.departure >= cast(:deliveryDateFrom as timestamp))
+                    and (cast(:deliveryDateTo as date) is null or destination.departure <= cast(:deliveryDateTo as timestamp))
+                    and (cast(:scheduledDeliveryDateFrom as date) is null or destination.scheduledArrival >= cast(:scheduledDeliveryDateFrom as timestamp))
+                    and (cast(:scheduledDeliveryDateTo as date) is null or destination.scheduledArrival <= cast(:scheduledDeliveryDateTo as timestamp))
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_LOAD_CARRIER">
+        <![CDATA[
+                select l.carrier from LoadEntity l where l.id = :shipmentId
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_UPDATE_STATUS">
+        <![CDATA[
+                update LoadEntity l set l.status = :newStatus, 
+                l.modification.modifiedDate = LOCALTIMESTAMP,
+                l.modification.modifiedBy = :modifiedBy where id = :loadId
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_LOAD_PRO_NUMBER">
+        <![CDATA[
+            SELECT load.numbers.proNumber FROM LoadEntity load where load.id = :loadId
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_PRIMARY_LOAD_COST_DETAIL">
+        <![CDATA[
+            SELECT new com.pls.shipment.domain.bo.QuotedBO(cost.totalRevenue, cost.totalCost) FROM LoadCostDetailsEntity cost
+                     where cost.load.id = :loadId
+            order by case when cost.pricingProfileDetailId is not null then cost.id else 9999999999 end, cost.id
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.GET_LOADS_FOR_ACTIVITY_REPORT">
+        <![CDATA[
+                select
+                    customer.name as customerName,
+                    o.departure as departure,
+                    o.earlyScheduledArrival as earlyScheduledArrival,
+                    load.id as loadId,
+                    load.numbers.bolNumber as bol,
+                    load.numbers.refNumber as shipperRef,
+                    load.numbers.poNumber as poNumber,
+                    load.numbers.glNumber as glNumber,
+                    load.numbers.proNumber as proNumber,
+                    carrier.scac as scacCode,
+                    carrier.name as carrierName,
+                    load.shipmentDirection as shipmentDirection,
+                    o.contact as originContact,
+                    oa.address1 as originAddress,
+                    oa.city as originCity,
+                    oa.stateCode as originStateCode,
+                    oa.zip as originZip,
+                    d.contact as destinationContact,
+                    da.address1 as destinationAddress,
+                    da.city as destinationCity,
+                    da.stateCode as destinationStateCode,
+                    da.zip as destinationZip,
+                    sum(case when cdi.accessorialType = 'SRA' then cdi.subtotal else 0 end) as custLhCost,
+                    sum(case when cdi.accessorialType = 'FS' then cdi.subtotal else 0 end) as custFsCost,
+                    sum(cdi.subtotal) as totalRevenue
+                from CostDetailItemEntity cdi
+                join cdi.costDetails cd with cd.status = 'A' and ((:dateType = 'GL' and cd.generalLedgerDate between :startDate and :endDate) or (:dateType = 'SHIP' and cd.shipDate between :startDate and :endDate))
+                join cd.load load with load.container = 'VANLTL' and load.originatingSystem in ('PLS2_LT', 'GS')
+                join load.origin o
+                join o.address oa
+                join load.destination d
+                join d.address da
+                join load.billTo billto
+                join load.organization customer  with (customer.id = :customerId or (:networkId is not null and customer.networkId = :networkId))
+                join load.carrier carrier
+                left join cdi.financialAccessorials fa
+                where cdi.owner = 'S' and (fa.id is null or fa.generalLedgerDate is not null)
+                group by load.id, customer.name, o.departure, load.numbers.bolNumber, load.numbers.refNumber, load.numbers.poNumber,
+                    load.numbers.glNumber, load.numbers.proNumber, carrier.scac, carrier.name, load.shipmentDirection, o.contact,
+                    oa.address1, oa.city, oa.stateCode, oa.zip, d.contact, da.address1, da.city, da.stateCode, da.zip, o.earlyScheduledArrival
+                order by o.departure desc, load.id asc
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.GET_LOADS_FOR_CARRIER_ACTIVITY_REPORT">
+        <![CDATA[
+                select
+                    customer.name as customerName,
+                    o.departure as departure,
+                    o.earlyScheduledArrival as earlyScheduledArrival,
+                    load.id as loadId,
+                    load.numbers.bolNumber as bol,
+                    load.numbers.refNumber as shipperRef,
+                    load.numbers.poNumber as poNumber,
+                    load.numbers.glNumber as glNumber,
+                    load.numbers.proNumber as proNumber,
+                    carrier.scac as scacCode,
+                    carrier.name as carrierName,
+                    load.shipmentDirection as shipmentDirection,
+                    o.contact as originContact,
+                    oa.address1 as originAddress,
+                    oa.city as originCity,
+                    oa.stateCode as originStateCode,
+                    oa.zip as originZip,
+                    d.contact as destinationContact,
+                    da.address1 as destinationAddress,
+                    da.city as destinationCity,
+                    da.stateCode as destinationStateCode,
+                    da.zip as destinationZip,
+                    sum(case when cdi.accessorialType = 'CRA' then cdi.subtotal else 0 end) as custLhCost,
+                    sum(case when cdi.accessorialType = 'FS' then cdi.subtotal else 0 end) as custFsCost,
+                    sum(cdi.subtotal) as totalRevenue,
+                    network.name as businessUnit,
+                    load.status as opsStatus,
+                    case when load.finalizationStatus = 'FH' then 'Hold' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'ABH' and alert.id is null then 'Invoice Audit' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'PAH' and alert.id is null then 'Billing Hold' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'FBH' and alert.id is null then 'Invoice Error' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'NF'  and alert.id is null then 'Waiting for Vendor Bill' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'FP'  and alert.id is null
+                        and cd.invoicedInFinance = 'Y' and cd.invoiceNumber is null then 'Sent to Financials' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'FP'  and alert.id is null
+                        and cd.invoicedInFinance = 'Y' and cd.invoiceNumber is not null then 'Invoiced in Financials' else
+                    case when load.status = 'CD' and load.finalizationStatus = 'FP'  and alert.id is null then 'Invoiced' else
+                    case when load.status = 'CD' and invSet.invoiceType = 'TRANSACTIONAL' and alert.id is null then 'Transactional' else
+                    case when load.status = 'CD' and invSet.invoiceType = 'CBI' and alert.id is null then 'Consolidated' else
+                    case when load.status <> 'CD' and alert.id is not null then 'NONE' else 'NONE' end end end end end end end end end end end as billingStatus,
+                    cd.pricingProfileDetailId as pricingProfileId,
+                    (select ppe.ltlPricingType from LtlPricingProfileEntity ppe where ppe.id = cd.pricingProfileDetailId) as ltlPricingType
+                from CostDetailItemEntity cdi
+                join cdi.costDetails cd with cd.status = 'A' and ((:dateType = 'GL' and cd.generalLedgerDate between :startDate and :endDate) or (:dateType = 'SHIP' and cd.shipDate between :startDate and :endDate))
+                join cd.load load with load.container = 'VANLTL' and load.originatingSystem in ('PLS2_LT', 'GS')
+                join load.origin o
+                join o.address oa
+                join load.destination d
+                join d.address da
+                join load.billTo billto
+                join load.organization customer  with (:customerId is null or customer.id = :customerId)
+                join load.carrier carrier with (carrier.id = :carrierId)
+                left join cdi.financialAccessorials fa
+                left join customer.network network
+                join load.billTo billTo
+                left outer join billTo.invoiceSettings invSet
+                left outer join load.alerts alert with alert.type = 'DWP'
+                where cdi.owner = 'C' and (fa.id is null or fa.generalLedgerDate is not null)
+                group by load.id, customer.name, o.departure, load.numbers.bolNumber, load.numbers.refNumber, load.numbers.poNumber,
+                    load.numbers.glNumber, load.numbers.proNumber, carrier.scac, carrier.name, load.shipmentDirection, o.contact,
+                    oa.address1, oa.city, oa.stateCode, oa.zip, d.contact, da.address1, da.city, da.stateCode, da.zip, o.earlyScheduledArrival, 
+                    network.name, load.status, load.finalizationStatus, alert.id, cd.invoicedInFinance, cd.invoiceNumber, invSet.invoiceType, cd.pricingProfileDetailId
+                order by o.departure desc, load.id asc
+        ]]>
+    </query>
+        <query name="com.pls.shipment.domain.LoadEntity.GET_REASONS_FOR_CARRIER_ACTIVITY_REPORT">
+        <![CDATA[
+                select load.id as loadId, auditReason.billAuditReasonCodeEntity.description as description
+                from LdBillingAuditReasonsEntity auditReason 
+                join auditReason.load load
+                left outer join load.activeCostDetails activecost
+                join load.organization customer  with (:customerId is null or customer.id = :customerId or (:networkId is not null and customer.networkId = :networkId))
+                where activecost.generalLedgerDate >= :startDate and activecost.generalLedgerDate <= :endDate and (:carrierId is null or load.carrierId = :carrierId)
+                and auditReason.status = 'A'
+                and load.finalizationStatus in ('FBH','ABH','ABHAA')
+                group by load.id, auditReason.billAuditReasonCodeEntity.description
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.GET_PRODUCTS_FOR_ACTIVITY_REPORT">
+        <![CDATA[
+                select load.id as loadId, lm.weight as weight,
+                lm.commodityClass as commodityClass, lm.pieces as pieces,
+                lm.height as height, lm.width as width, lm.length as length
+                from LoadEntity load
+                join load.origin o
+                join o.loadMaterials lm
+                left outer join load.activeCostDetails activecost
+                join load.organization customer  with (:customerId is null or customer.id = :customerId or (:networkId is not null and customer.networkId = :networkId))
+                where (activecost.generalLedgerDate >= :startDate) and (activecost.generalLedgerDate <= :endDate) and (:carrierId is null or load.carrierId = :carrierId)
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.GET_ACCESSORIAL_FOR_ACTIVITY_REPORT">
+        <![CDATA[
+                select
+                    load.id as loadId,
+                    acc.id as accessorialTypeCode,
+                    acc.description as description
+                from LoadEntity load
+                left outer join load.ltlAccessorials la
+                left outer join la.accessorial acc with acc.status = 'A'
+                left outer join load.activeCostDetails activecost
+                join load.organization customer  with (:customerId is null or customer.id = :customerId or (:networkId is not null and customer.networkId = :networkId))
+                where (activecost.generalLedgerDate >= :startDate) and (activecost.generalLedgerDate <= :endDate) and (:carrierId is null or load.carrierId = :carrierId)
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.GET_LOADS_FOR_SAVINGS_REPORT">
+        <![CDATA[
+                select
+                    customer.name as customerName,
+                    o.departure as departure,
+                    load.id as loadId,
+                    load.numbers.bolNumber as bol,
+                    load.numbers.refNumber as shipperRef,
+                    load.numbers.poNumber as poNumber,
+                    load.numbers.glNumber as glNumber,
+                    load.numbers.proNumber as proNumber,
+                    carrier.scac as scacCode,
+                    carrier.name as carrierName,
+                    load.shipmentDirection as shipmentDirection,
+                    o.contact as originContact,
+                    oa.address1 as originAddress,
+                    oa.city as originCity,
+                    oa.stateCode as originStateCode,
+                    oa.zip as originZip,
+                    d.contact as destinationContact,
+                    da.address1 as destinationAddress,
+                    da.city as destinationCity,
+                    da.stateCode as destinationStateCode,
+                    da.zip as destinationZip,
+                    sum(case when cdi.owner = 'S' then cdi.subtotal else 0 end) as totalRevenue,
+                    sum(case when cdi.owner = 'S' and cdi.accessorialType = 'SRA' then cdi.subtotal else 0 end) as custLhCost,
+                    sum(case when cdi.owner = 'S' and cdi.accessorialType = 'FS' then cdi.subtotal else 0 end) as custFsCost,
+                    sum(case when cdi.owner ='B' and cdi.accessorialType in ('SBR', 'FS') then cdi.subtotal else 0 end) as benchmarkAmount
+                from LoadEntity load
+                join load.origin o
+                join o.address oa
+                join load.destination d
+                join d.address da
+                join load.billTo billto
+                join load.activeCostDetails actCost with actCost.pricingProfileDetailId is not null
+                    and (actCost.revenueOverride = 'N' or actCost.revenueOverride is null)
+                    and (actCost.costOverride = 'N' or actCost.costOverride is null)
+                join actCost.costDetailItems cdiBench with cdiBench.owner = 'B' and cdiBench.accessorialType = 'SBR'
+                join load.organization customer  with (customer.id = :customerId or (:networkId is not null and customer.networkId = :networkId))
+                left join actCost.allCostDetailItems cdi
+                left join cdi.financialAccessorials fa
+                left join load.carrier carrier
+                where (actCost.generalLedgerDate >= :startDate) and (actCost.generalLedgerDate <= :endDate)
+                    and load.status = 'CD' and load.finalizationStatus = 'FP'
+                    and (fa.id is null or fa.generalLedgerDate is not null)
+                group by load.id, customer.name, o.departure, load.numbers.bolNumber, load.numbers.refNumber, load.numbers.poNumber,
+                    load.numbers.glNumber, load.numbers.proNumber, carrier.scac, carrier.name, load.shipmentDirection, o.contact,
+                    oa.address1, oa.city, oa.stateCode, oa.zip, d.contact, da.address1, da.city, da.stateCode, da.zip
+                order by o.departure desc
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.GET_PRODUCTS_FOR_SAVINGS_REPORT">
+        <![CDATA[
+                select distinct
+                    load.id as loadId,
+                    lm.weight as weight,
+                    lm.commodityClass as commodityClass,
+                    lm.pieces as pieces,
+                    lm.height as height,
+                    lm.width as width,
+                    lm.length as length
+                from LoadEntity load
+                join load.origin o
+                join o.loadMaterials lm
+                join load.activeCostDetails actCost
+                join actCost.costDetailItems cdBenchLH with cdBenchLH.owner = 'B'
+                join load.organization customer  with (customer.id = :customerId or (:networkId is not null and customer.networkId = :networkId))
+                where (actCost.generalLedgerDate >= :startDate) and (actCost.generalLedgerDate <= :endDate)
+                    and actCost.pricingProfileDetailId is not null
+                    and (actCost.revenueOverride = 'N' or actCost.revenueOverride is null)
+                    and (actCost.costOverride = 'N' or actCost.costOverride is null)
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.GET_ACCESSORIAL_FOR_SAVINGS_REPORT">
+        <![CDATA[
+                select distinct
+                    load.id as loadId,
+                    acc.id as accessorialTypeCode,
+                    acc.description as description
+                from LoadEntity load
+                join load.ltlAccessorials la
+                join la.accessorial acc with acc.status = 'A'
+                join load.activeCostDetails actCost
+                join actCost.costDetailItems cdi with cdi.owner = 'B'
+                join load.organization customer  with (customer.id = :customerId or (:networkId is not null and customer.networkId = :networkId))
+                where (actCost.generalLedgerDate >= :startDate) and (actCost.generalLedgerDate <= :endDate)
+                    and actCost.pricingProfileDetailId is not null
+                    and (actCost.revenueOverride = 'N' or actCost.revenueOverride is null)
+                    and (actCost.costOverride = 'N' or actCost.costOverride is null)
+                order by acc.id
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.GET_SHIPMENT_BILL_TO">
+        <![CDATA[
+            SELECT billToId FROM LoadEntity load WHERE load.id = :id
+        ]]>
+    </query>
+    <sql-query name="com.pls.shipment.domain.LoadEntity.Q_ACTIVITY_BOOKED">
+        <return-scalar column="exactDate" type="date"/>
+        <return-scalar column="totalCount" type="long"/>
+        <return-scalar column="totalCost" type="java.math.BigDecimal"/>
+        <![CDATA[
+                select distinct DATE_TRUNC('day', l.DATE_CREATED) as exactDate, count(l.LOAD_ID) as totalCount, round(cast(sum(lcd.TOTAL_REVENUE) as numeric), 2) as totalCost from LOADS l
+                left join rater.LOAD_COST_DETAILS lcd on l.LOAD_ID=lcd.LOAD_ID and lcd.status = 'A' where l.CONTAINER_CD='VANLTL'
+                and l.ORIGINATING_SYSTEM in ('PLS2_LT', 'GS') and l.LOAD_STATUS in (:statuses) and l.ORG_ID=:customerId
+                and l.DATE_CREATED between :fromDate and :toDate group by DATE_TRUNC('day', l.DATE_CREATED)
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.shipment.domain.LoadEntity.Q_ACTIVITY">
+        <return-scalar column="exactDate" type="date"/>
+        <return-scalar column="totalCount" type="long"/>
+        <return-scalar column="totalCost" type="java.math.BigDecimal"/>
+        <![CDATA[
+                select DATE_TRUNC('day', ld.DEPARTURE) as exactDate, count(ld.LOAD_ID) as totalCount, round(cast(sum(lcd.TOTAL_REVENUE) as numeric), 2) as totalCost
+                from LOADS l inner join LOAD_DETAILS ld on l.LOAD_ID = ld.LOAD_ID and l.ORIGINATING_SYSTEM in ('PLS2_LT', 'GS')
+                and ld.LOAD_ACTION = :loadDetailsType and ld.DEPARTURE between :fromDate and :toDate
+                and l.CONTAINER_CD = 'VANLTL' and l.LOAD_STATUS in (:statuses) and l.ORG_ID = :customerId
+                left outer join rater.LOAD_COST_DETAILS lcd on l.LOAD_ID = lcd.LOAD_ID and lcd.status = 'A'
+                group by DATE_TRUNC('day', ld.DEPARTURE)
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.shipment.domain.LoadEntity.Q_GET_MATCHED_LOADS_BY_PRO_AND_ORG_ID">
+        <![CDATA[
+                select load_id
+                from (
+                    select load_id,
+                           ltrim(regexp_replace(carrier_reference_number, '[[:punct:][:space:]]', ''), '0') as matched_pro_num
+                    from loads l
+                    where coalesce(l.originating_system, '10') in ('PLS2_LT', 'GS') and l.award_carrier_org_id = :orgId
+                    ) t
+                where matched_pro_num = :pronum
+        ]]>
+    </sql-query>
+    <query name="com.pls.shipment.domain.LoadEntity.GET_CREATION_REPORT_DATA">
+        <![CDATA[
+            select load.id as loadId, actCost.invoiceNumber as invoiceNumber,cru.firstName || ' ' || cru.lastName as name,
+                case when load.sourceInd = 'EDI' then 'EDI Vendor Bill' else
+                case when load.sourceInd = 'EDI_M' then 'Manual Vendor Bill' else
+                case when actCost.pricingProfileDetailId is not null then 'Quote/Shipment Entry'
+                else 'Sales Order' end end end as creationMethod, load.modification.createdDate as createdDate,
+                load.numbers.proNumber as proNumber, load.numbers.bolNumber as bol, load.numbers.poNumber as poNumber,
+                case when (actCost.shipDate is null) then o.scheduledArrival else actCost.shipDate end as shipDate,
+                carrier.scac as scacCode, o.contact as shipperName, oa.city as originCity,
+                oa.stateCode as originSt, oa.zip as originZip, d.contact as consignee, da.city as destCity, da.stateCode as destSt,
+                da.zip as destZip, load.weight as weight, sum(case when cdi.owner = 'S' then cdi.subtotal else 0 end) as cost,
+                case when ((select count(distinct lm.commodityClass) from LoadMaterialEntity lm join lm.loadDetail ld join ld.load l
+                Where l.id = load.id) = 1) then (select distinct lm.commodityClass from LoadMaterialEntity lm join lm.loadDetail ld join ld.load l
+                Where l.id = load.id) end as shipmentClass
+            from LoadEntity load join load.origin o join o.address oa join load.destination d join d.address da
+                join load.organization customer with (customer.id = :customerId or (:networkId is not null and customer.networkId = :networkId))
+                left join load.activeCostDetails actCost
+                left join load.carrier carrier left join actCost.allCostDetailItems cdi
+                left join load.modification.createdUser cru
+            where (load.modification.createdDate >= :startDate) and
+                (load.modification.createdDate <= :endDate) and load.status <> 'C' and load.status <> 'CE'
+                and (load.finalizationStatus = case when ( :invoicedOnly = true) then 'FP' else (load.finalizationStatus) end
+                or (load.finalizationStatus IS null and :invoicedOnly = false))
+            group by load.id, actCost.invoiceNumber,
+                cru.firstName, cru.lastName, load.sourceInd, load.vendorBillDetails.frtBillRecvFlag,
+                actCost.pricingProfileDetailId, load.modification.createdDate, load.numbers.proNumber,
+                load.numbers.bolNumber, load.numbers.poNumber, actCost.shipDate, carrier.scac, o.contact, oa.city,
+               oa.stateCode, oa.zip, d.contact, da.city, da.stateCode, da.zip, load.weight, o.scheduledArrival
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.GET_LOAD_INVOICE_TYPE">
+        select l.billTo.invoiceSettings.invoiceType from LoadEntity l where l.id=:loadId
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_FIND_HOLD_SHIPMENT">
+        <![CDATA[
+                select
+                    load.id as shipmentId,
+                    load.numbers.bolNumber as bolNumber,
+                    load.numbers.soNumber as soNumber,
+                    load.numbers.glNumber as glNumber,
+                    load.numbers.proNumber as proNumber,
+                    load.numbers.refNumber as refNumber,
+                    load.numbers.poNumber as poNumber,
+                    load.numbers.puNumber as puNumber,
+                    max(jobs.jobNumber) as jobNumber,
+                    orig.contact as shipper,
+                    originAddress.city || ', ' || originAddress.stateCode || ', ' || originAddress.zip as originAddress,
+                    destinationAddress.city || ', ' || destinationAddress.stateCode || ', ' || destinationAddress.zip as destinationAddress,
+                    dest.contact as consignee,
+                    carrier.name as carrier,
+                    coalesce(orig.departure, orig.earlyScheduledArrival) as pickupDate,
+                    coalesce(dest.departure,dest.scheduledArrival) as deliveryDate,
+                    activeCostDetails.totalRevenue as revenue,
+                    activeCostDetails.totalCost as cost,
+                    activeCostDetails.totalRevenue - activeCostDetails.totalCost as margin,
+                    load.status as status,
+                    TRIM(both ', ' from
+                            (case when load.hazmat=true then 'H, ' else '' end) ||
+                            (case when activeCostDetails.guaranteedBy is not null then 'GD, ' else '' end) ||
+                            (case when exists (from load.documents doc where doc.documentType = 'FREIGHT_PICTURE' and doc.status = 'A') then 'FP, ' else '' end) ||
+                            (case when exists (from load.documents doc where doc.documentType = 'CERTIFICATE_OF_INS' and doc.status = 'A') then 'CF, ' else '' end)
+                        ) as indicators,
+                    sn2.note as noteComment,
+                    sn2.modification.createdDate as noteCreatedDate,
+                    sn2modu.firstName || ' ' || sn2modu.lastName as noteModifiedBy,
+                    count(distinct sn1.id) as numberOfNotes,
+                    network.name as network,
+                    aeU.firstName || ' ' || aeU.lastName as accountExecutive,
+                    load.pieces as pieces,
+                    load.weight as weight
+                from LoadEntity load
+                join load.origin as orig
+                join load.destination as dest
+                join orig.address as originAddress
+                join dest.address as destinationAddress
+                left outer join load.activeCostDetails as activeCostDetails
+                left outer join load.carrier carrier
+                left join load.organization customer
+                left join customer.network network
+                left join load.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+                left join network.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+                left outer join load.numbers.jobNumbers jobs
+                left join load.shipmentNotes sn1 with sn1.status = 'A'
+                left join load.shipmentNotes sn2 with sn2.status = 'A'
+                left join sn2.modification.createdUser sn2modu with sn2modu.userStatus = 'A'
+                left join load.location l
+                left join l.accountExecutives ae with ae.status = 'A' and LOCALTIMESTAMP between ae.effectiveDate and ae.expirationDate
+                left join ae.user aeU
+                where (cu.personId is not null or nu.id is not null)
+                    and (load.finalizationStatus = :status)
+                    and (sn2.id is null or sn2.id in (select max(id) as id from load.shipmentNotes))
+                group by
+                    load.id,load.numbers.bolNumber,load.numbers.soNumber,load.numbers.glNumber, load.numbers.proNumber,load.numbers.refNumber ,
+                    load.numbers.poNumber,load.numbers.puNumber,orig.contact,originAddress.city,originAddress.stateCode,originAddress.zip,
+                    destinationAddress.city,destinationAddress.stateCode,destinationAddress.zip,dest.contact,carrier.name,
+                    orig.departure,orig.earlyScheduledArrival,dest.departure,dest.scheduledArrival,activeCostDetails.totalRevenue,activeCostDetails.totalCost,
+                    load.status,sn2.note,sn2.modification.createdDate,sn2modu.firstName,sn2modu.lastName,load.hazmat, activeCostDetails.guaranteedBy, network.name,
+                    aeU.firstName, aeU.lastName, load.pieces, load.weight
+     ]]>
+    </query>
+    <sql-query name="com.pls.shipment.domain.LoadEntity.GET_PAPERWORK_EMAILS">
+        <![CDATA[
+            select
+                distinct
+                L.LOAD_ID as "loadId",
+                L.SHIPPER_REFERENCE_NUMBER as "shipperRef",
+                L.BOL as "bol",
+                OA.CITY||', '||OA.STATE_CODE||', '||OA.POSTAL_CODE as "origin",
+                DA.CITY||', '||DA.STATE_CODE||', '||DA.POSTAL_CODE as "destination",
+                coalesce(ORIG.DEPARTURE,ORIG.EARLY_SCHEDULED_ARRIVAL) as "pickupDate",
+                L.WEIGHT as "weight",
+                FINAP.INV_NUMBER as "invoiceNumber",
+                case when (SUBSTR(CONCAT(REQ_BILLTO_DOCUMENTS, CONCAT(',', DOC.DOCUMENTS)), 1, 1)) = ','
+                    then rtrim(SUBSTR(CONCAT(REQ_BILLTO_DOCUMENTS, CONCAT(',', DOC.DOCUMENTS)), 2), ',')
+                    else rtrim(SUBSTR(CONCAT(REQ_BILLTO_DOCUMENTS, CONCAT(',', DOC.DOCUMENTS)), 1), ',') end as "documents",
+                N.NOTE as "note",
+                PE.ORG_ID as "carrierId",
+                PE.EMAIL as "carrierEmail",
+                O.name as "carrierName"
+            from LOADS L
+                inner join LOAD_DETAILS ORIG on L.LOAD_ID=ORIG.LOAD_ID and 'P'=ORIG.LOAD_ACTION and 'O'=ORIG.POINT_TYPE
+                inner join LOAD_DETAILS DEST on L.LOAD_ID=DEST.LOAD_ID and 'D'=DEST.LOAD_ACTION and 'D'=DEST.POINT_TYPE
+                inner join ADDRESSES OA on ORIG.ADDRESS_ID=OA.ADDRESS_ID
+                inner join ADDRESSES DA on DEST.ADDRESS_ID=DA.ADDRESS_ID
+                inner join ORGANIZATIONS O on L.AWARD_CARRIER_ORG_ID = O.ORG_ID and O.ORG_TYPE = 'CARRIER'
+                inner join PAPERWORK_EMAIL PE on L.AWARD_CARRIER_ORG_ID = PE.ORG_ID and PE.DONT_REQ_PPW = 'N'
+                inner join rater.LOAD_COST_DETAILS LCD on L.LOAD_ID=LCD.LOAD_ID and LCD.GL_DATE IS NULL and LCD.STATUS = 'A'
+                left join FINAN_ACCOUNT_PAYABLES FINAP on L.LOAD_ID=FINAP.LOAD_ID
+
+                left join FLATBED.LOAD_BILLING_HISTORY LBH on L.LOAD_ID=LBH.LOAD_ID and LBH.STATUS_REASON = 'PW'
+                                                           and L.LOAD_STATUS = 'CD' and L.FINALIZATION_STATUS = 'FBH'
+                left join (select LOAD_ID, REQUEST_PAPERWORK, string_agg(DESCRIPTION, ', ') DOCUMENTS
+                    from (
+                        select PHD.LOAD_ID, PHD.REQUEST_PAPERWORK, IDT.DESCRIPTION
+                        from PAPERWORK_HOLD_DOCUMENTS PHD, IMAGE_DOCUMENT_TYPE IDT
+                        where PHD.DOCUMENT_TYPE = IDT.DOCUMENT_TYPE
+                        order by IDT.DESCRIPTION
+                    ) s1 group by LOAD_ID, REQUEST_PAPERWORK) DOC on LBH.LOAD_ID=DOC.LOAD_ID
+                left join NOTES N on LBH.LOAD_ID=N.REF_ID and N.STATUS='A' and N.NOTE_TYPE = 'CARR_PPWK'
+
+                left join (select BILL_TO_ID, string_agg(DESCRIPTION, ', ') REQ_BILLTO_DOCUMENTS, COUNT(*) REQ_BILLTO_DOCS_COUNT
+                    from (
+                        select RD.BILL_TO_ID, IDT.DESCRIPTION
+                        from FLATBED.BILL_TO_REQ_DOC RD, FLATBED.IMAGE_DOCUMENT_TYPE IDT
+                        where RD.DOCUMENT_TYPE = IDT.DOCUMENT_TYPE and RD.SHIPPER_REQ_TYPE = 'REQUIRED'
+                        order by IDT.DESCRIPTION
+                    ) s2 group by BILL_TO_ID) RD on L.BILL_TO=RD.BILL_TO_ID
+            where
+                coalesce(L.ORIGINATING_SYSTEM, 'PLS10') not in ('PLS2_LT', 'GS')
+                and (
+                  (:days < 7 and DOC.DOCUMENTS is not null and N.NOTE is not null and N.DATE_MODIFIED >= current_date - :days)
+                  or (:days >= 7
+                    and (
+                      (DOC.DOCUMENTS is not null and N.DATE_MODIFIED >= current_date - :days)
+                      or (L.FRT_BILL_RECV_FLAG <> 'Y'
+                        and cast(coalesce(ORIG.DEPARTURE,ORIG.EARLY_SCHEDULED_ARRIVAL) as date) + 13 < LOCALTIMESTAMP
+                        and cast(coalesce(ORIG.DEPARTURE,ORIG.EARLY_SCHEDULED_ARRIVAL) as date) + 35 > LOCALTIMESTAMP
+                        and COALESCE(REQ_BILLTO_DOCS_COUNT, 0) > 0
+                      )
+                    )
+                    and LCD.TOTAL_COSTS > 0
+                  )
+                )
+
+                -- this should be changed soon -- and coalesce(DOC.REQUEST_PAPERWORK, 'Y') = 'Y'
+        ]]>
+    </sql-query>
+
+    <sql-query name="com.pls.shipment.domain.LoadEntity.GET_ORDERS_HISTORY">
+        <![CDATA[
+			select
+				distinct
+				L.LOAD_ID as "loadId",
+				L.SHIPPER_REFERENCE_NUMBER as "shipperRef",
+				L.BOL as "bol",
+				L.LOAD_STATUS as "loadStatus",
+				OA.CITY||', '||OA.STATE_CODE||', '||OA.POSTAL_CODE as "origin",
+				DA.CITY||', '||DA.STATE_CODE||', '||DA.POSTAL_CODE as "destination",
+				coalesce(ORIG.DEPARTURE,ORIG.EARLY_SCHEDULED_ARRIVAL) as "pickupDate",
+				coalesce(DEST.ARRIVAL,DEST.EARLY_SCHEDULED_ARRIVAL) as "deliveryDate",
+				L.WEIGHT as "weight",
+				LCD.total_costs as "totalCost",
+				O.name as "carrierName"
+			from LOADS L
+				inner join LOAD_DETAILS ORIG on L.LOAD_ID=ORIG.LOAD_ID and 'P'=ORIG.LOAD_ACTION and 'O'=ORIG.POINT_TYPE
+				inner join LOAD_DETAILS DEST on L.LOAD_ID=DEST.LOAD_ID and 'D'=DEST.LOAD_ACTION and 'D'=DEST.POINT_TYPE
+				inner join ADDRESSES OA on ORIG.ADDRESS_ID=OA.ADDRESS_ID
+				inner join ADDRESSES DA on DEST.ADDRESS_ID=DA.ADDRESS_ID
+				inner join ORGANIZATIONS O on L.AWARD_CARRIER_ORG_ID = O.ORG_ID and O.ORG_TYPE = 'CARRIER'
+				inner join rater.LOAD_COST_DETAILS LCD on L.LOAD_ID=LCD.LOAD_ID and LCD.GL_DATE IS NULL and LCD.STATUS = 'A'
+				
+			where L.CREATED_BY = :personId and L.SOURCE_IND = 'GS'
+        ]]>
+    </sql-query>
+    
+     <sql-query name="com.pls.shipment.domain.LoadEntity.GET_LOAD_TRACKING_UPDATES">
+     	<![CDATA[
+     		SELECT 
+    			LT.TRACK_CITY AS "city", 
+    			LT.TRACK_STATE AS "state",
+    			LT.TRACK_DATE_TIME AS "date", 
+    			LT.TRACK_TIMEZONE AS "timeZone",
+    			LT.TRACK_STATUS_CODE AS "code",
+    			LTS.DESCRIPTION AS "description"
+  			FROM LOAD_TRACKING LT
+    			INNER JOIN LOAD_TRACKING_STATUS_TYPES LTS ON (LT.TRACK_STATUS_CODE = LTS.TRACK_STATUS_CODE)
+    		WHERE LT.LOAD_ID = :loadId AND LT.TRACK_STATUS_CODE NOT IN ('EC','AG','CA','C','D','E','R','M','W','X','EU','CN','CE');
+     	]]>
+     </sql-query>
+     
+     <sql-query name="com.pls.shipment.domain.LoadEntity.GET_LOAD_TRACKING">
+     	<![CDATA[
+   			SELECT
+     			L.LOAD_ID AS "loadId",
+     			L.BOL AS "bol",
+     			O.name as "carrierName",
+     			L.carrier_reference_number as "proNum",
+     			L.LOAD_STATUS AS "loadStatus",
+     			OA.ADDRESS1 AS "originAddr1",
+     			OA.ADDRESS2 AS "originAddr2",
+     			OA.CITY||', '||OA.STATE_CODE||' '||OA.POSTAL_CODE AS "origin",
+     			OA.COUNTRY_CODE AS "originCountry",
+     			OA.LONGITUDE AS "originLongitude",
+     			OA.LATITUDE AS "originLatitude",
+     			DA.ADDRESS1 AS "destinationAddr1",
+     			DA.ADDRESS2 AS "destinationAddr2",
+				DA.CITY||', '||DA.STATE_CODE||' '||DA.POSTAL_CODE AS "destination",
+				DA.COUNTRY_CODE AS "destCountry",
+				DA.LONGITUDE AS "destinationLongitude",
+     			DA.LATITUDE AS "destinationLatitude",
+				coalesce(ORIG.DEPARTURE,ORIG.EARLY_SCHEDULED_ARRIVAL) AS "pickupDate",
+				ORIG.arrival_window_start AS "pickupStart",
+				ORIG.arrival_window_end AS "pickupEnd",
+				coalesce(DEST.ARRIVAL,DEST.EARLY_SCHEDULED_ARRIVAL) AS "deliveryDate",
+				DEST.arrival_window_start AS "deliveryStart",
+				DEST.arrival_window_end AS "deliveryEnd",
+				ORIG.contact_name AS "originContactName", 
+				ORIG.contact_phone AS "originContactPhone",
+				ORIG.contact_email AS "originContactEmail",
+				ORIG.date_created AS "orderDate",
+				DEST.contact_name AS "destContactName", 
+				DEST.contact_phone AS "destContactPhone",
+				DEST.contact_email AS "destContactEmail",
+				concat(ORIG.NOTES, ' ', DEST.notes, ' ', L.special_message) AS "loadNotes",
+				LT.track_city AS "trackCity",
+				LT.track_state AS "trackState",
+				I.sum_insured AS "insuranceSumInsured",
+				I.policy_number AS "insurancePolicyNumber",
+				case when (CLD.is_trans_country is null) then false else CLD.is_trans_country end AS "transCountry"
+
+			FROM LOADS L
+				inner join LOAD_DETAILS ORIG on L.LOAD_ID=ORIG.LOAD_ID and 'P'=ORIG.LOAD_ACTION and 'O'=ORIG.POINT_TYPE
+				inner join LOAD_DETAILS DEST on L.LOAD_ID=DEST.LOAD_ID and 'D'=DEST.LOAD_ACTION and 'D'=DEST.POINT_TYPE
+				inner join ADDRESSES OA on ORIG.ADDRESS_ID=OA.ADDRESS_ID
+				inner join ADDRESSES DA on DEST.ADDRESS_ID=DA.ADDRESS_ID
+				inner join ORGANIZATIONS O on L.AWARD_CARRIER_ORG_ID = O.ORG_ID and O.ORG_TYPE = 'CARRIER'
+				left outer join rater.LOAD_COST_DETAILS LCD on L.LOAD_ID=LCD.LOAD_ID and LCD.GL_DATE IS NULL and LCD.STATUS = 'A'
+				left outer join CUSTOMS_LOAD_DETAILS CLD on (CLD.LOAD_ID = L.LOAD_ID) 
+				left outer join load_tracking LT on L.load_id = LT.load_id
+				left outer join insurance I on L.load_id = I.load_id
+				
+   			WHERE L.BOL = :bolId
+   			and LT.tracking_id = (SELECT max(ltl.tracking_id) from load_tracking ltl where ltl.load_id= L.load_id) and  L.CREATED_BY = :personId and L.SOURCE_IND = 'GS'
+     	]]>
+     </sql-query>
+     
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_PICKUPS_AND_DELIVERIES">
+        <![CDATA[
+            select
+                case when l.status = :pickupStatus then 'P' else 'D' end as type,
+                cast(
+                    (cast((case when
+                            date_trunc('day', case when l.status = :pickupStatus then orig.scheduledArrival else dest.scheduledArrival end) < (current_date - 1)
+                        then (current_date - 1)
+                        else date_trunc('day', case when l.status = :pickupStatus then orig.scheduledArrival else dest.scheduledArrival end)
+                    end) as date) - current_date) as int) as days,
+                case when l.status = :pickupStatus then originAddress.city else destinationAddress.city end as city,
+                case when l.status = :pickupStatus then originAddress.stateCode else destinationAddress.stateCode end as state,
+                case when l.status = :pickupStatus then originAddress.zip else destinationAddress.zip end as zip
+            from LoadEntity l
+            join l.origin orig
+            join l.destination dest
+            join orig.address originAddress
+            join dest.address destinationAddress
+            join l.organization customer
+            join customer.network network
+            left join l.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+            left join network.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+            where (cu.personId is not null or nu.id is not null)
+                and ((l.status = :pickupStatus and orig.departure is null and date_trunc('day', orig.scheduledArrival) < (current_date + 1))
+                    or (l.status in (:deliveryStatuses) and dest.departure is null and date_trunc('day', dest.scheduledArrival) < (current_date + 1)))
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadEntity.Q_GET_LOADS_PICKUPS_AND_DELIVERIES">
+        <![CDATA[
+            select
+                l.id as loadId,
+                l.numbers.bolNumber as bolNumber,
+                l.numbers.refNumber as refNumber,
+                l.numbers.poNumber as poNumber,
+                l.status as status,
+                coalesce(orig.departure, orig.scheduledArrival) as pickupDate,
+                dest.scheduledArrival as estDeliveryDate,
+                carrier.name as carrierName,
+                orig.contactName as shipper,
+                dest.contactName as consignee,
+                originAddress.city as origCity,
+                originAddress.stateCode as origState,
+                originAddress.zip as origZip,
+                destinationAddress.city as destCity,
+                destinationAddress.stateCode as destState,
+                destinationAddress.zip as destZip
+            from LoadEntity l
+            join l.carrier carrier
+            join l.origin orig
+            join l.destination dest
+            join orig.address originAddress
+            join dest.address destinationAddress
+            join l.organization customer
+            join customer.network network
+            left join l.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+            left join network.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+            where (cu.personId is not null or nu.id is not null)
+                and l.status in (:statuses)
+                and ((l.status = :pickupStatus and orig.departure is null
+                            and (:zip is null or (originAddress.zip = :zip and originAddress.city = :city))
+                            and cast((case when date_trunc('day', orig.scheduledArrival) < (current_date - 1) then (current_date - 1) else date_trunc('day', orig.scheduledArrival) end) as date) - current_date - :dateType = 0)
+                        or (l.status in (:deliveryStatuses) and dest.departure is null
+                            and (:zip is null or (destinationAddress.zip = :zip and destinationAddress.city = :city))
+                            and cast((case when date_trunc('day', dest.scheduledArrival) < (current_date - 1) then (current_date - 1) else date_trunc('day', dest.scheduledArrival) end) as date) - current_date - :dateType = 0))
+        ]]>
+    </query>
+    <sql-query name="com.pls.shipment.domain.LoadEntity.Q_UNBILLED_REPORT">
+        <return-scalar column="shipperCode" type="string"/>
+        <return-scalar column="ownerName" type="string"/>
+        <return-scalar column="loadId" type="long"/>
+        <return-scalar column="shipDate" type="date"/>
+        <return-scalar column="glDate" type="date"/>
+        <return-scalar column="revenue" type="java.math.BigDecimal"/>
+        <return-scalar column="cost" type="java.math.BigDecimal"/>
+        <return-scalar column="margin" type="java.math.BigDecimal"/>
+        <![CDATA[
+                select shipper_code as shipperCode,
+                    owner_name as ownerName,
+                    load_id as loadId,
+                    ship_date as shipDate,
+                    gl_date as glDate,
+                    revenue as revenue,
+                    cost as cost,
+                    margin as margin
+                from flatbed.report_unbilled(:customerId, :endDate, :companyCode)
+        ]]>
+    </sql-query>
+</hibernate-mapping>

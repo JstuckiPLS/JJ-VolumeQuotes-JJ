@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <sql-query name="com.pls.core.domain.LostSavOppRptDataEntity.Q_PREPARE_DATA">
+        <return-scalar column="jobId" type="long"/>
+        <![CDATA[
+            select ltl_lost_sav_opp_rpt_proc as jobId
+            from flatbed.ltl_lost_sav_opp_rpt_proc(:customerId, :networkId, :startDate, :endDate)
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.core.domain.LostSavOppRptDataEntity.GET_LOST_SAVINGS_OPP_REPORT_QUERY">
+    <![CDATA[
+        select CONCAT(CONCAT(u.FIRST_NAME, ' '), u.LAST_NAME) as userName,
+            lsord.BOL,
+            lsord.PO_NUM,
+            lsord.SO_NUMBER,
+            lsord.SHIPPER_REFERENCE_NUMBER,
+            lsord.SHIPPER_NAME,
+            lsord.ORIG_STATE,
+            lsord.ORIG_CITY,
+            lsord.ORIG_ZIP,
+            lsord.CONSIGNEE_NAME,
+            lsord.DEST_STATE,
+            lsord.DEST_CITY,
+            lsord.DEST_ZIP,
+            lsorm.WEIGHT,
+            lsorm.COMMODITY_CLASS_CODE,
+            lsord.TOTAL_WEIGHT,
+            lsord.LOAD_CREATED_DATE,
+            lsord.EST_PICKUP_DATE,
+            lsord.PICKUP_DATE,
+            lsora.ACCESSORIAL_TYPE,
+            (select distinct org.SCAC from ORGANIZATIONS org where lsord.CARRIER_ORG_ID = org.ORG_ID) as carrSelected,
+            (select distinct org.SCAC from ORGANIZATIONS org where lsord.LC_CARRIER_ORG_ID = org.ORG_ID) as leastCostCarr,
+            lsord.TOTAL_REVENUE,
+            lsord.TRANSIT_TIME,
+            lsord.LC_CARR_TOTAL_REVENUE,
+            lsord.LC_CARR_TRANSIT_TIME,
+            lsord.REVENUE_SAVINGS,
+            lsord.REV_SAVINGS_PERC,
+            lsord.LOAD_ID,
+            lsord.DATE_CREATED,
+            lsorm.LSO_RPT_MATERIAL_ID,
+            lsora.LSO_RPT_ACCESSORIAL_ID,
+            lsorm.PART_DESCRIPTION
+        from LOST_SAV_OPP_RPT_DATA lsord
+        left outer join USERS u on lsord.LOAD_CREATED_BY = u.PERSON_ID
+        left outer join LOST_SAV_OPP_RPT_ACC lsora on lsord.LSO_RPT_DATA_ID = lsora.LSO_RPT_DATA_ID
+        left outer join LOST_SAV_OPP_RPT_MATERIALS lsorm on lsord.LSO_RPT_DATA_ID = lsorm.LSO_RPT_DATA_ID
+        where lsord.JOB_ID = :jobId
+        ORDER BY case when :sortOrder = 'EstPickupDate' then lsord.EST_PICKUP_DATE else null end ASC,
+            case when :sortOrder = 'EstPickupDate' then lsord.LOAD_CREATED_DATE else null end DESC,
+            case when :sortOrder = 'UserName' then lower(CONCAT(CONCAT(u.FIRST_NAME, ' '), u.LAST_NAME)) else null end ASC,
+            case when :sortOrder = 'UserName' then lsord.REVENUE_SAVINGS else null end DESC,
+            case when :sortOrder = 'PotentialSavings' then lsord.REVENUE_SAVINGS else null end DESC,
+            case when :sortOrder = 'PotentialSavings' then lsord.EST_PICKUP_DATE else null end DESC
+    ]]>
+    </sql-query>
+</hibernate-mapping>

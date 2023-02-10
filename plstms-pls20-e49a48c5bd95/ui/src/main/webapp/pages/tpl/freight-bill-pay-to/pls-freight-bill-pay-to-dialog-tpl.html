@@ -1,0 +1,109 @@
+<div data-pls-modal="showDialog" data-options="{parentDialog: 'detailsDialogDiv'}" data-close="closeDialog()" data-enter="saveDialog()"
+     class="modal modalWidth5">
+    <div class="modal-header">
+        <h4>Edit Freight Bill Pay To</h4>
+    </div>
+
+    <form name="freightBillPayToForm" class="form-vertical">
+        <div class="modal-body" data-ng-if="showDialog">
+            <div class="row-fluid">
+                <label class="span3 text-right label-middle" for="company">Company:</label>
+
+                <div class="span8">
+                    <input class="span12" type="text" id="company" data-ng-model="freight.company" maxlength="32" required>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="span3 text-right label-middle" for="contactName">Contact Name:</label>
+
+                <div class="span8">
+                    <input class="span12" type="text" id="contactName" data-ng-model="freight.contactName" maxlength="100" required>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="span3 text-right label-middle" for="address1">Address1:</label>
+
+                <div class="span8">
+                    <input class="span12" type="text" id="address1" data-ng-model="freight.address.address1" maxlength="200" required>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="span3 text-right label-middle" for="address2">Address2:</label>
+
+                <div class="span8">
+                    <input class="span12" type="text" id="address2" data-ng-model="freight.address.address2" maxlength="200">
+                </div>
+            </div>
+            <div class="row-fluid" data-ng-show="zipAutoComplete">
+                <label class="span3 text-right label-middle" for="zipInp">City, ST, ZIP:</label>
+
+                <div class="span8">
+                    <input id="zipInp" data-pls-zip-search="freight.address.zip" data-country="freight.address.country.id" data-ng-required="true"
+                           data-input-label-filter="zip" class="span12">
+                </div>
+            </div>
+            <div class="row-fluid" data-ng-if="!zipAutoComplete">
+                <label class="span3 text-right label-middle" for="cityInp">City:</label>
+
+                <div class="span8">
+                    <input class="span12" id="cityInp" type="text" data-ng-model="freight.address.zip.city"
+                           maxlength="30" required data-ng-disabled="!freight.address.country">
+                </div>
+            </div>
+            <div class="row-fluid" data-ng-if="!zipAutoComplete">
+                <label class="span3 text-right label-middle" for="zipCodeInp">Zip:</label>
+
+                <div class="span8">
+                    <input class="span12" id="zipCodeInp" type="text" data-ng-model="freight.address.zip.zip"
+                           maxlength="10" required data-ng-disabled="!freight.address.country">
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="span3 text-right label-middle" for="countryInp">Country:</label>
+
+                <div class="span8">
+                    <input class="span12" id="countryInp" data-pls-country-search="freight.address.country" required maxlength="3">
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="span3 text-right label-middle" for="phoneNumberCodeId">Phone:</label>
+
+                <div class="span8">
+                    <div class="controls row-fluid"> +
+                        <span id="phoneCountryCodeId" data-ng-bind="freight.address.country.dialingCode"></span>(
+                        <input data-ng-model="freight.phone.areaCode" data-ng-minlength="1" data-ng-maxlength="3" data-pls-digits-validation required
+                               id="phoneAreaCodeId" type="text" maxlength="3" class="span2"/>)
+                        <input data-ng-model="freight.phone.number" data-ng-minlength="7" data-ng-maxlength="7" data-pls-digits-validation required
+                               id="phoneNumberCodeId" type="text" placeholder="#######" maxlength="7" class="span4"/>
+                        &nbsp;Ext.:
+                        <input data-ng-model="freight.phone.extension" data-ng-maxlength="6" data-pls-digits-validation
+                               type="text" placeholder="######" maxlength="6" class="span3"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="span3 text-right label-middle" for="email">Email:</label>
+
+                <div class="span8">
+                    <input class="span12" type="email" id="email" required
+                        data-ng-pattern="/^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[_A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/"
+                        data-ng-model="freight.email" maxlength="255">
+                </div>
+            </div>
+            <div data-ng-if="!showAccountId" class="row-fluid">
+                <label class="span3 text-right label-middle" for="accountNum">Account #:</label>
+
+                <div class="span8">
+                    <input class="span12" type="text" id="accountNum" data-ng-model="freight.accountNum" maxlength="32" data-pls-digits-validation>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="modal-footer">
+        <button data-ng-disabled="!defaultFreightBill.company || isFreightBillNotChanged()"
+                data-ng-click="resetDialog()" type="button" class="btn">Reset to Default
+        </button>
+        <button type="button" class="btn" data-ng-click="closeDialog()">Cancel</button>
+        <button type="button" class="btn btn-primary" data-ng-disabled="freightBillPayToForm.$invalid" data-ng-click="saveDialog()">Ok</button>
+    </div>
+</div>

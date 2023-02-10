@@ -1,0 +1,19 @@
+<div>
+    <div class="control-group">
+        <label class="control-label span4 label-middle" for="zipInp{{$id}}">{{zipLabel || 'ZIP:'}}</label>
+        <div class="span8">
+            <input data-ng-attr-id="zipInp{{$id}}" class="span12" required data-zip-disabled="!selectedCountry.id"
+                data-pls-zip-search="directiveModel.zip" tabindex="{{zipTabIndex}}"
+                data-country="selectedCountry.id"/>
+        </div>
+    </div><div class="row-fluid"></div>
+    <div class="control-group">
+        <label class="control-label span4 label-middle" for="countryInp{{$id}}">{{countryLabel || 'Country:'}}</label>
+        <div class="span8">
+            <input data-ng-attr-id="countryInp{{$id}}" class="span12" data-pls-country-search="selectedCountry" data-pls-country-index="zipTabIndex" tabindex="-1"/>
+        </div>
+    </div><div class="row-fluid"></div>
+    <div class="control-group">
+        <label class="span12 text-success control-label" style="padding: 5px 0 0 5px;">{{selectedZip | zip}}</label>
+    </div>
+</div>

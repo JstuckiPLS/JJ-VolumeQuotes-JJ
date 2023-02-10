@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.ltlrating.domain.LtlCustHidePricDetailsEntity.ARCHIVE_HIDE_CUST_PRIC">
+        <![CDATA[
+                UPDATE LtlCustHidePricDetailsEntity
+                lpe SET lpe.status = 'I', lpe.modification.modifiedBy = :modifiedBy, lpe.modification.modifiedDate = LOCALTIMESTAMP
+                WHERE lpe.shipperOrgId = :shipperOrgId and lpe.ltlPricingProfileId = :profileId
+        ]]>
+    </query>
+</hibernate-mapping>

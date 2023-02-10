@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.documentmanagement.domain.LoadDocumentEntity.Q_BY_LOAD_ID">
+        <![CDATA[
+                select lde.id from LoadDocumentEntity lde where lde.loadId = :loadId
+        ]]>
+    </query>
+    <query name="com.pls.documentmanagement.domain.LoadDocumentEntity.Q_BY_EARLIER_CREATED_DATE">
+        <![CDATA[
+                from LoadDocumentEntity d where d.modification.createdDate <= :createdDate and d.documentType='TEMP'
+        ]]>
+    </query>
+    <query name="com.pls.documentmanagement.domain.LoadDocumentEntity.Q_UPDATE_STATUS_BY_DOC_IDS">
+        <![CDATA[
+                update LoadDocumentEntity lde set lde.status=:status where lde.id in (:docIds)
+        ]]>
+    </query>
+    <query name="com.pls.documentmanagement.domain.LoadDocumentEntity.Q_BY_LOAD_ID_AND_DOC_TYPE">
+        <![CDATA[
+                from LoadDocumentEntity where loadId=:loadId and documentType=:documentType
+        ]]>
+    </query>
+    <query name="com.pls.documentmanagement.domain.LoadDocumentEntity.Q_BY_MANUAL_BOL_ID_AND_DOC_TYPE">
+        <![CDATA[
+                from LoadDocumentEntity where manualBol=:manualBolId and documentType=:documentType
+        ]]>
+    </query>
+    <query name="com.pls.documentmanagement.domain.LoadDocumentEntity.Q_DELETE_TEMP_DOC">
+        <![CDATA[
+                delete from LoadDocumentEntity where documentType='TEMP' and id = :id
+        ]]>
+    </query>
+    <query name="com.pls.documentmanagement.domain.LoadDocumentEntity.Q_GET_CUSTOMER_LOGO_FOR_BOL">
+        <![CDATA[
+                from LoadDocumentEntity where id in (
+                    select logoId
+                    from CustomerEntity
+                    where id = :customerId
+                        and displayLogoOnBol = true
+                )
+        ]]>
+    </query>
+    <query name="com.pls.documentmanagement.domain.LoadDocumentEntity.Q_GET_CUSTOMER_LOGO_SHIP_LABEL">
+        <![CDATA[
+                from LoadDocumentEntity where id in (
+                    select logoId
+                    from CustomerEntity
+                    where id = :customerId
+                        and displayLogoOnShipLabel = true
+                )
+        ]]>
+    </query>
+    <sql-query name="com.pls.documentmanagement.domain.LoadDocumentEntity.Q_GET_REQUIRED_AND_AVAILABLE_DOCUMENTS">
+        <![CDATA[
+            SELECT im.image_meta_id
+            FROM loads l
+            JOIN bill_to bt ON bt.bill_to_id = l.bill_to
+            JOIN bill_to_req_doc rd ON rd.bill_to_id = bt.bill_to_id and rd.status = 'A' AND rd.shipper_req_type IN ('REQUIRED', 'ON_AVAIL')
+            JOIN image_metadata im ON im.document_type = rd.document_type AND im.load_id = l.load_id and im.status = 'A'
+            WHERE l.load_id = :loadId
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.documentmanagement.domain.LoadDocumentEntity.Q_GET_CREATED_DATE_FOR_REQ_DOCS">
+        <![CDATA[
+            SELECT im.date_created
+            FROM loads l
+            JOIN bill_to bt ON bt.bill_to_id = l.bill_to
+            JOIN bill_to_req_doc rd ON rd.bill_to_id = bt.bill_to_id and rd.status = 'A' AND rd.shipper_req_type IN ('REQUIRED')
+            JOIN image_metadata im ON im.document_type = rd.document_type AND im.load_id = l.load_id and im.status = 'A'
+            WHERE l.load_id = :loadId
+        ]]>
+    </sql-query>
+    <query name="com.pls.documentmanagement.domain.LoadDocumentEntity.Q_GET_DOCUMENT_BY_ID_AND_TOKEN">
+        <![CDATA[
+                select lde from LoadDocumentEntity lde where lde.id = :id and lde.downloadToken = :downloadToken
+        ]]>
+    </query>
+</hibernate-mapping>

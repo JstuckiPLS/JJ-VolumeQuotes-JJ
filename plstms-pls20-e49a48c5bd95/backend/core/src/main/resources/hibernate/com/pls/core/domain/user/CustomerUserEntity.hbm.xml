@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.core.domain.user.CustomerUserEntity.Q_LIST_ACTIVE_BY_CUSTOMER_ID">
+        <![CDATA[
+                SELECT entity FROM CustomerUserEntity entity
+                WHERE entity.customer.id = :orgId AND entity.status='A'AND entity.user.userStatus = 'A'
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.CustomerUserEntity.Q_GET_USER_CUSTOMERS_BY_NAME">
+        <![CDATA[
+                SELECT entity FROM CustomerUserEntity entity
+                WHERE entity.user.id = :userId AND UPPER(entity.customer.name) LIKE UPPER(:customerName) AND entity.status = 'A'
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.CustomerUserEntity.Q_GET_BY_PERSON_ID_AND_ORG_ID">
+        <![CDATA[
+                FROM CustomerUserEntity entity
+                WHERE entity.personId = :personId AND entity.customerId = :orgId AND entity.locationId = NULL
+        ]]>
+    </query>
+</hibernate-mapping>

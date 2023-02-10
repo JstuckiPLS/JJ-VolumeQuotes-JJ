@@ -1,0 +1,14 @@
+<div class="row-fluid" data-ng-controller="ViewProfileCtrl">
+    <div class="tabbable tabbable-bordered span12" data-ng-if="user">
+        <div data-ng-include="'pages/content/profile/view/view-my-profile-details.html'"></div>
+
+        <br/><br/>
+        <div class="row-fluid">
+            <a class="btn" href="#/my-profile/edit" data-ng-if="$root.isFieldRequired('EDIT_MY_PROFILE')">Edit</a>
+            <button type="button" class="btn" data-ng-if="$root.isFieldRequired('CHANGE_PASSWORD')"
+                data-ng-click="changePassword()">Change Password</button>
+        </div>
+        <div data-ng-include="'pages/content/profile/edit/edit-password.html'"></div>
+    </div>
+</div>
+<div data-ng-include="'pages/content/customer/location-info.html'"></div>

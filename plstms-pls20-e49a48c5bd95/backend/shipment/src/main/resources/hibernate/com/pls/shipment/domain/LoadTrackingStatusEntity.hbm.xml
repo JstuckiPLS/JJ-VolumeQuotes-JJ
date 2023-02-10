@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.shipment.domain.LoadTrackingStatusEntity.GET_ALL">
+        <![CDATA[
+         select ltse
+         from LoadTrackingStatusEntity ltse
+         join ltse.loadTrackingStatusEntityId ltseid 
+         where ltseid.source = :source
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadTrackingStatusEntity.FIND">
+        <![CDATA[
+         select ltse
+         from LoadTrackingStatusEntity ltse
+         join ltse.loadTrackingStatusEntityId ltseid 
+         where ltseid.source = :source and ltseid.code = :code
+        ]]>
+    </query>
+</hibernate-mapping>

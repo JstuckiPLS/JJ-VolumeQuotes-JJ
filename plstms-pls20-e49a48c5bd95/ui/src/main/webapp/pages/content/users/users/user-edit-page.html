@@ -1,0 +1,261 @@
+<form name="userCreationForm" class="form-horizontal small-labels">
+    <div data-ng-controller="UserMgmtEditCtrl">
+        <div class="row-fluid" data-ng-if="user">
+            <div class="span6">
+                <div class="row-fluid">
+                    <h4>User Profile</h4>
+                </div>
+                <hr/>
+                <div class="row-fluid">
+                    <div class="span7">
+                        <div class="row-fluid">
+                            <label class="control-label span4" for="userId"><strong>User ID:</strong></label>
+                            <div class="span8">
+                                <input id="userId" class="span12 a_userId" type="text" maxlength="50" placeholder="User ID" data-ng-model="user.userId" required data-pls-blur="validateUserId()" data-ng-class="{'ng-invalid':userAlreadyExists}" data-pls-uppercase />
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <label class="control-label span4" for="userName"><strong>User Name:</strong></label>
+                            <div class="span8">
+                                <input type="text" class="span6 a_firstName" placeholder="First Name" data-ng-model="user.firstName"
+                                       maxlength="30" required data-pls-uppercase id="userName"
+                                       data-ng-change="updateSameAsUserProfileAdditionalInfo()"/>
+                                <input type="text" class="span6 a_lastName pull-right" placeholder="Last Name" data-ng-model="user.lastName"
+                                       maxlength="30" required data-pls-uppercase
+                                       data-ng-change="updateSameAsUserProfileAdditionalInfo()"/>
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <label class="control-label span4" for="organization"><strong>Organization:</strong></label>
+                            <div class="span8">
+                                <input id="organization" type="text" placeholder="Organization" class="span12" data-ng-model="user.parentOrganization"
+                                       data-pls-typeahead="org as org.organizationName | uppercase for org in findParentOrganization($viewValue)"
+                                       data-typeahead-auto-select="true" required data-ng-disabled="authData.assignedOrganization">
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <label class="control-label span4" for="email"><strong>Email:</strong></label>
+                            <div class="span8" data-ng-if="!user.parentOrganization.customer">
+                                <input id="email" name="email" class="span12 a_email" type="text" placeholder="Email" maxlength="100" data-ng-model="user.email"
+                                       data-ng-if="user.customerServiceContactInfoType !== 'SAME_AS_USER_PROFILE'"
+                                       data-ng-pattern="/^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[_A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/" required />
+                                <input id="plsEmail" name="plsEmail" class="span12 a_email" type="text" placeholder="Email" maxlength="100" data-ng-model="user.email"
+                                       data-ng-if="user.customerServiceContactInfoType === 'SAME_AS_USER_PROFILE'"
+                                       data-ng-change="updateSameAsUserProfileAdditionalInfo()"
+                                       data-ng-pattern="/^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@plslogistics.com$/" required />
+                            </div>
+                            <div class="span8" data-ng-if="user.parentOrganization.customer">
+                                <input id="customerEmail" name="customerEmail" class="span12 a_email" type="text" placeholder="Email" maxlength="100" data-ng-model="user.email"
+                                       data-ng-pattern="/^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[_A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/" required />
+                            </div>
+                        </div>
+                        <div class="row-fluid" data-ng-show="userCreationForm.plsEmail.$error.pattern">
+                            <span class="text-error span12 text-right">
+                                Incorrect email. Please use @plslogistics.com email.
+                            </span>
+                        </div>
+                        <div class="row-fluid">
+                            <label class="control-label span4" for="country"><strong>Country:</strong></label>
+                            <div class="span8">
+                                <input id="country" class="span12 a_country" placeholder="Country" data-pls-country-search="user.country" required maxlength="3">
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <label class="control-label span4" for="address1"><strong>Address 1:</strong></label>
+                            <div class="span8">
+                                <input id="address1" type="text" placeholder="Address" class="span12 a_address1" data-ng-model="user.address1" required />
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <label class="control-label span4" for="address2">Address 2:</label>
+                            <div class="span8">
+                                <input id="address2" type="text" placeholder="Address" class="span12 a_address2" data-ng-model="user.address2" />
+                            </div>
+                        </div>
+                        <div class="row-fluid" data-ng-if="zipAutoComplete">
+                            <label class="control-label span4" for="zip"><strong>City, ST, ZIP:</strong></label>
+                            <div class="span8">
+                                <input id="zip" placeholder="Zip" class="span12 a_zip" required data-pls-zip-search="user.zip"
+                                       data-country="user.country.id" data-zip-disabled="!user.country" data-input-label-filter="zip"/>
+                            </div>
+                        </div>
+                        <div class="row-fluid" data-ng-if="!zipAutoComplete">
+                            <label class="control-label span4" for="cityInp"><strong>City:</strong></label>
+                            <div class="span8">
+                                <input id="cityInp" type="text" class="span12 a_city" data-ng-model="user.zip.city"
+                                       maxlength="30" required data-ng-disabled="!user.country">
+                            </div>
+                        </div>
+                        <div class="row-fluid" data-ng-if="!zipAutoComplete">
+                            <label class="control-label span4" for="zipCodeInp"><strong>ZIP:</strong></label>
+                            <div class="span8">
+                                <input id="zipCodeInp" type="text" class="span12 a_zip" data-ng-model="user.zip.zip"
+                                       maxlength="10" required data-ng-disabled="!user.country">
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <label class="control-label span4" for="phoneNumberCodeId"><strong>Phone:</strong></label>
+                            <div class="span8 control">
+                                +
+                                 <span data-ng-bind="user.phone.countryCode"></span>
+                                (
+                                <input id="userPhoneAreaCodeId" class="span2 a_phoneAreaCode" type="text" data-ng-model="user.phone.areaCode"
+                                       required data-ng-minlength="1" data-ng-maxlength="3" maxlength="3" data-pls-digits-validation
+                                       data-ng-change="updateSameAsUserProfileAdditionalInfo()"
+                                       placeholder="###">
+                                )
+                                <input id="userPhoneNumberCodeId" data-pls-digits-validation class="span4 a_phoneNumberCode" type="text" data-ng-model="user.phone.number"
+                                       placeholder="#######" required data-ng-minlength="7" data-ng-maxlength="7" maxlength="7"
+                                       data-ng-change="updateSameAsUserProfileAdditionalInfo()">
+                                &nbsp;Ext.:
+                                <input id="userExtensionId" data-pls-digits-validation class="span3" type="text" 
+                                       placeholder="######" data-ng-maxlength="6" data-ng-model="user.phone.extension"
+                                       maxlength="6" data-ng-change="updateSameAsUserProfileAdditionalInfo()">
+                            </div>
+                        </div>
+                        <div class="row-fluid">
+                            <label class="control-label span4" for="faxNumberCodeId"><strong>Fax:</strong></label>
+                            <div class="span8">
+                                +
+                                <span data-ng-bind="user.fax.countryCode"></span>
+                                (
+                                <input class="span3 a_faxAreaCode" type="text" data-ng-model="user.fax.areaCode"
+                                       data-ng-required="user.fax.number" data-ng-minlength="1" data-ng-maxlength="3" maxlength="3"
+                                       data-pls-digits-validation placeholder="###">
+                                )
+                                <input id="faxNumberCodeId" class="span5 a_faxNumber" type="text" data-ng-model="user.fax.number"
+                                       data-ng-required="user.fax.areaCode" placeholder="#######"
+                                       required data-ng-minlength="7" data-ng-maxlength="7" maxlength="7" data-pls-digits-validation>
+                            </div>
+                        </div>
+                        <div class="row-fluid" data-ng-if="$root.isFieldRequired('MANAGE_PROMO_CODES')">
+                            <label class="control-label span4" for="promoCode"><strong>Promo Code:</strong></label>
+                            <div class="span8">
+                                <input type="text" class="span7" id="promoCode"
+                                       data-ng-model="user.promoCode"
+                                       data-ng-maxlength="30" 
+                                       data-ng-minlength="4"
+                                       />
+                                 &nbsp;Discount %
+                                <input type="text" class="span2 pull-right" id="discount"
+                                       data-ng-model="user.discount"
+                                       data-ng-required="user.promoCode" 
+                                       data-pls-number="positivePercentage"
+                                       data-forbid-zero="true"
+                                       data-ng-disabled="!user.promoCode"/>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span5" data-ng-if="isFieldRequired('MANAGE_CUSTOMER_SERVICE_CONTACT_INFO') && isFieldRequired('VIEW_CUSTOMER_SERVICE_CONTACT_INFO')">
+                        <h5>Customer Service Contact Information</h5>
+                        <h6>(For use on system generated emails):</h6>
+                        <hr/>
+                        <div class="row-fluid">
+                            <label for="default" class="radio">PLS Operations
+                                <input type="radio" class="radio" name="ifoType" id="default" value="DEFAULT"
+                                    data-ng-change="setDefaultAdditionalInfo()"
+                                    data-ng-model="user.customerServiceContactInfoType"/>
+                            </label>
+                            <label for="sameAsUserProfile" class="radio">Same as User Profile
+                                <input type="radio" class="radio" name="ifoType" id="sameAsUserProfile" value="SAME_AS_USER_PROFILE"
+                                    data-ng-change="updateSameAsUserProfileAdditionalInfo()"
+                                    data-ng-model="user.customerServiceContactInfoType"/>
+                            </label>
+                            <label for="custom" class="radio">Custom
+                                <input type="radio" class="radio" name="ifoType" id="custom" value="CUSTOM"
+                                    data-ng-change="setCustomAdditionalInfo()"
+                                    data-ng-model="user.customerServiceContactInfoType"/>
+                            </label>
+                        </div>
+                        <br>
+                        <div class="row-fluid">
+                            <label for="contactName"><strong>Contact Name:</strong>
+                                <input id="contactName" class="span12" type="text" maxlength="50" data-ng-model="user.additionalInfo.contactName" 
+                                    data-ng-disabled="!isCustomContactInfoSelected()" data-ng-required="isCustomContactInfoSelected()"/>
+                            </label>
+                        </div>
+                        <div class="row-fluid">
+                            <label for="contactEmail"><strong>Email:</strong>
+                                <input id="contactEmail" name="contactEmail" class="span12" type="text" maxlength="50"
+                                    data-ng-if="!user.parentOrganization.customer"
+                                    data-ng-model="user.additionalInfo.email"
+                                    data-ng-pattern="/^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@plslogistics.com$/"
+                                    data-ng-disabled="!isCustomContactInfoSelected()" data-ng-required="isCustomContactInfoSelected()"/>
+                                <input id="customerContactEmail" name="customerContactEmail" class="span12" type="text" maxlength="50"
+                                    data-ng-if="user.parentOrganization.customer"
+                                    data-ng-model="user.additionalInfo.email"
+                                    data-ng-pattern="/^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[_A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$/"
+                                    data-ng-disabled="!isCustomContactInfoSelected()" data-ng-required="isCustomContactInfoSelected()"/>
+                            </label>
+                        </div>
+                        <div class="row-fluid" data-ng-show="userCreationForm.contactEmail.$error.pattern">
+                            <span class="text-error">
+                                Incorrect email. Please use @plslogistics.com email.
+                            </span>
+                        </div>
+                        <div class="row-fluid">
+                            <label for="phoneNumberCodeId"><strong>Phone:</strong></label>
+                            <div class="control">
+                                +
+                                 <span data-ng-bind="user.additionalInfo.phone.countryCode"></span>
+                                (
+                                <input id="infoPhoneAreaCodeId" class="span2 a_phoneAreaCode" type="text" data-ng-model="user.additionalInfo.phone.areaCode"
+                                       required data-ng-minlength="1" data-ng-maxlength="3" maxlength="3" data-pls-digits-validation
+                                       data-ng-disabled="!isCustomContactInfoSelected()" data-ng-required="isCustomContactInfoSelected()">
+                                )
+                                <input id="infoPhoneNumberCodeId" data-pls-digits-validation class="span4 a_phoneNumberCode" type="text"
+                                       data-ng-model="user.additionalInfo.phone.number"
+                                       placeholder="#######" required data-ng-minlength="7" data-ng-maxlength="7" maxlength="7"
+                                       data-ng-disabled="!isCustomContactInfoSelected()" data-ng-required="isCustomContactInfoSelected()">
+                                &nbsp;Ext.:
+                                <input id="infoExtensionId" data-pls-digits-validation class="span3" type="text"
+                                       data-ng-model="user.additionalInfo.phone.extension" placeholder="######"
+                                       data-ng-maxlength="6" maxlength="6" data-ng-disabled="!isCustomContactInfoSelected()">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="span6">
+                <div class="tabbable tabbable-bordered span12">
+                    <ul class="nav nav-tabs" data-ng-init="userInfoTab='customers'">
+                        <li class="active">
+                            <a href="" data-toggle="tab" data-ng-click="userInfoTab='customers'">Assigned Customers</a>
+                        </li>
+                        <li>
+                            <a href="" data-toggle="tab" data-ng-click="userInfoTab='businessUnits'">Business Units</a>
+                        </li>
+                        <li>
+                            <a href="" data-toggle="tab" data-ng-click="userInfoTab='roles'">Roles</a>
+                        </li>
+                        <li>
+                            <a href="" data-toggle="tab" data-ng-click="userInfoTab='permissions'">Additional Permissions</a>
+                        </li>
+                    </ul>
+
+                    <div class="tab-content">
+                        <div data-pls-assigned-customers
+                            data-user-customers="user.customers"
+                            data-user-id="user.personId"
+                            data-user-info-tab="userInfoTab">
+                        </div>
+                        <div data-pls-user-networks
+                             data-user-network-ids="user.networkIds"
+                             data-user-info-tab="userInfoTab">
+                        </div>
+                        <div data-pls-roles-and-additional-permissions
+                             data-user-permissions="user.permissions"
+                             data-user-info-tab="userInfoTab"
+                             data-user-roles="user.roles">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid text-center">
+            <button type="button" class="btn a_saveButton" data-ng-disabled="userCreationForm.$invalid || userAlreadyExists" data-ng-click="handleSave()">Save Changes</button>
+            <button type="button" class="btn a_cancelButton" data-ng-click="goHome()">Close</button>
+        </div>
+    </div>
+</form>
+<div data-ng-include="'pages/content/customer/location-info.html'"></div>

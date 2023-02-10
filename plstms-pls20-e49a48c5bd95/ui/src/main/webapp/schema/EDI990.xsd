@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--Created with Liquid XML 2015 Designer Edition 13.1.0.5909 (http://www.liquid-technologies.com)-->
+<xs:schema xmlns="http://com.pls.load" attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="http://com.pls.load" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="LTLLoadTenderAck" type="LTLLoadTenderAck"/>
+        <xs:complexType name="LTLLoadTenderAck">
+            <xs:sequence>
+                <xs:element name="Scac" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Standard Carrier Alpha Code</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="CustomerOrgId" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Customer Organization ID</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="LoadId" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Load ID</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Bol" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Bill of Lading</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ProNumber" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>PRO Number</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ShipmentNo" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Shipment Number</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="PersonId" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>EDI User</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="TrailerNum" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Trailer Number</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="MessageType" type="xs:string" minOccurs="1">
+                    <xs:annotation>
+                        <xs:documentation>Message Type</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Status" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Status</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="StatusNotes" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Status Notes</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="DeclineReasonCd" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Decline Reason Code</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="DeclineReasonDesc" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Decline Reason Description</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="B2biFileName" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>B2Bi File Name</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="RecvDateTime" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Received Date Time</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="AddlRefNumbers" minOccurs="0" maxOccurs="1">
+                    <xs:annotation>
+                        <xs:documentation>Additional Reference Numbers</xs:documentation>
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="AddlRefNumber" minOccurs="1" maxOccurs="unbounded">
+                                <xs:annotation>
+                                    <xs:documentation>Additional Reference Number</xs:documentation>
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Qualifier" type="xs:string" minOccurs="1">
+                                            <xs:annotation>
+                                                <xs:documentation>Qualifier</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                        <xs:element name="Number" type="xs:string" minOccurs="1">
+                                            <xs:annotation>
+                                                <xs:documentation>Reference Number</xs:documentation>
+                                            </xs:annotation>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    
+</xs:schema>

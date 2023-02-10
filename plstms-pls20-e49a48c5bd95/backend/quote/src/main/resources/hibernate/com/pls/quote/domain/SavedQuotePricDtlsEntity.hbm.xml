@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.quote.domain.SavedQuotePricDtlsEntity.Q_SAVED_QUOTE_PRIC_DTLS">
+        <![CDATA[
+                select sqpd from SavedQuotePricDtlsEntity sqpd
+                left outer join fetch sqpd.savedQuotePricMatDtls sqpmd
+                where sqpd.savedQuote.id = :quoteId
+        ]]>
+    </query>
+</hibernate-mapping>

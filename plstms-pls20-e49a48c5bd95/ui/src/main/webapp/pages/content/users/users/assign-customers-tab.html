@@ -1,0 +1,37 @@
+<div>
+    <div data-ng-if="userInfoTab=='customers'">
+         <div class="span8">
+             <div class="gridStyle gridHeight3 span12" data-ng-grid="customersModel.options"></div>
+         </div>
+         <div class="span4">
+             <div class="row-fluid">
+                 <div class="span12">
+                     <strong>Assignment Date:</strong><br/>
+                     <span data-ng-bind="selectedCustomers[0].assignmentDate | date:$root.appDateFullFormat"></span>
+                 </div>
+             </div>
+             <br/>
+             <div class="row-fluid">
+                 <strong>Notifications:</strong>
+                 <label data-ng-repeat="notification in allNotifications">
+                     <input type="checkbox" class="checkbox-label-spacing" data-pls-tri-state-checkbox data-ng-model="notification.selected"
+                            data-ng-true-value="ALL" data-ng-false-value="NONE" disabled
+                            data-ng-change="handleNotificationChanges()"/>{{notification.label}}
+                 </label>
+             </div>
+             <br/>
+             <div class="row-fluid">
+                 <div class="span12">
+                     <button type="button" class="btn btn-block" data-ng-click="editCustomerList()">{{viewMode ? 'View': 'Edit'}} Customers List</button>
+                 </div>
+             </div>
+             <div class="row-fluid">
+                 <div class="span12">
+                     <button type="button" class="btn btn-block" data-ng-disabled="!selectedCustomers.length" data-ng-click="editLocationsList(transferObject)">{{viewMode ? 'View': 'Edit'}} Locations</button>
+                 </div>
+             </div>
+         </div>
+         <div data-ng-include src="'pages/content/users/users/tpl/edit-customer-location-tpl.html'"></div>
+         <div data-ng-include src="'pages/content/users/users/tpl/edit-customers-list-tpl.html'"></div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+<div data-ng-controller="ShowAffectedCustomersCtrl">
+    <div data-pls-modal="shouldBeOpen" data-close="close()">
+        <div class="modal-header">
+            <h4>Customers Affected by Blocking</h4>
+        </div>
+        <div class="modal-body">
+            <div class="gridStyle" data-ng-grid="gridOptions"></div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn cancel" data-ng-click="close()">
+                    OK
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

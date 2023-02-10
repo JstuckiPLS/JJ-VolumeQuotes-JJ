@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd"
+    logicalFilePath="legacy/legacy.xml">
+
+    <changeSet id="10/25/2017-1" author="Aleksandr Leshchenko">
+        <sqlFile path="sql/flatbed.sql" relativeToChangelogFile="true" splitStatements="true" />
+    </changeSet>
+    <changeSet id="10/25/2017-2" author="Aleksandr Leshchenko">
+        <sqlFile path="sql/flatbed_constraints.sql" relativeToChangelogFile="true" splitStatements="true" />
+    </changeSet>
+    <changeSet id="10/25/2017-3" author="Aleksandr Leshchenko">
+        <sqlFile path="sql/rater.sql" relativeToChangelogFile="true" splitStatements="true" />
+    </changeSet>
+    <changeSet id="10/25/2017-4" author="Aleksandr Leshchenko">
+        <sqlFile path="sql/rater_constraints.sql" relativeToChangelogFile="true" splitStatements="true" />
+    </changeSet>
+    <changeSet id="10/25/2017-5" author="Aleksandr Leshchenko">
+        <sqlFile path="sql/hist.sql" relativeToChangelogFile="true" splitStatements="true" />
+    </changeSet>
+    <changeSet id="10/25/2017-6" author="Aleksandr Leshchenko">
+        <sqlFile path="sql/views.sql" relativeToChangelogFile="true" splitStatements="true" />
+    </changeSet>
+    <changeSet id="10/25/2017-7" author="Aleksandr Leshchenko">
+        <sqlFile path="sql/functions.sql" relativeToChangelogFile="true" splitStatements="true" endDelimiter="\n/\s*\n|\n/\s*$" />
+    </changeSet>
+    <!-- <changeSet id="10/25/2017-8" author="Aleksandr Leshchenko">
+        <sqlFile path="sql/triggers.sql" relativeToChangelogFile="true" splitStatements="true" />
+    </changeSet> -->
+</databaseChangeLog>

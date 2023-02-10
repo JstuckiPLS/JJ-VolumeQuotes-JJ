@@ -1,0 +1,27 @@
+<div data-ng-controller="AccountCalendarDetailsCtrl">
+    <div>
+        <div class="row-fluid">
+            <div class="span2 well well-small offset5 text-center" data-ng-bind="formattedDatePeriod"></div>
+        </div>
+        <div class="row-fluid">
+
+            <div class="gridStyle gridHeight3 gridWidth11 span11" data-ng-grid="detailsGrid.options"></div>
+
+            <div class="span1 btn-block">
+                <div>
+                    <button type="button" class="btn btn-block a_viewButton" data-ng-disabled="_.isEmpty(selectedShipments)" data-ng-click="viewDetails()">View</button>
+                </div>
+                <br>
+                <div>
+                    <button type="button" class="btn btn-block a_exportButton" data-ng-disabled="_.isEmpty(detailsGridData)" data-ng-click="exportShipments()">Export</button>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4 offset7 text-left">
+                <span class=" offset2">Records: <strong><span class="a_totalCount" data-ng-bind="detailsGrid.totalCount"></span></strong></span>
+                <span class=" offset1">Total: <strong><span class="a_totalCost" data-ng-bind="detailsGrid.totalCost | plsCurrency"></span></strong></span>
+            </div>
+        </div>
+    </div>
+</div>

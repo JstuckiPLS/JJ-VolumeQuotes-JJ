@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.shipment.domain.LoadReasonTrackingStatusEntity.GET_ALL">
+        <![CDATA[
+        from LoadReasonTrackingStatusEntity where source = :source
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LoadReasonTrackingStatusEntity.FIND">
+        <![CDATA[
+        from LoadReasonTrackingStatusEntity where source = :source and id = :id
+        ]]>
+    </query>
+</hibernate-mapping>

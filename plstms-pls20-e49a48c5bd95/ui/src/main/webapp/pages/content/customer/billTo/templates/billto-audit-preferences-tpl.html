@@ -1,0 +1,56 @@
+<div class="row-fluid" data-pls-form-disabled="!$root.isFieldRequired('ADD_EDIT_AUDITING_PREFERENCES')">
+    <div class="row-fluid">
+        <div class="span8">
+            <div class="span2">
+                <label for="costDiff" class="pls-font-bold">Cost Difference:</label>
+            </div>
+            <div class="span2">
+                <input id="costDiff" type="text" data-pls-number="positiveDecimal" data-forbid-zero="true" data-ng-model="billTo.billToThresholdSettings.costDifference"></input>
+            </div>
+        </div>
+   </div>
+    <div class="row-fluid">
+        <div class="span8">
+            <div class="span4">
+                <label class="pls-font-bold" for="revenue">High Revenue:</label>
+            </div>
+        </div>
+   </div>
+   <div class="row-fluid">
+        <div class="span8">
+            <div class="span2">
+                <label for="revenue">Total Revenue:</label>
+            </div>
+            <div class="span4">
+                <input id="totalRevenue" type="text" data-pls-number="positiveDecimal" data-forbid-zero="true" data-ng-model="billTo.billToThresholdSettings.totalRevenue"/>
+            </div>
+            <div class="span4">
+                <div class="span4">
+                    <label for="revenue">Margin %:</label>
+                </div>
+                <div class="span2">
+                    <input id="margin" type="text" data-pls-number="positiveDecimal" data-forbid-zero="true" data-ng-model="billTo.billToThresholdSettings.margin"/>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br>
+    <div class="row-fluid">
+        <div class="span3">
+            <label class="checkbox" for="auditPreferencesRequired">
+             <input id="auditPreferencesRequired" type="checkbox" data-ng-model="billTo.auditPrefReq">
+              Invoice Audit Required for all loads
+         </label>
+        </div>
+        <div class="span5">
+            <label class="checkbox" for="emailAccountExecutive">
+                <input id="emailAccountExecutive" type="checkbox" data-ng-model="billTo.emailAccountExecutive">
+                Email Account Executive when shipment is sent to Invoice Audit
+            </label>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <label for="auditInstr" class="control-label">Manual Invoice Audit Notes:</label>
+        <textarea class="span12" id="auditInstr" rows="20" data-ng-model="billTo.auditInstructions"></textarea>
+    </div>
+</div>

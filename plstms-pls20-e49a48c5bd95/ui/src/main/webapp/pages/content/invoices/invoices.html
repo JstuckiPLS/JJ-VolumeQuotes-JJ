@@ -1,0 +1,106 @@
+<div data-ng-controller="CustomerInvoicesController" data-ng-init="init()" data-pls-ignore-location-change-check="true">
+    <div class="row-fluid">
+        <div class="span3 well well-small">
+            <div class="row-fluid">
+                <label class="radio">
+                    <input type="radio" data-ng-model="pageModel.searchCriteria.invoiceType" value="PAID"/>Paid Invoices
+                </label>
+            </div>
+            <div class="row-fluid">
+                <div class="span3 text-right label-middle">From</div>
+                <div class="span9 input-append">
+                    <input name="dateField" type="text" id="fromDate"
+                           data-ng-model="pageModel.searchCriteria.paidFrom" data-max-date="pageModel.searchCriteria.paidTo"
+                           data-pls-datepicker data-ng-required="pageModel.searchCriteria.invoiceType === 'PAID'"
+                           class="input-small" data-ng-disabled="pageModel.searchCriteria.invoiceType != 'PAID'"/>
+                    <button type="button" class="btn" data-toggle="datepicker" data-ng-disabled="pageModel.searchCriteria.invoiceType != 'PAID'">
+                        <i class="icon-calendar"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span3 text-right label-middle">To</div>
+                <div class="span9 input-append">
+                    <input name="dateField" type="text" id="toDate"
+                           data-ng-model="pageModel.searchCriteria.paidTo" data-min-date="pageModel.searchCriteria.paidFrom"
+                           data-pls-datepicker data-ng-required="pageModel.searchCriteria.invoiceType === 'PAID'"
+                           class="input-small" data-ng-disabled="pageModel.searchCriteria.invoiceType != 'PAID'"/>
+                    <button type="button" class="btn" data-toggle="datepicker" data-ng-disabled="pageModel.searchCriteria.invoiceType != 'PAID'">
+                        <i class="icon-calendar"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="row-fluid">&nbsp</div>
+            <div class="row-fluid">
+                <label class="radio span7">
+                <input type="radio" data-ng-model="pageModel.searchCriteria.invoiceType" value="OPEN">Open Invoices
+                </label>
+                <span class="pull-right text-right"><strong>{{pageModel.consolidatedInfo.openInvoices | plsCurrency}}</strong></span>
+            </div>
+            <div class="row-fluid">&nbsp</div>
+            <div class="row-fluid">
+                <label class="radio span7">
+                    <input type="radio" data-ng-model="pageModel.searchCriteria.invoiceType" value="PAST_DUE">Past Due Invoices
+                </label>
+                <span class="pull-right text-right"><strong>{{pageModel.consolidatedInfo.pastDueTotalInvoices | plsCurrency}}</strong></span>
+            </div>
+            <div class="row-fluid">
+                <input type="checkbox" class="offset1" data-ng-model="pageModel.searchCriteria.includeFirstThirtyDays" data-ng-disabled="pageModel.searchCriteria.invoiceType != 'PAST_DUE'">
+                <span data-ng-class="{'text-error': isPastDueFilterRequired()}" data-ng-style="{'font-weight': isPastDueFilterRequired() ? 'bold' : 'normal'}">1-30 days</span>
+                <span class="pull-right text-right">{{pageModel.consolidatedInfo.pastDue1to30Invoices | plsCurrency}}</span>
+            </div>
+            <div class="row-fluid">&nbsp</div>
+            <div class="row-fluid">
+                <input type="checkbox" class="offset1" data-ng-model="pageModel.searchCriteria.includeSecondThirtyDays" data-ng-disabled="pageModel.searchCriteria.invoiceType != 'PAST_DUE'">
+                <span data-ng-class="{'text-error': isPastDueFilterRequired()}" data-ng-style="{'font-weight': isPastDueFilterRequired() ? 'bold' : 'normal'}">31-60 days</span>
+                <span class="pull-right text-right">{{pageModel.consolidatedInfo.pastDue31to60Invoices | plsCurrency}}</span>
+            </div>
+            <div class="row-fluid">&nbsp</div>
+            <div class="row-fluid">
+                <input type="checkbox" class="offset1" data-ng-model="pageModel.searchCriteria.includeThirdThirtyDays" data-ng-disabled="pageModel.searchCriteria.invoiceType != 'PAST_DUE'">
+                <span data-ng-class="{'text-error': isPastDueFilterRequired()}" data-ng-style="{'font-weight': isPastDueFilterRequired() ? 'bold' : 'normal'}">61-90 days</span>
+                <span class="pull-right text-right">{{pageModel.consolidatedInfo.pastDue61to90Invoices | plsCurrency}}</span>
+            </div>
+            <div class="row-fluid">&nbsp</div>
+            <div class="row-fluid">
+                <input type="checkbox" class="offset1" data-ng-model="pageModel.searchCriteria.includeLastDays" data-ng-disabled="pageModel.searchCriteria.invoiceType != 'PAST_DUE'">
+                <span data-ng-class="{'text-error': isPastDueFilterRequired()}" data-ng-style="{'font-weight': isPastDueFilterRequired() ? 'bold' : 'normal'}">+90 days</span>
+                <span class="pull-right text-right">{{pageModel.consolidatedInfo.pastDue91Invoices | plsCurrency}}</span>
+            </div>
+            <div class="row-fluid">&nbsp</div>
+            <div data-ng-form="invoiceSearchForm">
+                <div class="row-fluid">
+                    <div class="span3 text-right label-middle">Carrier:</div>
+                    <div class="span9">
+                        <input id="inputSCAC" class="span12" data-pls-scac-search="pageModel.carrierTuple" data-scac-disabled="!pageModel.searchCriteria.invoiceType"/>
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <button type="button" class="span4 offset8" data-ng-disabled="isCantSearch() || invoiceSearchForm.$invalid" data-ng-click="loadInvoices()">Search</button>
+            </div>
+        </div>
+        <div class="span9">
+            <div class="row-fluid">
+                <button type="button" class="btn span2" data-ng-disabled="pageModel.selectedInvoices.length != 1" data-ng-click="viewInvoice(pageModel.selectedInvoices[0])">View</button>
+                <button type="button" class="btn span2" data-ng-disabled="pageModel.selectedInvoices.length === 0" data-ng-click="sendInvoicesByEmail()">Email to</button>
+                <button type="button" class="btn offset6 span2" data-ng-disabled="pageModel.customerInvoices.length === 0" data-ng-click="exportInvoices()">Export</button>
+            </div>
+            <div class="row-fluid">&nbsp;</div>
+            <div class="row-fluid">
+                <div class="gridStyle gridHeight5 span12" data-ng-grid="customerInvoicesGrid"></div>
+            </div>
+            <div class="row-fluid">&nbsp;</div>
+            <div class="row-fluid">
+                <div class="span2 offset7">
+                    Total Paid: <strong><span data-ng-bind="pageModel.totalPaid | currency" class="a_records"></span></strong>
+                </div>
+                <div class="span2 offset1">
+                    Total Due: <strong><span data-ng-bind="pageModel.totalDue | currency" class="a_records"></span></strong>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-pls-send-mail="pageModel.emailOptions" data-dialog-show-option="pageModel.showSendMailDialog"></div>
+    <div data-ng-include="'pages/content/quotes/shipment-details.html'"></div>
+</div>

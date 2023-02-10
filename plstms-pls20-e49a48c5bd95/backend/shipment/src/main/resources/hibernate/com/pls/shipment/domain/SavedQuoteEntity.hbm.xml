@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.shipment.domain.SavedQuoteEntity.Q_UPDATE_STATUS">
+        <![CDATA[
+                update SavedQuoteEntity set status = :new_status where id = :quote_id
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.SavedQuoteEntity.Q_UPDATE_REF_NUM">
+        <![CDATA[
+                update SavedQuoteEntity set quoteReferenceNumber = :new_ref_num where id = :quote_id
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.SavedQuoteEntity.Q_FIND_SAVED_QUOTES">
+        <![CDATA[
+            select distinct sq.id as id, sq.quoteReferenceNumber as quoteId, cd.pricingProfileDetailId as pricingProfileId,
+                    sq.volumeQuoteId as volumeQuoteId, originZip.zipCode as originZip, originZip.stateCode as originState,
+                    originZip.city as originCity, destZip.zipCode as destZip, destZip.stateCode as destState,
+                    destZip.city as destCity, carr.name as carrierName, cust.name as customerName,
+                    cd.estimatedTransitTime as estimatedTransitTime, cd.totalCost as carrierCost, cd.totalRevenue as customerRevenue,
+                    cdi.subTotal as shipperBaseRate, sq.costOverride as costOverride, sq.revenueOverride as revenueOverride,
+                    (select sum(weight) from sq.materials) as weight,
+                    (select case when count(distinct commodityClass) > 1 then 'Multi' else max(commodityClass) end from sq.materials) as commodityClass,
+                    (select case when count(distinct id) > 1 then 'Multiple' else str(max(id)) end from sq.loads) as loadId
+            from SavedQuoteEntity sq
+                left join sq.costDetails cd
+                left join cd.costDetailsItems cdi with cdi.owner = 'S' and cdi.refType = 'SRA'
+                left join sq.route r
+                left join r.originZipCode originZip
+                left join r.destinationZipCode destZip
+                left join sq.carrier carr
+                left join sq.customer cust
+                left join cust.customerUsers cu with cu.status = 'A' and cu.personId = :personId
+                left join cust.network n
+                left join n.networkUsers nu with nu.status = 'A' and nu.userId = :personId
+            where sq.status = 'A'
+                and ((:customerId is not null and cust.id = :customerId and (cu.personId is not null or nu.id is not null))
+                    or (:customerId is null and sq.modification.createdBy = :personId))
+                and date_trunc('day', sq.modification.createdDate) between date_trunc('day', cast (:fromDate as timestamp))
+                        and date_trunc('day', cast (:toDate as timestamp))
+            group by sq.id, sq.quoteReferenceNumber, cd.pricingProfileDetailId, sq.volumeQuoteId, r.originZipCode,
+                r.destinationZipCode, carr.name, cust.name, cd.estimatedTransitTime, cd.totalCost, cd.totalRevenue,
+                cdi.subTotal, sq.costOverride, sq.revenueOverride, originZip.zipCode, originZip.stateCode, originZip.city,
+                destZip.zipCode, destZip.stateCode, destZip.city
+        ]]>
+    </query>
+    <sql-query name="com.pls.shipment.domain.SavedQuoteEntity.Q_FIND_LOAD_ID_LIST_FOR_SAVED_QUOTE">
+        <return-scalar column="LOAD_ID" type="long"/>
+        <![CDATA[
+                select LOAD_ID from loads where SAVED_QUOTE_ID = :quoteId
+        ]]>
+    </sql-query>
+</hibernate-mapping>

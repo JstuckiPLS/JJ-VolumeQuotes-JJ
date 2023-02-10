@@ -1,0 +1,82 @@
+<div class="row-fluid" data-ng-controller="FuelTableCtrl"
+    xmlns="http://www.w3.org/1999/html">
+
+    <div class="span6">
+        <div class="form-horizontal" data-ng-hide="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">
+            <div class="control-group">
+                <label class="control-label" for="inputCopyFrom"><b>Copy from:</b></label>
+                <div class="controls">
+                    <select class="span11" id="inputCopyFrom" data-ng-change="openCopyingDialog()" data-ng-model="selectedRateToCopy"
+                            data-ng-options="prof.id as prof.rateName for prof in copyProfiles"></select>
+                </div>
+            </div>
+        </div>
+
+        <div class="row-fluid text-error" data-ng-show="minRateExists || maxRateExists">
+            <b>Min. Rate and Max. Rate values should be unique.</b>
+        </div>
+        <div class="row-fluid text-error" data-ng-show="rangeValidationFailed">
+            <b>Range of Min. and Max. Rate values should be unique.</b>
+        </div>
+        <div class="row-fluid">
+            <div class="span6">
+                <div id="fuelSurchargeGrid" class="gridStyle gridHeight4 span12" data-ng-grid="gridOptions"></div>
+            </div>
+            <div class="span2">
+                <div class="row-fluid">
+                    <button class="btn btn-block" type="button" data-ng-click="onExport()" data-ng-disabled="_.isEmpty(fuelTableList)">Export</button>
+                </div>
+                <br>
+                <div class="row-fluid">
+                    <button class="btn btn-block" type="button" data-toggle="modal" data-target="#fuelSurchargeImportDialog" data-ng-click="onShowImportDialog()"
+                        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">Import</button>
+                </div>
+                <!-- XXX: Temporary solution -->
+                <br>
+                <div class="row-fluid">
+                    <button class="btn btn-block" type="button" data-ng-click="onNewRecord()" 
+                        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">Add New</button>
+                </div>
+                <br>
+                <div class="row-fluid">
+                    <button class="btn btn-block" type="button" data-ng-click="openDeleteDialog()"
+                        data-ng-disabled="_.isNull(currentlySelectedRowElement) || _.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType) || 
+                        (!_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType) && selectedItems.length != 1)">
+                        Delete
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div>&nbsp;</div>
+        <div class="row-fluid">
+            <div class="offset7">
+                <button class="btn btn-block span4" type="button" data-ng-click="loadFuelSurchargeList()">Clear</button>
+                <button class="btn btn-primary span4" type="button" 
+                        data-ng-disabled="(!validationPassed) || _.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                        data-ng-click="saveFuelSurchargeList()">Save</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="fuelSurchargeImportDialog" class="modal hide fade modalWidth4" data-role="dialog" data-aria-labelledby="myModalLabel" data-aria-hidden="true">
+
+        <div class="modal-header">
+            <h4>Import Fuel Surcharge</h4>
+        </div>
+        <form>
+            <div class="modal-body form-inline">
+                <input type="file" class="filestyle" data-buttonText="Browse" data-classButton="btn" data-classInput="span9" data-icon="false" id="upload" name="upload" data-pls-file-bind="fuelSurchargeFile" />
+                <div data-ng-show="uploadProgressMsg">{{uploadProgressMsg}}</div>
+                <div class = "text-success" data-ng-show="fileSentOk">Your file has been successfully uploaded</div>
+                <div class ="text-error" data-ng-show="incorrectHeader">Could not import, header row contains incorrect or missing names. See help for more information</div>
+                <div class ="text-error" data-ng-show="incorrectData">Could not import, data is not numeric or is an unacceptable value. See help for more information</div>
+           </div>
+
+           <div class="modal-footer">
+               <button type="button" class="btn" data-dismiss="modal" data-aria-hidden="true" data-ng-click="onImportDialogClose()">Close</button>
+               <button class="btn btn-primary" type="submit" data-ng-click="importSurchargeFile()">Import</button>
+           </div>
+       </form>
+    </div>
+</div>

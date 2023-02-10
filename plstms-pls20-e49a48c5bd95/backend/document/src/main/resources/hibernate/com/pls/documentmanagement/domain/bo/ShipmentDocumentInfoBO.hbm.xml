@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <sql-query name="com.pls.documentmanagement.domain.bo.ShipmentDocumentInfoBO.QUERY_BY_LOAD_ID">
+        <![CDATA[
+                select mt.image_meta_id as id, mt.load_id as shipmentId, t.description as docName,
+                mt.date_modified as modifiedDate, mt.date_created as createdDate, mt.image_file_name as fileName,
+                u.first_name as createdByFirstName, u.last_name as createdByLastName, mt.image_file_type as docFileType
+                from IMAGE_METADATA mt
+                join IMAGE_DOCUMENT_TYPE t on mt.document_type = t.document_type
+                left join users u on u.person_id = mt.created_by
+                where mt.load_id = :loadId and mt.status = 'A' and t.document_level = 'LOAD'
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.documentmanagement.domain.bo.ShipmentDocumentInfoBO.QUERY_BY_MANUAL_BOL_ID">
+        <![CDATA[
+                select mt.image_meta_id as id, mt.manual_bol_id as shipmentId, t.description as docName,
+                mt.date_modified as modifiedDate, mt.date_created as createdDate, mt.image_file_name as fileName,
+                u.first_name as createdByFirstName, u.last_name as createdByLastName, mt.image_file_type as docFileType
+                from IMAGE_METADATA mt
+                join IMAGE_DOCUMENT_TYPE t on mt.document_type = t.document_type
+                left join users u on u.person_id = mt.created_by
+                where mt.manual_bol_id = :loadId and mt.status = 'A' and t.document_level = 'LOAD'
+        ]]>
+    </sql-query>
+</hibernate-mapping>

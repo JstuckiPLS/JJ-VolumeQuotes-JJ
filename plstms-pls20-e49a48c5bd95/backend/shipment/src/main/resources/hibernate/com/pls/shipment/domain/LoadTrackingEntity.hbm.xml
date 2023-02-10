@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.shipment.domain.LoadTrackingEntity.Q_GET_BY_LOAD_ID">
+        <![CDATA[
+                select distinct
+                    lt.trackingDate as trackingDate,
+                    lt.timezoneCode as timezoneCode,
+                    u.firstName as userFirstName,
+                    u.lastName as userLastName,
+                    l.id as shipmentId,
+                    lt.city as city,
+                    lt.state as state,
+                    lt.country as country,
+                    c.name as carrierName,
+                    lt.source as source,
+                    lt.freeMessage as freeMessage,
+                    s.description as statusDescription,
+                    s.loadTrackingStatusEntityId.code as statusCode,
+                    lt.departureTime as departureTime
+                from LoadTrackingEntity lt
+                join lt.load l
+                join lt.createdByUser u
+                left outer join lt.carrier c
+                join lt.status s
+                where
+                    l.id = :loadId
+                order by lt.trackingDate desc
+        ]]>
+    </query>
+    <sql-query name="com.pls.shipment.domain.LoadTrackingEntity.Q_GET_AUDIT_BY_LOAD_ID">
+        <![CDATA[
+                select aud.grp as "group", aud.fld_name as "fieldName", aud.pls_quoted as "plsQuoted",
+                       aud.pls_current as "plsCurrent", aud.vendor_bill as "vendorBill",
+                       aud.last_modified as "lastModified", aud.modified_by as "modifiedBy"
+                from flatbed.pls_audit_load_data_fnc(:loadId) aud
+        ]]>
+    </sql-query>
+</hibernate-mapping>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:amq="http://activemq.apache.org/schema/core"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+           http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <context:component-scan base-package="com.pls.shipment" />
+
+    <amq:queue id="PLS.EDIQueue" physicalName="PLS.EDIQueue"/>
+    <amq:redeliveryPolicy id="ediRedeliveryPolicy" destination="#PLS.EDIQueue"
+                          useExponentialBackOff="true"
+                          backOffMultiplier="3"
+                          maximumRedeliveries="4"
+                          initialRedeliveryDelay="3000"/>
+    <amq:connectionFactory id="ediConnectionFactory" brokerURL="${activeMQ.brokerURL}"
+        redeliveryPolicy="#ediRedeliveryPolicy" trustAllPackages="true" nonBlockingRedelivery="true" />
+    <bean id="ediCachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="ediConnectionFactory" />
+        <property name="sessionCacheSize" value="10" />
+        <property name="exceptionListener" ref="ediCachingConnectionFactory"/>
+    </bean>
+    <bean id="ediJMSTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="ediCachingConnectionFactory" />
+        <property name="defaultDestination" ref="PLS.EDIQueue" />
+        <property name="sessionTransacted" value="true" />
+        <qualifier value="ediTemplate"/>
+    </bean>
+    <bean id="loadAuditAspect" class="com.pls.shipment.aspect.LoadAuditAspect"/>
+    <aop:aspectj-autoproxy proxy-target-class="true">
+        <aop:include name="loadAuditAspect"/>
+    </aop:aspectj-autoproxy>
+</beans>

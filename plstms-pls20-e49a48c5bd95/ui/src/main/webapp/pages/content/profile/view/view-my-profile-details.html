@@ -1,0 +1,87 @@
+<div class="row-fluid">
+    <div class="span7">
+        <div class="row-fluid">
+            <div class="span4"><span><b>User ID:</b></span></div>
+            <div class="span8"><span id="userId">{{user.userId}}</span></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4"><span><b>User Name:</b></span></div>
+            <div class="span8"><span id="userName">{{user.fullName}}</span></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4"><span><b>Organization:</b></span></div>
+            <div class="span8"><span>{{user.parentOrganization.organizationName}}</span></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4"><span><b>Email:</b></span></div>
+            <div class="span8"><a id="userEmail" class="text-clipping" data-ng-href="{{'mailto:' + user.email}}"
+                onclick="ignoreUnload=true">{{user.email}}</a></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4"><span><b>Country:</b></span></div>
+            <div class="span8"><span>{{user.country.id}}</span></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4"><span><b>Address1:</b></span></div>
+            <div class="span8"><span>{{user.address1}}</span></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4"><span><b>Address2:</b></span></div>
+            <div class="span8"><span>{{user.address2}}</span></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4"><span><b>City, ST, ZIP:</b></span></div>
+            <div class="span8"><span>{{user.zip | zip}}</span></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4"><span><b>Phone:</b></span></div>
+            <div class="span8"><span>{{user.phone | phone}}</span></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4"><span><b>Fax:</b></span></div>
+            <div class="span8"><span>{{user.fax | phone}}</span></div>
+        </div>
+        <div class="row-fluid">
+            <div class="span4"><span><b>Promo code:</b></span></div>
+            <div class="span8"><span>{{user.promoCode}}</span></div>
+        </div>
+    </div>
+    <div class="span5">
+        <div data-ng-if="$root.isFieldRequired('VIEW_CUSTOMER_SERVICE_CONTACT_INFO')">
+            <strong>Customer Service Contact Information</strong>
+            <br>
+            <span>(For use on system generated emails):</span>
+            <hr/>
+            <div class="row-fluid">
+                <label class="radio">PLS Operations
+                    <input type="radio" class="radio" name="infoType" value="DEFAULT"
+                        data-ng-model="user.customerServiceContactInfoType" disabled/>
+                </label>
+                <label class="radio">Same as User Profile
+                    <input type="radio" class="radio" name="infoType" value="SAME_AS_USER_PROFILE"
+                        data-ng-model="user.customerServiceContactInfoType" disabled/>
+                </label>
+                <label class="radio">Custom
+                    <input type="radio" class="radio" name="infoType" value="CUSTOM"
+                        data-ng-model="user.customerServiceContactInfoType" disabled/>
+                </label>
+            </div>
+            <br>
+            <div class="row-fluid">
+                <div class="span12">
+                    <strong class="span4">Contact Name:</strong> <span class="span8" data-ng-bind="user.additionalInfo.contactName"></span>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <strong class="span4">Email:</strong> <span class="span8" data-ng-bind="user.additionalInfo.email"></span>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <strong class="span4">Phone:</strong> <span class="span8" data-ng-bind="user.additionalInfo.phone | phone"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

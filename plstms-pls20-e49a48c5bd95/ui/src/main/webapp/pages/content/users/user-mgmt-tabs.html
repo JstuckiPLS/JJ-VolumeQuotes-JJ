@@ -1,0 +1,23 @@
+<div class="row-fluid">
+    <div class="span12">
+        <div class="tabbable tabs-left tabbable-bordered">
+            <ul class="nav nav-tabs">
+                <li class="active pls-menu-item">
+                  <a href="#/user-mgmt/users">Users</a>
+                </li>
+                <li class="pls-menu-item">
+                  <a href="#/user-mgmt/roles">Roles</a>
+                </li>
+                <li class="pls-menu-item">
+                  <a href="#/user-mgmt/announcements">Announcements</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="userMgmtTab">
+                    <div data-ng-include="route.current.userMgmtTab"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

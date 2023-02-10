@@ -1,0 +1,26 @@
+<div data-ng-class="{warning: isModelValueFormatWarn || isModelValueWarn || isModelFormatWarn, error: isModelValueError || isModelFormatError}"
+     class="control-group pls-margin-bottom-0">
+    <label for="{{plsIdentifier}}" class="label-middle span3">
+        <span data-ng-bind="plsIdentifierDetails.label"></span>:
+    </label>
+
+    <div data-ng-class="{'input-append span12 pls-input-append': isModelInvalid || isSafwayGL() || isSafeworksGL()}" class="span9">
+        <input data-ng-attr-id="{{plsIdentifier}}" type="text" data-ng-model="inputModel" data-ng-required="required" class="controls span12"
+               data-ng-disabled="!shipment.billTo || disabledIdentifier || isSafwayGL() || isSafeworksGL()" maxlength="{{getMaxFieldLength()}}"/>
+        <i data-ng-if="isSafwayGL() || isSafeworksGL()" data-ng-click="clearGl()" class="fa fa-lg fa-times add-on"></i>
+        <i data-ng-if="isModelInvalid && !isSafwayGL() && !isSafeworksGL()" data-pls-popover data-placement="{{popPlace || 'top'}}"
+                class="fa fa-exclamation-circle add-on pls-warn-icon">
+            <span data-ng-if="isModelValueWarn || isModelValueError">
+                Incorrect value of {{plsIdentifierDetails.label}}. It should be filled with "{{defaultValueBackup}}"
+            </span>
+
+            <span data-ng-if="isModelFormatWarn || isModelFormatError">
+                Incorrect format of {{plsIdentifierDetails.label}}. It should Start with "{{startWith}}", End with "{{endWith}}"
+            </span>
+
+            <span data-ng-if="isModelValueFormatWarn">
+                Incorrect format of {{plsIdentifierDetails.label}}. It should Start with "{{startWith}}", End with "{{endWith}}" or be filled with"{{defaultValueBackup}}"
+            </span>
+        </i>
+    </div>
+</div>

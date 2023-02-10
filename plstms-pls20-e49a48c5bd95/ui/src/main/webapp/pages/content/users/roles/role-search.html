@@ -1,0 +1,63 @@
+<div data-ng-controller="RoleSearchCtrl" data-pls-ignore-location-change-check="true">
+    <div class="row-fluid" >
+        <div class="span7">
+            <div class="form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="searchText">Role:</label>
+                    <div class="controls">
+                        <input data-ng-model="searchText" id="searchText" data-ng-change="filterRoles()"
+                            placeholder="search for role name" class="input-xxlarge" />
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid" >
+        <div class="gridStyle gridHeight6 span3 table" data-ng-grid="rolesGrid" data-ng-click="loadRole()"></div>
+         <div class="span9">
+             <div class="span1">
+                <button type="button" class="btn btn-block" data-ng-click="addRole()"
+                    data-ng-show="$root.isFieldRequired('ADD_EDIT_ROLE')">Add</button>
+                <div>&nbsp;</div>
+                <button type="button" class="btn btn-block" data-ng-disabled="selectedItems.length != 1"
+                    data-ng-show="$root.isFieldRequired('ADD_EDIT_ROLE')" data-ng-click="editRole()">Edit</button>
+                <div>&nbsp;</div>
+                <button type="button" class="btn btn-block" data-ng-disabled="selectedItems.length != 1"
+                    data-ng-show="$root.isFieldRequired('DELETE_ROLE')" data-ng-click="deleteRole()">Delete</button>
+                <div>&nbsp;</div>
+             </div>
+             <div class="span12 form-inline well well-small">
+                <span class="legend">Details</span>
+               
+                <div class="row-fluid">
+                    <div class="span2"><strong>Role Name:</strong></div>
+                    {{selectedRole.name}}
+                </div>
+                
+                <div class="row-fluid">
+                    <div class="span3">
+                        <div class="gridStyle gridHeight4 span12 table" data-ng-grid="roleDetailsGrid"></div>
+                    </div>
+                    <div class="span9">
+                        <div class="row-fluid">
+                            <div class="span2"><strong>Users:</strong></div>
+                        </div>
+                        
+                        <div class="row-fluid">
+                           <div class="gridStyle gridHeight4 span12 table" data-ng-grid="usersGrid"></div>
+                        </div>
+                        
+                        <div class="row-fluid ">
+                            <div class="offset9">
+                               <button type="button" class="btn" data-ng-disabled="_.isEmpty(unassignCriteria.users)" data-ng-click="unassignUsers()">Save</button>
+                               <button type="button" class="btn" data-ng-disabled="_.isEmpty(unassignCriteria.users)" data-ng-click="resetSelectedUsers()">Reset</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+           </div>
+       </div>
+    </div>
+    
+    <div data-ng-include="'pages/content/users/roles/add-edit-role.html'"></div>
+</div>

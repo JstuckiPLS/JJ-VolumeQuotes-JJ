@@ -1,0 +1,87 @@
+<div class="container-fluid tooltip-container" data-ng-cloak>
+    <div class="row-fluid">
+        <div class="span12">
+            <strong>Customer:  {{tooltipData.customerName}}</strong>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <strong>Carrier:  {{tooltipData.carrier}}</strong>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span2">
+            <div data-ng-if="tooltipData.logoPath">
+                <img data-ng-src="{{tooltipData.logoPath}}" alt="" src="">
+            </div>
+        </div>
+        <div class="span5">
+            <div class="row-fluid">
+                <div class="span12">
+                    Origin:
+                </div>
+            </div>
+            <div class="row-fluid" data-ng-if="tooltipData.origin.addressName">
+                <div class="span12 text-clipping">
+                    <span data-ng-bind="tooltipData.origin.addressName"></span>
+                </div>
+            </div>
+            <div class="row-fluid" data-ng-if="tooltipData.origin.zip">
+                <div class="span12">
+                    {{tooltipData.origin.zip | zip}}
+                </div>
+            </div>
+             <div class="row-fluid" data-ng-if="tooltipData.origin.address1">
+                <div class="text-clipping span12">{{tooltipData.origin.address1 + (tooltipData.origin.address2 && (', '+tooltipData.origin.address2))}}</div>
+            </div>
+            <div class="row-fluid" data-ng-if="!tooltipData.origin.address1 && tooltipData.origin.address2">
+                <div class="text-clipping span12">{{tooltipData.origin.address2}}</div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12 text-clipping" data-ng-if="tooltipData.origin.contactName || tooltipData.origin.phone">
+                    <span data-ng-if="tooltipData.origin.contactName">{{tooltipData.origin.contactName}}</span><!--
+                 --><span data-ng-if="tooltipData.origin.contactName && tooltipData.origin.phone.number">,</span>
+                    <span data-ng-if="tooltipData.origin.phone">{{(tooltipData.origin.phone | phone)}}</span>
+                </div>
+            </div>
+        </div>
+        <div class="span5">
+            <div class="row-fluid">
+                <div class="span12">
+                    Destination:
+                </div>
+            </div>
+            <div class="row-fluid" data-ng-if="tooltipData.destination.addressName">
+                <div class="span12 text-clipping">
+                    <span data-ng-bind="tooltipData.destination.addressName"></span>
+                </div>
+            </div>
+            <div class="row-fluid" data-ng-if="tooltipData.destination.zip">
+                <div class="span12">
+                    {{tooltipData.destination.zip | zip}}
+                </div>
+            </div>
+             <div class="row-fluid" data-ng-if="tooltipData.destination.address1">
+                <div class="span12 text-clipping">{{tooltipData.destination.address1 + ((tooltipData.destination.address2) && (', '+tooltipData.destination.address2))}}</div>
+            </div>
+            <div class="row-fluid" data-ng-if="!tooltipData.destination.address1 && tooltipData.destination.address2">
+                <div class="span12 text-clipping">{{tooltipData.destination.address2}}</div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12 text-clipping" data-ng-if="tooltipData.destination.contactName || tooltipData.destination.phone">
+                    <span data-ng-if="tooltipData.destination.contactName">{{tooltipData.destination.contactName}}</span><!--
+                 --><span data-ng-if="tooltipData.destination.contactName && tooltipData.destination.phone.number">,</span>
+                    <span data-ng-if="tooltipData.destination.phone">{{(tooltipData.destination.phone | phone)}}</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br/>
+    <div class="row-fluid">
+        <div class="span12">Products:</div>
+    </div>
+    <div class="row-fluid" data-ng-repeat="tooltipProduct in tooltipData.products">
+        <div class="span12 padding-left20" data-ng-bind="tooltipProduct"></div>
+    </div>
+</div>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.shipment.domain.PromoCodeEntity.Q_FIND_BY_CODE">
+        <![CDATA[
+                from PromoCodeEntity where code = :code and status = 'A'
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.PromoCodeEntity.Q_IS_PROMO_CODE_UNIQUE">
+        <![CDATA[
+                from PromoCodeEntity where code = :promoCode and status = 'A' and (:personId is null or accountExecutiveId != :personId)
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.PromoCodeEntity.Q_FIND_BY_USER">
+        <![CDATA[
+                from PromoCodeEntity where accountExecutiveId = :personId and status = 'A'
+        ]]>
+    </query>
+</hibernate-mapping>

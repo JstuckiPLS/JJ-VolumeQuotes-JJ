@@ -1,0 +1,93 @@
+<div>
+    <div id="dataImportDialog" data-pls-modal="importDialogOptions.showDialog" data-close="importItemsModel.close()"
+         class="modalWidth5 a_dataImportDialog">
+
+        <div class="modal-header">
+            <h4>{{importDialogOptions.label}}</h4>
+        </div>
+
+        <form novalidate action="{{importItemsModel.importUrl}}" data-ng-upload data-ng-submit="importSubmit()" class="margin0" id="uploadForm">
+            <div class="modal-body height05 form-inline">
+                File: &nbsp; <input type="file" class="filestyle" data-classInput="span3" data-buttonText="Browse" data-icon="false" name="upload" id="fileToUpload" onchange="angular.element(this).scope().importItemsModel.setFile(this)"/>
+
+            </div>
+            <div class="modal-footer">
+                <button class="btn a_cancelButton" type="button" data-ng-click="importDialogOptions.showDialog = false">Cancel</button>
+                <button class="btn btn-primary a_importButton" type="submit" data-upload-submit="uploadCallback(content, completed)"
+                        data-ng-if="importItemsModel.importFile">Import
+                </button>
+                <button class="btn btn-primary a_importButton" type="button" data-ng-disabled="true"
+                        data-ng-if="!importItemsModel.importFile">Import
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <div data-pls-modal="importItemsModel.importResults.showResults" data-close="importItemsModel.importResults.closeResults()"
+         class="a_importResultsWindow" data-ng-class="getImportResultsWindowClass()" data-options="importItemsModel.importResults.modalOptions"
+         data-enter="importItemsModel.importResults.closeResults()">
+
+        <div class="modal-header">
+            <div data-ng-switch="importItemsModel.importResults.success && !importItemsModel.importResults.hasNoRecords">
+                <div data-ng-switch-when="true">
+                    <h4>Import Results Notification</h4>
+                </div>
+                <div data-ng-switch-when="false">
+                    <h4>Import Notification</h4>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-body">
+            <div data-ng-switch="importItemsModel.importResults.success && !importItemsModel.importResults.hasNoRecords" class="text-left">
+                <div data-ng-switch-when="false">
+                    <div class="text-center text-error" data-ng-show="importItemsModel.importResults.recordsNumberExceeded">
+                        The number of records exceeds maximum limit: 1000 records.
+                        <br/>
+                        Please upload correct file
+                    </div>
+
+                    <div class="text-center" data-ng-hide="importItemsModel.importResults.recordsNumberExceeded">
+                        <div class="text-error" data-ng-hide="importItemsModel.importResults.success">The file format is incorrect!</div>
+                        <div class="text-error" data-ng-show="importItemsModel.importResults.success">File is empty!</div>
+                        <div>Please upload a correct file</div>
+                    </div>
+                </div>
+                <div data-ng-switch-when="true" data-ng-cloak style="margin-left: 50px">
+                    <div class="text-success">Import successfully completed!</div>
+                    <div class="a_totalRecords">{{importItemsModel.importResults.rowsCount}} records processed:</div>
+                    <div class="a_addedNumber" data-ng-if="importDialogOptions.isProduct">{{importItemsModel.importResults.succeedCount}} products added to Products list</div>
+                    <div class="a_addedNumber" data-ng-if="importDialogOptions.isAddress">{{importItemsModel.importResults.succeedCount}} addresses added to Address Book</div>
+                    <div class="a_errorsNumber">{{importItemsModel.importResults.failedCount}} errors detected</div>
+                    <div data-ng-show="importItemsModel.importResults.hasFailedRecords">
+                        <div>&nbsp;</div>
+                        <div>Please click on 'Fix Now' button to edit errors now.</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <div class="text-center">
+                <div data-ng-switch="importItemsModel.importResults.success && !importItemsModel.importResults.hasNoRecords">
+                    <div data-ng-switch-when="true" class="a_closeButton">
+                        <button class="btn a_closeOkButton" type="button" data-ng-click="importItemsModel.importResults.closeResults()">
+                            Close
+                        </button>
+                    </div>
+                    <div data-ng-switch-when="false" class="a_okButton">
+                        <button class="btn a_closeOkButton" type="button" data-ng-click="importItemsModel.importResults.closeResults()">
+                            OK
+                        </button>
+                    </div>
+                </div>
+
+                <button class="btn a_fixNowButton" type="button"
+                        data-ng-show="importItemsModel.importResults.success && importItemsModel.importResults.hasFailedRecords"
+                        data-ng-click="importItemsModel.importResults.fixNow()">Fix Now
+                </button>
+            </div>
+        </div>
+    </div>
+    <div data-pls-progress-panel="importItemsModel.progressPanelOptions"></div>
+</div>

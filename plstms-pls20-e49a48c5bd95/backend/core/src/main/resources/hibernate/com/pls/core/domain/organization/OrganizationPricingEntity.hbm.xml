@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.core.domain.organization.OrganizationPricingEntity.Q_GET_MIN_ACCEPT_MARGIN">
+        <![CDATA[
+                SELECT org.minAcceptMargin FROM OrganizationPricingEntity AS org WHERE org.id = :orgId and org.status = 'A'
+        ]]>
+    </query>
+</hibernate-mapping>

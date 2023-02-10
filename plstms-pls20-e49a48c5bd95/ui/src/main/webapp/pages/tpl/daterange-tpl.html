@@ -1,0 +1,49 @@
+<div class="row-fluid">
+    <div class="span12 well well-small">
+        <div data-ng-form="plsDateRangeForm">
+            <div class="row-fluid">
+                <div class="span4">
+                    <label class="control-label span5 label-middle" for="inputDateRangeType"><b>Date Range:</b></label>
+                    <select id="inputDateRangeType" class="span7" data-ng-model="rangeType">
+                        <option value="TODAY">Today</option>
+                        <option value="WEEK">This Week</option>
+                        <option value="MONTH">This Month</option>
+                        <option value="QUARTER">This Quarter</option>
+                        <option value="YEAR">This Year</option>
+                        <option value="DEFAULT">Manual Select</option>
+                    </select>
+                </div>
+                <div class="span4">
+                    <label class="control-label span3 label-middle" for="inputFromDate"><b>From:</b></label>
+                    <div class="input-append span5">
+                        <input name="dateField" type="text" class="input-small" id="inputFromDate"
+                            data-ng-model="startDate" data-date-format="{{appDateFormat}}"
+                            data-min-date="minFromDate" data-max-date="maxFromDate"
+                            data-pls-datepicker
+                            data-ng-disabled="rangeType!='DEFAULT'"
+                            data-ng-class="{'ng-invalid':fromDateAlreadyExists}" />
+                        <button type="button" class="btn" data-toggle="datepicker"
+                            data-ng-disabled="rangeType!='DEFAULT'">
+                            <i class="icon-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="span4">
+                    <label class="control-label span3 label-middle" for="inputToDate"><b>To:</b></label>
+                    <div class="input-append span5">
+                        <input name="dateField" type="text" class="input-small" id="inputToDate"
+                            data-ng-model="endDate" data-date-format="{{appDateFormat}}"
+                            data-min-date="minToDate" data-max-date="maxToDate"
+                            data-pls-datepicker
+                            data-ng-disabled="rangeType!='DEFAULT'"
+                            data-ng-class="{'ng-invalid':toDateAlreadyExists}" />
+                        <button type="button" class="btn" data-toggle="datepicker"
+                            data-ng-disabled="rangeType!='DEFAULT'">
+                            <i class="icon-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

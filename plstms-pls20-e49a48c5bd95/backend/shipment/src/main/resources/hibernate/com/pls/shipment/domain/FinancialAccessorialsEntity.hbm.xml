@@ -1,0 +1,287 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.shipment.domain.FinancialAccessorialsEntity.Q_UPDATE_FIN_ADJ_INVOICE_APPROVED">
+        <![CDATA[
+                update versioned FinancialAccessorialsEntity f set f.invoiceApproved = :invoiceApproved,
+                f.modification.modifiedDate = LOCALTIMESTAMP, f.modification.modifiedBy = :modifiedBy
+                where f.id in :adjustmentIds and f.status = 'A'
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.FinancialAccessorialsEntity.Q_UPDATE_FIN_ADJ_FINANCIAL_STATUS">
+        <![CDATA[
+                update versioned FinancialAccessorialsEntity f set f.financialStatus = :status, f.modification.modifiedDate = LOCALTIMESTAMP,
+                f.modification.modifiedBy = :modifiedBy where f.id in (:adjustmentIds) and f.status = 'A'
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.FinancialAccessorialsEntity.Q_SET_INVOICE_NUMBER">
+        <![CDATA[
+                update versioned FinancialAccessorialsEntity
+                    set invoiceNumber = :invoiceNumber,
+                    groupInvoiceNumber = :groupInvoiceNumber,
+                    generalLedgerDate = :invoiceDate,
+                    sentToFinance = 'Y',
+                    financialStatus = :financialStatus,
+                    modification.modifiedDate = LOCALTIMESTAMP,
+                    modification.modifiedBy = :modifiedBy
+                where status = 'A' and id = :adjustmentId
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.FinancialAccessorialsEntity.Q_GET_CBI_DATA_ADJ">
+        <![CDATA[
+                select
+                    bt.id as billToId,
+                    bt.name as billToName,
+                    bt.currency as currency,
+                    customer.id as customerId,
+                    customer.name as customerName,
+                    n.name as networkName,
+                    bis.processingType as processingType,
+                    bis.processingPeriod as processingPeriod,
+                    bis.processingTime as processingTime,
+                    bis.processingDayOfWeek as processingDayOfWeek,
+                    bis.gainshareOnly as includeCarrierRate,
+                    case when bis.ediInvoice = 'Y' then TRUE else FALSE end as edi,
+                    case when bis.documents is not null then TRUE else FALSE end as email,
+                    tz.code as timeZone,
+                    sum(case when (coalesce(fa.invoiceApproved, 'N') = 'Y' and cdi.owner = 'C') then cdi.subtotal else 0 end) as totalCost,
+                    sum(case when (coalesce(fa.invoiceApproved, 'N') = 'Y' and cdi.owner = 'S') then cdi.subtotal else 0 end) as totalRevenue,
+                    sum(case when (coalesce(fa.invoiceApproved, 'N') = 'Y') then 1 else 0 end) as approvedCount,
+                    count(fa.id) as allCount
+                from FinancialAccessorialsEntity fa
+                join fa.costDetailItems cdi
+                join fa.load load with load.container='VANLTL' and load.originatingSystem='PLS2_LT'
+                join load.organization customer
+                join cdi.billTo bt
+                join bt.invoiceSettings bis with bis.invoiceType = 'CBI'
+                left join bis.processingTimeTimezone tz
+                left join load.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+                left join customer.network n
+                left join n.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+                where
+                    fa.status = 'A'
+                    and fa.sentToFinance != 'Y'
+                    and fa.financialStatus = 'ABAA'
+                    and (cu.personId is not null or nu.id is not null)
+                group by 
+                    bt.id,
+                    bt.name,
+                    bt.currency,
+                    customer.id,
+                    customer.name,
+                    n.name,
+                    bis.processingType,
+                    bis.processingPeriod,
+                    bis.processingTime,
+                    bis.processingDayOfWeek,
+                    bis.gainshareOnly,
+                    bis.ediInvoice,
+                    bis.documents,
+                    tz.code
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.FinancialAccessorialsEntity.Q_GET_ADJ_FOR_TRANSACTIONAL_INVOICES">
+        <![CDATA[
+                select
+                    load.id as loadId,
+                    case when cbt is null then lbt.id else cbt.id end as billToId,
+                    customer.name as customerName,
+                    case when cbt is null then lbt.name else cbt.name end as billToName,
+                    dest.departure as deliveredDate,
+                    load.numbers.bolNumber as bolNumber,
+                    load.numbers.proNumber as proNumber,
+                    case when carrier is null then car.name else carrier.name end as carrierName,
+                    adj.totalCost as cost,
+                    adj.totalRevenue as revenue,
+                    adj.margin as margin,
+                    adj.marginAmt as marginAmt,
+                    coalesce(fs.subtotal, 0) as fs,
+                    adj.totalRevenue - coalesce(acc.subtotal, 0) - coalesce(fs.subtotal, 0) as acc,
+                    case when adj.invoiceApproved = 'Y' then TRUE else FALSE end as approved,
+                    n.name as networkName,
+                    adj.id as adjustmentId,
+                    adj.revision as adjustmentRevision,
+                    case when adj.shortPay = 'Y' then TRUE else FALSE end as doNotInvoice,
+                    case when max(reason.code) in ('RB', 'RS') then TRUE else FALSE end as rebill,
+                    case when (cbt is not null and cbtTerms.id is null) or (cbt is null and lbtTerms.id is null) then TRUE else FALSE end as missingPaymentsTerms,
+                    coalesce(lar.amountApplied, 0) as paidAmount,
+                    sn2.note as noteComment,
+                    sn2.modification.createdDate as noteCreatedDate,
+                    sn2modu.firstName || ' ' || sn2modu.lastName as noteModifiedBy,
+                    load.shipmentDirection as shipmentDirection,
+                    load.paymentTerms as paymentTerms,
+                    count(distinct sn1.id) as numberOfNotes
+                from FinancialAccessorialsEntity adj
+                inner join adj.load load with load.status = 'CD' and load.originatingSystem in ('PLS2_LT', 'GS')
+                inner join load.destination dest with dest.departure <= LOCALTIMESTAMP
+                inner join adj.costDetailItems cdi
+                inner join load.origin orig
+                inner join load.carrier car
+                left outer join cdi.carrier carrier
+                left outer join cdi.billTo cbt
+                left outer join cdi.reason reason
+                left join cbt.plsCustomerTerms cbtTerms
+                left outer join cbt.invoiceSettings cis
+                inner join load.billTo lbt
+                left join lbt.plsCustomerTerms lbtTerms
+                inner join lbt.invoiceSettings lis
+                inner join load.organization customer
+                left join load.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+                left join customer.network n
+                left join n.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+                left join adj.costDetailItems fs with fs.owner = 'S' and fs.accessorialType = 'FS'
+                left join adj.costDetailItems acc with acc.owner = 'S' and acc.accessorialType = 'SRA'
+                left join load.accountReceivables lar with lar.financialAccessorials.id is not null
+                left join load.shipmentNotes sn1 with sn1.status = 'A'
+                left join load.shipmentNotes sn2 with sn2.status = 'A'
+                left join sn2.modification.createdUser sn2modu with sn2modu.userStatus = 'A'
+                where
+                    adj.status = 'A'
+                    and adj.financialStatus = 'ABAA'
+                    and adj.sentToFinance != 'Y'
+                    and (cbt is null and lis.invoiceType = 'TRANSACTIONAL' or cis.invoiceType = 'TRANSACTIONAL')
+                    and (cu.personId is not null or nu.id is not null)
+                    and (sn2.id is null or sn2.id in (select max(id) as id from load.shipmentNotes))
+                group by
+                    load.id, cbt.id, lbt.id, customer.name, cbt.name, lbt.name,
+                    dest.departure, load.numbers.bolNumber, load.numbers.proNumber, carrier.id, carrier.name, car.name,
+                    adj.totalRevenue, fs.subtotal, acc.subtotal, adj.totalCost, adj.margin, adj.marginAmt,
+                    adj.invoiceApproved, n.name, adj.id, adj.revision, adj.shortPay, cbtTerms.id, lbtTerms.id, lar.amountApplied,
+                    load.shipmentDirection, load.paymentTerms,
+                    sn2.note, sn2.modification.createdDate, sn2modu.firstName || ' ' || sn2modu.lastName
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.FinancialAccessorialsEntity.Q_GET_ADJ_FOR_CONSOLIDATED_INVOICES">
+         <![CDATA[
+                 select
+                     load.id as loadId,
+                     case when cbt is null then lbt.id else cbt.id end as billToId,
+                     customer.name as customerName,
+                     case when cbt is null then lbt.name else cbt.name end as billToName,
+                     case when cbt is null then lbt.currency else cbt.currency end as currency,
+                     dest.departure as deliveredDate,
+                     load.numbers.bolNumber as bolNumber,
+                     load.numbers.proNumber as proNumber,
+                     load.numbers.poNumber as poNumber,
+                     load.numbers.glNumber as glNumber,
+                     case when carrier is null then car.name else carrier.name end as carrierName,
+                     adj.totalCost as cost,
+                     adj.totalRevenue as revenue,
+                     adj.margin as margin,
+                     adj.marginAmt as marginAmt,
+                     coalesce(fs.subtotal, 0) as fs,
+                     adj.totalRevenue - coalesce(acc.subtotal, 0) - coalesce(fs.subtotal, 0) as acc,
+                     oa.city as origCity,
+                     oa.stateCode as origState,
+                     oa.zip as origZip,
+                     da.city as destCity,
+                     da.stateCode as destState,
+                     da.zip as destZip,
+                     case when adj.invoiceApproved = 'Y' then TRUE else FALSE end as approved,
+                     n.name as networkName,
+                     adj.id as adjustmentId,
+                     case when adj.shortPay = 'Y' then TRUE else FALSE end as doNotInvoice,
+                     case when max(reason.code) in ('RB', 'RS') then TRUE else FALSE end as rebill,
+                     case when (cbt is not null and cbtTerms.id is null) or (cbt is null and lbtTerms.id is null) then TRUE else FALSE end as missingPaymentsTerms,
+                     coalesce(lar.amountApplied, 0) as paidAmount,
+                     sn2.note as noteComment,
+                     sn2.modification.createdDate as noteCreatedDate,
+                     sn2modu.firstName || ' ' || sn2modu.lastName as noteModifiedBy,
+                     count(distinct sn1.id) as numberOfNotes
+                 from FinancialAccessorialsEntity adj
+                 inner join adj.load load with load.status = 'CD' and load.originatingSystem in ('PLS2_LT', 'GS')
+                 inner join load.destination dest with dest.departure <= LOCALTIMESTAMP
+                 inner join dest.address da
+                 inner join load.origin orig
+                 inner join orig.address oa
+                 inner join load.carrier car
+                 inner join adj.costDetailItems cdi
+                 left outer join cdi.carrier carrier
+                 left outer join cdi.billTo cbt
+                 left outer join cdi.reason reason
+                 left join cbt.plsCustomerTerms cbtTerms
+                 left outer join cbt.invoiceSettings cis
+                 inner join load.billTo lbt
+                 left join lbt.plsCustomerTerms lbtTerms
+                 inner join lbt.invoiceSettings lis
+                 inner join load.organization customer
+                 left join load.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+                 left join customer.network n
+                 left join n.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+                 left join adj.costDetailItems fs with fs.owner = 'S' and fs.accessorialType = 'FS'
+                 left join adj.costDetailItems acc with acc.owner = 'S' and acc.accessorialType = 'SRA'
+                 left join load.accountReceivables lar with lar.financialAccessorials.id is not null
+                 left join load.shipmentNotes sn1 with sn1.status = 'A'
+                 left join load.shipmentNotes sn2 with sn2.status = 'A'
+                 left join sn2.modification.createdUser sn2modu with sn2modu.userStatus = 'A'
+                 where
+                     adj.status = 'A'
+                     and adj.financialStatus = 'ABAA'
+                     and adj.sentToFinance != 'Y'
+                     and ((cbt is null and lis.invoiceType = 'CBI') or (cis.invoiceType = 'CBI'))
+                     and ((cbt is null and lbt.id in (:billToIds)) or cbt.id in (:billToIds))
+                     and (cu.personId is not null or nu.id is not null)
+                     and (sn2.id is null or sn2.id in (select max(id) as id from load.shipmentNotes))
+                 group by
+                     load.id, cbt.id, lbt.id, customer.name, cbt.name, lbt.name, cbt.currency, lbt.currency,
+                     dest.departure, load.numbers.bolNumber, load.numbers.proNumber, load.numbers.poNumber,
+                     load.numbers.glNumber, carrier.id, carrier.name, car.name, adj.totalRevenue, fs.subtotal, acc.subtotal,
+                     adj.totalCost, adj.margin, adj.marginAmt, oa.city, oa.stateCode, oa.zip, da.city, da.stateCode, da.zip,
+                     adj.invoiceApproved, n.name, adj.id, adj.shortPay, cbtTerms.id, lbtTerms.id, lar.amountApplied,
+                     sn2.note, sn2.modification.createdDate, sn2modu.firstName || ' ' || sn2modu.lastName
+         ]]>
+    </query>
+    <query name="com.pls.shipment.domain.FinancialAccessorialsEntity.Q_GET_OTHER_REBILL_ADJUSTMENTS">
+        <![CDATA[
+                select distinct
+                    load.id as loadId,
+                    adj2.id as adjustmentId,
+                    cbt.id as billToId,
+                    cbt.name as billToName,
+                    cis.invoiceType as billToProcessType,
+                    load.numbers.bolNumber as bolNumber,
+                    case when reason.code = 'RB' or reason.code = 'RS' then TRUE else FALSE end as rebill,
+                    case when adj.shortPay = 'Y' then TRUE else FALSE end as doNotInvoice
+                from FinancialAccessorialsEntity adj
+                join adj.load load with load.container='VANLTL' and load.originatingSystem = 'PLS2_LT'
+                join load.financialAccessorials adj2 with adj2.status = 'A' and adj2.sentToFinance != 'Y'
+                join adj2.costDetailItems cdi
+                join cdi.billTo cbt
+                join cbt.invoiceSettings cis
+                join cdi.reason reason with (reason.code = 'RB' or reason.code = 'RS')
+                left join load.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+                inner join load.organization customer
+                left join customer.network n
+                left join n.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+                where
+                    adj.id in (:rebillAdjIds)
+                    and adj2.id not in (:rebillAdjIds)
+                    and (cu.personId is not null or nu.id is not null)
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.FinancialAccessorialsEntity.Q_GET_REBILL_ADJ_FOR_AUTO_PROCESSING">
+        <![CDATA[
+                select distinct
+                    adj2.id as adjustmentId,
+                    cdi2.billTo.id as billToId
+                from FinancialAccessorialsEntity adj
+                join adj.costDetailItems cdi with cdi.billTo.id = :billToId
+                join cdi.reason reason with (reason.code = 'RB' or reason.code = 'RS')
+                join adj.load load with load.container='VANLTL' and load.originatingSystem = 'PLS2_LT'
+                join load.financialAccessorials adj2 with adj2.sentToFinance != 'Y' and adj2.status = 'A' and adj2.generalLedgerDate is null
+                join adj2.costDetailItems cdi2 with cdi2.billTo.id <> :billToId
+                join cdi2.reason reason2 with (reason2.code = 'RB' or reason2.code = 'RS')
+                where
+                    adj.sentToFinance <> 'Y'
+                    and adj.status = 'A'
+                    and adj.generalLedgerDate is null
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.FinancialAccessorialsEntity.Q_GET_COST_ITEMS_COUNT">
+        <![CDATA[
+                select size(adj.costDetailItems) from FinancialAccessorialsEntity adj where adj.status = 'A' and adj.id = :adjustmentId
+        ]]>
+    </query>
+</hibernate-mapping>

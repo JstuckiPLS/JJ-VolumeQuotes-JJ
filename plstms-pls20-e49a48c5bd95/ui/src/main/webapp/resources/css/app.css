@@ -1,0 +1,1585 @@
+/* app css stylesheet */
+.pls-header {
+    background-attachment: fixed;
+    background-size: 100%;
+    background-image: url(../img/header.jpg);
+    min-height: 80px;
+}
+
+.pls-header img {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+
+.header-line-height {
+    line-height: 63px;
+}
+
+.ngAggregate {
+    background-color: lightgrey;
+}
+
+a {
+    cursor: pointer;
+}
+
+hr {
+    margin: 4px 0;
+    border: 0;
+    border-top: 1px solid #eeeeee;
+    border-bottom: 1px solid #ffffff;
+}
+
+.tabs-left > .tab-content {
+    min-height: 100px;
+}
+
+/*
+Override Bootstrap section
+*/
+
+textarea {
+    resize: none !important;
+}
+
+.nav-tabs a {
+    font-weight: bold;
+    color: #00659b;
+}
+
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus {
+    color: black;
+}
+
+.btn {
+    background-color: #00659b;
+    background-image: inherit;
+    color: white;
+}
+
+.pls-fix-btn {
+    background: linear-gradient(to bottom, #fff, #e6e6e6);
+    color: #333;
+}
+
+.pls-fix-btn:hover,
+.pls-fix-btn:focus,
+.pls-fix-btn:disabled {
+    background: linear-gradient(to bottom, #eee, #d6d6d6);
+    color: #333 !important;
+}
+
+.pls-fix-btn i {
+    padding: 4px 0 4px 0;
+}
+
+.btn-primary {
+    background-color: #d5482a;
+}
+
+.btn.btn-primary:hover, .btn.btn-primary:focus {
+    background-color: #f34a20;
+}
+
+.btn.disabled, .btn[disabled], .btn.disabled:hover, .btn.disabled:focus, .btn[disabled]:focus, .btn[disabled]:hover {
+    background-color: #00659b;
+    color: white;
+}
+
+.btn-primary.disabled,
+.btn-primary[disabled],
+.btn-primary.disabled:hover,
+.btn-primary.disabled:focus,
+.btn-primary[disabled]:focus,
+.btn-primary[disabled]:hover {
+    background-color: #EF9D8D;
+    color: white;
+}
+
+.btn:hover, .btn:focus, .btn:active, .btn.active {
+    background-color: #02507f;
+    color: white;
+}
+
+.tab-content {
+    border-color: #e1a264;
+    border-width: 2px;
+    padding: 18px 10px 0;
+    border-width: 0 1px 1px;
+}
+
+.nav-tabs {
+    border-bottom: 1px solid #e1a264;
+    color: #04669d;
+}
+
+.nav-tabs > .active > a, .nav-tabs > .active > a:hover, .nav-tabs > .active > a:focus {
+    border: 1px solid #e1a264;
+    border-bottom-color: transparent;
+}
+
+.nav-tabs > li > a:hover, .nav-tabs > li > a:focus {
+    border-color: #eeeeee #eeeeee #e1a264;
+}
+
+[data-ng-click="showTypeaheadList();"].btn,
+button[data-toggle="datepicker"].btn {
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#ffffff), to(#e6e6e6));
+    background-color: #e6e6e6;
+}
+
+[data-ng-click="showTypeaheadList();"].btn.disabled,
+[data-ng-click="showTypeaheadList();"].btn[disabled],
+button[data-toggle="datepicker"].btn.disabled,
+button[data-toggle="datepicker"].btn[disabled] {
+    background-image: none;
+    background-color: #e6e6e6;
+}
+
+[data-ng-click="showTypeaheadList();"].btn.disabled:hover,
+[data-ng-click="showTypeaheadList();"].btn.disabled:focus,
+[data-ng-click="showTypeaheadList();"].btn[disabled]:hover,
+[data-ng-click="showTypeaheadList();"].btn[disabled]:focus {
+    background-color: #e6e6e6;
+}
+
+.tabs-left > .nav-tabs > .active > a, .tabs-left > .nav-tabs > .active > a:hover {
+    border-color: #e1a264 transparent #e1a264 #e1a264;
+}
+
+.tabs-left > .nav-tabs {
+    border-right: transparent;
+}
+
+.right-border-line {
+    border-right: 1px solid #dddddd;
+}
+
+.cursor-pointer {
+	cursor: pointer;
+}
+.tabbable {
+    border-color: #e1a264;
+}
+
+.modal-header {
+    padding: 4px 10px;
+}
+
+.centered {
+    position: fixed;
+    top: 50%;
+    margin-top: -120px;
+}
+
+.pls-red {
+	color: red;
+}
+.pls-green {
+	color: Green;
+}
+.relative-block {
+    position: relative;
+}
+
+.absolute-block {
+    position: absolute;
+}
+
+.fixed-block {
+    position: fixed;
+}
+
+.top-left-5 {
+    top: 5px;
+    left: 5px;
+}
+
+.bottom-5 {
+    bottom: 5px;
+}
+
+.sc-cloak {
+    top: 5px;
+    left: 200px;
+    bottom: 36px;
+    right: 0;
+}
+
+.absolute-center {
+    top: 48%;
+    left: 46%;
+}
+
+.selectorHeight {
+    height: 222px !important;
+}
+
+table.nonmarg select {
+    margin: 0;
+    width: 80px;
+}
+
+.divHeight15 {
+    height: 15px;
+}
+
+.divHeight20 {
+    height: 20px;
+}
+
+.divHeight30 {
+    height: 30px;
+}
+
+.divHeight43 {
+    height: 43px;
+}
+
+.divHeight77 {
+    height: 77px;
+}
+
+.divHeight100 {
+    height: 100px;
+}
+
+.divHeight150 {
+    height: 150px;
+}
+
+.divHeight200 {
+    height: 200px;
+}
+
+.mapDivHeight {
+    height: 400px;
+}
+
+.divHeight500 {
+    height: 500px;
+}
+
+[ng\:cloak], [ng-cloak], [data-ng-cloak], [x-ng-cloak], .ng-cloak, .x-ng-cloak {
+    display: none;
+}
+
+/* feat: before angular is ready, display loading animation */
+body.waiting-for-angular div#login-holder {
+    display: none;
+}
+
+body.waiting-for-angular div#content {
+    display: none;
+}
+
+body.waiting-for-angular div#initializing-panel {
+    display: block;
+    background: url(../img/loading.gif) center center no-repeat;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.ng-invalid,
+.pls-required {
+    border-color: red !important;
+}
+
+.loginHolder {
+    z-index: 1200;
+    background-color: white;
+    opacity: 1;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: 0;
+    position: fixed;
+}
+
+/** Modals */
+
+.modal {
+    width: auto !important;
+}
+
+.modalWidth2 {
+    width: 200px !important;
+    margin-left: -100px;
+}
+
+.modalWidth3 {
+    width: 300px !important;
+    margin-left: -150px;
+}
+
+.modalWidth4 {
+    width: 400px !important;
+    margin-left: -200px;
+}
+
+.modalWidth5 {
+    width: 500px !important;
+    margin-left: -250px;
+}
+
+.modalWidth6 {
+    width: 600px !important;
+    margin-left: -300px;
+}
+
+.modalWidth7 {
+    width: 700px !important;
+    margin-left: -350px;
+}
+
+.modalWidth8 {
+    width: 800px !important;
+    margin-left: -400px;
+}
+
+.modalWidth9 {
+    width: 900px !important;
+    margin-left: -450px;
+}
+
+.modalWidth10 {
+    width: 1000px !important;
+    margin-left: -500px;
+}
+
+.modalWidth11 {
+    width: 1100px !important;
+    margin-left: -550px;
+}
+
+.modalWidth12 {
+    width: 1258px !important;
+    margin-left: -629px;
+}
+
+.modalWidth13 {
+    width: 1300px !important;
+    margin-left: -650px;
+}
+
+.modalHeight7 {
+    max-height: 700px;
+    /** Min supported resolution 1280x800. So we can't waste vertical space*/
+    top: 1%;
+}
+
+.modalHeight7 .modal-body {
+    max-height: 510px;
+}
+
+.address-modal-body {
+	max-height: 570px !important;
+	overflow: hidden;
+}
+
+.fuel-graph-tab {
+	overflow-y: scroll;
+	overflow-x: hidden;
+}
+
+.billToModalSize .modal-body,
+.addCustomerModalSize .modal-body {
+    height: 568px !important;
+    max-height: 568px;
+    top: 1%;
+}
+
+.addCustomerModalSize {
+    width: 1258px !important;
+    margin-left: -629px;
+    top: 1%;
+}
+
+.billToModalSize {
+    width: 1198px !important;
+    margin-left: -599px;
+    top: 1%;
+}
+
+/** Grids */
+.gridStyle {
+    border: 1px solid rgb(212, 212, 212);
+    width: 470px;
+    height: 200px;
+}
+
+.ngTopPanel {
+    background-color: #186938;
+}
+
+.ngHeaderSortColumn {
+    color: white;
+    text-align: center;
+}
+
+.gridHeight4Rows {
+    height: 148px;
+}
+
+.gridHeight0_9 {
+    height: 90px;
+}
+
+.gridHeight1 {
+    height: 100px;
+}
+
+.gridHeight1_2 {
+    height: 120px;
+}
+
+.gridHeight1_25 {
+    height: 125px;
+}
+
+.gridHeight1_5 {
+    height: 150px;
+}
+
+.gridHeight1_8 {
+    height: 180px;
+}
+
+.gridHeight2 {
+    height: 200px;
+}
+
+.gridHeight2_35 {
+    height: 235px;
+}
+
+.gridHeight3 {
+    height: 300px;
+}
+
+.gridHeight3_48 {
+    height: 348px;
+}
+
+.gridHeight4 {
+    height: 400px;
+}
+
+.gridHeight4_12 {
+    height: 412px;
+}
+
+.gridHeight4_4 {
+    height: 440px;
+}
+
+.gridHeight4_8 {
+    height: 480px;
+}
+
+.gridHeight5 {
+    height: 500px;
+}
+
+.gridHeight6 {
+    height: 600px;
+}
+
+.gridHeight7 {
+    height: 700px;
+}
+
+.gridHeight8_23 {
+    height: 823px;
+}
+
+.gridWidth2 {
+    width: 200px !important;
+}
+
+.gridWidth3 {
+    width: 300px !important;
+}
+
+.gridWidth4 {
+    width: 400px !important;
+}
+
+.gridWidth4_30 {
+    width: 400px !important;
+}
+
+.gridWidth5 {
+    width: 500px !important;
+}
+
+.gridWidth6 {
+    width: 600px !important;
+}
+
+.gridWidth7 {
+    width: 700px !important;
+}
+
+.gridWidth8 {
+    width: 900px !important;
+}
+
+.gridWidth9 {
+    width: 900px !important;
+}
+
+.gridWidth10 {
+    width: 1000px !important;
+}
+
+.gridWidth11 {
+    width: 1100px !important;
+}
+
+.gridWidthAuto {
+    width: auto !important;
+}
+
+.popoverWidth2 {
+    width: 200px !important;
+}
+
+.popoverWidth3 {
+    width: 300px !important;
+}
+
+.height05 {
+    height: 50px !important;
+}
+
+.margin0 {
+    margin: 0;
+}
+
+.margin2 {
+	margin: 2px;
+}
+
+.padding-bottom10 {
+    padding-bottom: 10px;
+}
+
+.padding5 {
+    padding: 5px;
+}
+
+.padding-left20 {
+    padding-left: 20px;
+}
+
+.padding-top10 {
+    padding-top: 10px;
+}
+
+/*
+Styles for Angular UI Calendar
+*/
+.fc-header-title h2 {
+    font-size: .9em;
+    white-space: normal !important;
+    min-width: 100px;
+    left: 50%;
+}
+
+.fc .fc-header-space {
+    padding-left: 0;
+}
+
+.fc-view-month .fc-event, .fc-view-agendaWeek .fc-event {
+    font-size: 10px;
+    overflow: hidden;
+    height: 20px;
+}
+
+.fc-view-agendaWeek .fc-event-vert {
+    font-size: 0;
+    width: 2px !important;
+}
+
+.fc-agenda-axis {
+    width: 20px !important;
+    font-size: .7em;
+}
+
+.fc-event-skin {
+    border-color: transparent;
+    background-color: transparent;
+    color: #0000FF;
+}
+
+.well {
+    z-index: 10;
+}
+
+.popover {
+    max-width: none;
+    position: fixed;
+}
+
+.semiOpaqueLoader {
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    margin: 0 !important;
+    opacity: 0.8;
+    filter: alpha(opacity=80);
+    z-index: 1100;
+}
+
+.borderSeparator {
+    border-top: 1px solid #000000;
+}
+
+.carrier-select-double-line {
+    height: 43px;
+    min-height: 43px;
+}
+
+.carrier-select-logo-line {
+    height: 110px;
+    min-height: 110px;
+}
+
+.carrier-select-logo-line img {
+    max-height: 65px;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.wrap {
+    word-wrap: break-word;
+}
+
+.full-width {
+    width: 100%;
+}
+
+.valign-bottom {
+    vertical-align: bottom;
+}
+
+.text-clipping {
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.text-white {
+    color: white;
+}
+
+.label-middle {
+    padding-top: 7px;
+}
+
+.phone-number-code {
+    min-width: 35px;
+}
+
+/* Tables */
+.headerText {
+    padding: 5px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+    white-space: nowrap;
+    -ms-text-overflow: ellipsis;
+    -o-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}
+
+.headerPanel {
+    background-color: rgb(234, 234, 234);
+    overflow: hidden;
+    border-bottom: 1px solid rgb(212, 212, 212);
+}
+
+table {
+    overflow: auto;
+}
+
+.selected {
+    background-color: rgb(201, 221, 225);
+}
+
+.canSelect {
+    cursor: pointer;
+}
+
+.section-header {
+    font-size: 15px;
+    font-weight: bold;
+    margin: 8.5px 0;
+}
+
+.section-header-label {
+    margin: 8.5px 0;
+}
+
+.legend {
+    display: block;
+    width: 100%;
+    padding: 0;
+    margin-bottom: 17px;
+    font-size: 18px;
+    line-height: 34px;
+    color: #333333;
+    border: 0;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+.gridImageCell > div {
+    height: 100%;
+}
+
+.gridImageCell .gridImageCell {
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 100%;
+    background-position: center;
+}
+
+.tooltip-container {
+    width: 500px;
+    height: 100px;
+}
+
+.tooltip-container .row-fluid [class*="span"] {
+    min-height: 14px;
+}
+
+.ta-editor {
+    min-height: 100px;
+    overflow: auto;
+    font-family: inherit;
+    font-size: 100%;
+    border: 1px solid rgb(212, 212, 212);
+}
+
+.grid-error-row {
+    background-color: #bd362f;
+    color: white;
+}
+
+.plsCheckList {
+    overflow: auto;
+    padding: 3px;
+    border-left: 1px solid rgb(212, 212, 212);
+}
+
+.dashbord-accordion .accordion-inner,
+.dashbord-accordion .panel-body {
+    padding: 0;
+}
+
+.dashbord-accordion .accordion-inner ul,
+.dashbord-accordion .panel-body ul {
+    margin: 0;
+}
+
+.white-background .tab-content {
+    background-color: #fff;
+}
+
+.cellToolTip, .plsVisibleOverflow {
+    overflow: visible;
+}
+
+.ngCellText > .tooltip {
+    top: 0 !important;
+}
+
+.ngCellText > span:hover {
+    cursor: pointer !important;
+}
+
+#kpi .nav-tabs .active a {
+    background-color: #ddd;
+}
+
+#kpi .filtersBlock .control-group {
+    margin: 0 15px 5px 0 !important;
+}
+
+#kpi .filtersBlock .divHeight150 {
+    margin: 0 !important;
+}
+
+.checkbox-label-spacing {
+    margin-right: 4px !important;
+    margin-top: 0 !important;
+}
+
+.customer-label {
+    min-width: 50px;
+    margin-top: 5px;
+}
+
+.addrList {
+    display: inline-block;
+    white-space: nowrap;
+    float: none;
+    margin: 0;
+}
+
+.addrListArrow {
+    display: inline-block;
+    float: right;
+    position: relative;
+    width: 20px;
+    height: 100%;
+    margin: 3px 5px 0 0;
+    z-index: 1;
+}
+
+.addrListArrow button {
+    display: inline-block;
+    width: 100%;
+}
+
+.addrListArrow i {
+    display: inline-block;
+    position: relative;
+    background-position: -312px -103px;
+    width: 5px;
+    height: 5px;
+    left: 0;
+    padding: 0 5px 0 5px;
+    margin: 5px 0 0 -5px;
+}
+
+.addrListInput {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    min-height: 30px;
+    box-sizing: border-box;
+    padding: 0;
+}
+
+.addrListInputParent {
+    display: inline-block;
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
+.aboveLogin {
+    z-index: 1310;
+}
+
+.aboveLoginBackdrop {
+    z-index: 1300;
+}
+
+.login-header img {
+    margin: 10px;
+}
+
+.login-header a {
+    margin: 30px;
+}
+
+hr.white-line {
+    color: #ffffff;
+    background-color: #ffffff;
+    border: 0;
+    height: 1px;
+    border-top: 1px solid #ffffff;
+}
+
+hr.black-line {
+    color: #000000;
+    background-color: #000000;
+    border: 0;
+    height: 1px;
+}
+
+.pls-application {
+    background-size: 100%;
+    background: #242a28 url('../img/PLS-PRO-2.0-Footer-Background.jpg') repeat-y fixed left bottom;
+}
+
+#content {
+    background-color: #ffffff;
+}
+
+.vLine {
+    background: #d6431e;
+    width: 2px;
+    height: 45px;
+    margin-top: 15px;
+}
+
+.profileLinks {
+    margin-top: 10px;
+}
+
+.profileLinks a {
+    color: #d6431e;
+}
+
+.footer {
+    height: 10px;
+    background-color: #166935;
+}
+
+.max-width-210 {
+    max-width: 210px
+}
+
+.tooltip-wide .tooltip-inner {
+    max-width: 300px
+}
+
+.min-width-130 {
+    min-width: 130px
+}
+
+.logo {
+    float: left;
+    border: solid 1px;
+}
+
+.logo-small {
+    width: 80px;
+    height: 80px;
+}
+
+.logo-large {
+    width: 200px;
+    height: 200px;
+}
+
+.logo img {
+    max-height: 100%;
+}
+
+.ngRow.selected {
+    background-color: #fcfcb6;
+    font-weight: bold;
+}
+
+.ngRow.selected .popover {
+    font-weight: normal;
+}
+
+.ui-layout-container .gridStyle,
+.ui-layout-container .ngViewport {
+    height: 80% !important;
+}
+
+.pls-font-bold {
+    font-weight: bold;
+}
+
+.pls-pdf-container-emty {
+    border: 1px solid #000000;
+    text-align: center;
+}
+
+.pls-pdf-container-emty div {
+    margin-top: 60px;
+}
+
+.pls-cs-and-assignee-style {
+    margin: 10px;
+}
+
+.background-warning {
+    color: #ffe49a;
+}
+
+.color-warning {
+    color: #fa930a;
+}
+
+.z-index1010 {
+    z-index: 1010;
+}
+
+.white-background2 {
+    background-color: #fff;
+}
+
+.ui-layout-container-grid {
+    overflow: auto;
+}
+
+.ui-layout-container-grid .ngHeaderButton {
+    right: 20px;
+}
+
+.toast {
+    opacity: .85 !important;
+}
+
+.pls-font-lg {
+    font-size: 18px;
+}
+
+label .fa-question-circle {
+    color: #eee;
+}
+
+label .fa-question-circle:hover {
+    color: #555;
+}
+
+.pls-manual-bol-default .popover {
+    width: 250px !important;
+    text-align: center;
+}
+
+.pls-manual-bol-default .form-horizontal .controls {
+    margin-left: 120px;
+}
+
+.pls-manual-bol-default .form-horizontal .control-label {
+    text-align: left;
+    width: 100px;
+}
+
+@media (min-width: 1200px) and (max-width: 1700px) {
+    .pls-manual-bol-default #inputPhone1,
+    .pls-manual-bol-default #inputFax1 {
+        width: 20%;
+    }
+}
+
+.pls-pull-left {
+    float: left !important;
+}
+
+.pls-custom-warn {
+    margin: 20px -170px 0 0;
+}
+
+.pls-margin-top-200 {
+    margin-top: 200px;
+}
+
+.pls-margin-top-20 {
+	margin-top: 20px;
+}
+.pls-margin-bottom-20 {
+	margin-botton:20px;
+}
+.pls-margin-bottom-0 {
+    margin-bottom: 0 !important;
+}
+
+.pls-margin-left-0 {
+    margin-left: 0 !important;
+}
+
+.pls-input-append input {
+    width: 90% !important;
+}
+
+.pls-input-action:hover,
+.pls-input-append i:hover {
+    color: #555;
+}
+
+.pls-input-append i {
+    cursor: pointer;
+    width: 10% !important;
+    min-width: 15px !important;
+    padding: 6px 0 5px 0 !important;
+    color: #aaa;
+}
+
+.ui-datepicker {
+    z-index: 99999 !important;
+}
+
+.pls-inline-block {
+    display: inline-block;
+    margin: 0;
+}
+
+.pls-grid-responsive .ngTopPanel,
+.pls-grid-responsive .ngGroupPanel,
+.pls-grid-responsive .ngHeaderContainer,
+.pls-grid-responsive .ngHeaderScroller,
+.pls-grid-responsive .ngHeaderCell,
+.pls-grid-responsive .ngViewport,
+.pls-grid-responsive .ngCanvas,
+.pls-grid-responsive .ngRow {
+    width: 100% !important;
+    text-align: center !important;
+}
+
+.msg-pdf {
+    display: block;
+    position: absolute;
+    text-align: center;
+    padding: 20px 0;
+    margin-left: -238px;
+    top: 0;
+    left: 50%;
+    z-index: -1;
+}
+
+.pdf-wrapper {
+    position: relative;
+    z-index: 1040;
+}
+
+.modal-body {
+    min-height: 60px;
+}
+
+.modalWidth10 .modal-body {
+    min-height: 60px;
+    position: relative;
+    overflow-y: hidden;
+}
+
+.m-t-50 {
+    margin-top: 50px;
+}
+.m-t-34 {
+    margin-top: 34px;
+}
+.margin-top-5 {
+	margin-top: 5px;
+}
+.pls-dropdown-float-right .dropdown-menu {
+    float: right;
+    right: -70px;
+    left: auto;
+}
+
+.restartWarning {
+    background: white;
+    text-align: center;
+    font-size: xx-large;
+    padding: 20px;
+}
+
+.restartWarning span {
+    line-height: normal !important;
+}
+
+.animated {
+    -webkit-animation-duration: 2s;
+    animation-duration: 2s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+.animated.infinite {
+    -webkit-animation-iteration-count: infinite;
+    animation-iteration-count: infinite;
+}
+
+.animated.delay {
+    -webkit-animation-delay: 5s;
+    animation-delay: 5s;
+}
+
+@-webkit-keyframes bounceInDown {
+    0%, 100%, 60%, 75%, 90% {
+        -webkit-animation-timing-function: cubic-bezier(0.215, .61, .355, 1);
+        animation-timing-function: cubic-bezier(0.215, .61, .355, 1)
+    }
+    0% {
+        opacity: 0;
+        -webkit-transform: translate3d(0, -3000px, 0);
+        transform: translate3d(0, -3000px, 0)
+    }
+    60% {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 25px, 0);
+        transform: translate3d(0, 25px, 0)
+    }
+    75% {
+        -webkit-transform: translate3d(0, -10px, 0);
+        transform: translate3d(0, -10px, 0)
+    }
+    90% {
+        -webkit-transform: translate3d(0, 5px, 0);
+        transform: translate3d(0, 5px, 0)
+    }
+    100% {
+        -webkit-transform: none;
+        transform: none
+    }
+}
+
+@keyframes bounceInDown {
+    0%, 100%, 60%, 75%, 90% {
+        -webkit-animation-timing-function: cubic-bezier(0.215, .61, .355, 1);
+        animation-timing-function: cubic-bezier(0.215, .61, .355, 1)
+    }
+    0% {
+        opacity: 0;
+        -webkit-transform: translate3d(0, -3000px, 0);
+        transform: translate3d(0, -3000px, 0)
+    }
+    60% {
+        opacity: 1;
+        -webkit-transform: translate3d(0, 25px, 0);
+        transform: translate3d(0, 25px, 0)
+    }
+    75% {
+        -webkit-transform: translate3d(0, -10px, 0);
+        transform: translate3d(0, -10px, 0)
+    }
+    90% {
+        -webkit-transform: translate3d(0, 5px, 0);
+        transform: translate3d(0, 5px, 0)
+    }
+    100% {
+        -webkit-transform: none;
+        transform: none
+    }
+}
+
+.bounceInDown {
+    -webkit-animation-name: bounceInDown;
+    animation-name: bounceInDown
+}
+
+@-webkit-keyframes pulse {
+    0% {
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1)
+    }
+    50% {
+        -webkit-transform: scale3d(1.05, 1.05, 1.05);
+        transform: scale3d(1.05, 1.05, 1.05)
+    }
+    100% {
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1)
+    }
+}
+
+@keyframes pulse {
+    0% {
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1)
+    }
+    50% {
+        -webkit-transform: scale3d(1.1, 1.1, 1.1);
+        transform: scale3d(1.1, 1.1, 1.1)
+    }
+    100% {
+        -webkit-transform: scale3d(1, 1, 1);
+        transform: scale3d(1, 1, 1)
+    }
+}
+
+.pulse {
+    -webkit-animation-name: pulse;
+    animation-name: pulse
+}
+
+.float-right {
+    float: right !important;
+}
+
+/*
+ * Styles for horizontal view of 'Choose column' element
+ */
+
+.horizontal-column-select .ngColListItem {
+    float: left;
+    margin-right: 30px;
+}
+
+.horizontal-column-select .ngGroupIcon {
+    right: -20px;
+}
+
+.pls-warn-icon,
+.pls-warn-icon:hover {
+    color: #ec8521 !important;
+    font-size: 15px !important;
+}
+
+.input-append .add-on.add-on-lg {
+    height: 47px;
+    line-height: 47px;
+}
+
+.pls-required-buttons,
+.pls-required-buttons .btn {
+    float: right !important;
+}
+
+.pls-required-buttons .btn {
+    margin-right: 5px;
+}
+
+#toDate,
+#fromDate {
+    width: 80px;
+}
+
+.animate-hide {
+    transition: all linear 0.5s;
+    line-height: 20px;
+    opacity: 1;
+    padding: 10px;
+    border: 1px solid black;
+    background: white;
+}
+
+.animate-hide.ng-hide {
+    line-height: 0;
+    opacity: 0;
+    padding: 0 10px;
+}
+
+.check-element {
+    padding: 10px;
+    border: 1px solid black;
+    background: white;
+}
+
+/* Overriding the data grid cell style on focus to be similar to other input fields on focus in the application to maintain uniformity. */
+.ngCellElement:focus {
+  border-color: rgba(82, 168, 236, 0.8);
+  outline: 0;
+  outline: thin dotted \9;
+  /* IE6-9 */
+  -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
+  -moz-box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
+  box-shadow: inset 0 1px 1px rgba(0,0,0,.075), 0 0 8px rgba(82,168,236,.6);
+}
+
+.unsubscribeMessage {
+	padding:20px;
+	color: #39ac39;
+	font-size:25px;
+	border: 3px solid #39ac39;
+	line-height:20px;
+	display:none;
+}
+.unsubscribePLSLogo img {
+    display: block;
+    margin: auto;
+    margin-bottom:50px;
+    margin-top: 100px;
+}
+
+.centeredElement {
+	display: block !important;
+    margin: auto !important;
+    margin-top: 7px !important;
+}
+
+.unsubscribeFailMessage {
+    border-color: red;
+    color: red;
+}
+.loadingMessage {
+    font-size: 130%;
+}
+@media (min-width: 1px) and (max-width: 1180px) {
+    .unsubscribePLSLogo img {
+        max-width: 80%;
+        margin-bottom:20px;
+        margin-top: 20px;
+    }
+    .unsubscribeMessage {
+        padding:10px;
+        font-size:15px;
+        border: 2px solid #39ac39shellan
+        margin-bottom: 60px;
+    }
+}
+
+/* Start of menu Header styles */
+.navbar {
+    background-color: #186a36;
+}
+
+.navbar a {
+    color: white !important;
+}
+
+.navbar-inner {
+    background-color: #186a36;
+    background-image: -moz-linear-gradient(right, #186938, #186a36);
+    background-image: -webkit-gradient(linear, 0 0, 0 100%, from(#186938), to(#186a36));
+    background-image: -webkit-linear-gradient(right, #186938, #186a36);
+    background-image: -o-linear-gradient(right, #186938, #186a36);
+    background-image: linear-gradient(to right, #186938, #186a36);
+    filter: none;
+    -webkit-border-radius: 0;
+    border-radius: 0;
+    border: 0;
+}
+
+.navbar .dropdown-menu {
+    background-color: #186a36;
+    z-index: 1011;
+}
+
+.navbar .dropdown-menu:after {
+    border-bottom-color: #186a36 !important;
+}
+
+.navbar .caret {
+    border-top-color: white !important;
+    border-bottom-color: white !important;
+}
+
+.navbar .nav > .active > a,
+.navbar .nav > li > a:hover,
+.navbar .nav > .active > a:hover,
+.navbar .nav > .active > a:focus,
+.navbar .nav > .dropdown>.dropdown-menu>li.active>a,
+.navbar .nav > .dropdown>.dropdown-menu>li:hover>a,
+.navbar .nav > .dropdown>.dropdown-menu>li>a:focus,
+.navbar .nav > .dropdown>.dropdown-menu>.active>a:hover,
+.navbar .nav li.dropdown.open>.dropdown-toggle,
+.navbar .nav li.dropdown.active>.dropdown-toggle,
+.navbar .nav li.dropdown.open.active>.dropdown-toggle
+ {
+    background: #d6451f;
+}
+
+.dropdown-menu>li>a {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.pls-font-13 {
+    font-size: 13px;
+    margin: 0px 5px
+}
+.pls-font-14 {
+    font-size: 14px;
+}
+/* End of menu Header styles */
+
+.toast-nopacity {
+    opacity: 1 !important;
+}
+
+/*
+ * Styles for announcement
+ */
+.announcement-bell-text {
+    cursor: pointer;
+	margin-top: -36px;
+	margin-left: auto;
+	margin-right: auto;
+	color: white;
+	background: #d54728;
+	border-radius: 50px;
+	width: 22px;
+	height: 22px;
+	font-size: 20px;
+	text-align: center;
+	border: 2px solid black;
+	text-decoration: blink;
+	position: relative;
+	-webkit-animation-name: blinker;
+	-webkit-animation-duration: 1s;
+	-webkit-animation-iteration-count: infinite;
+	-webkit-animation-timing-function: ease-in-out;
+	-webkit-animation-direction: alternate;
+}
+
+.announcement-bell {
+	 cursor: pointer;
+	margin-top: 15px;
+	text-align: center;
+	width: 50px;
+	height: 50px;
+	font-size: 50px;
+	color: #ecebeb;
+	-webkit-animation: ring 4s .7s ease-in-out infinite;
+	-webkit-transform-origin: 50% 4px;
+	-moz-animation: ring 4s .7s ease-in-out infinite;
+	-moz-transform-origin: 50% 4px;
+	animation: ring 4s .7s ease-in-out infinite;
+	transform-origin: 50% 4px;
+}
+
+.announcement-bell-no-animation {
+	cursor: pointer;
+	text-align: center;
+    margin-top: 15px;
+    width: 50px;
+    height: 50px;
+    font-size: 50px;
+    color: #ecebeb;
+    transform-origin: 50% 4px;
+}
+
+@-webkit-keyframes pulse {
+    0% { transform: scale(1.0)}
+    50% { transform: scale(1.1)}
+    100% { transform: scale(1.0)}
+}
+
+@-webkit-keyframes blinker {
+	from {opacity: 1.0;}
+    to {opacity: 0.5;}
+}
+
+@keyframes ring {
+  0% { transform: rotate(0); box-shadow: 0 0 0 0 rgba(204,169,44, 0.4);}
+  1% { transform: rotate(30deg);}
+  3% { transform: rotate(-28deg); }
+  5% { transform: rotate(34deg); }
+  7% { transform: rotate(-32deg); }
+  9% { transform: rotate(30deg); }
+  11% { transform: rotate(-28deg); }
+  13% { transform: rotate(26deg); }
+  15% { transform: rotate(-24deg); }
+  17% { transform: rotate(22deg); }
+  19% { transform: rotate(-20deg); box-shadow: 0 0 0 10px rgba(204,169,44, 0)}
+  21% { transform: rotate(18deg); }
+  23% { transform: rotate(-16deg); }
+  25% { transform: rotate(14deg); }
+  27% { transform: rotate(-12deg); }
+  29% { transform: rotate(10deg); }
+  31% { transform: rotate(-8deg); }
+  33% { transform: rotate(6deg); }
+  35% { transform: rotate(-4deg); }
+  37% { transform: rotate(2deg); }
+  39% { transform: rotate(-1deg); }
+  41% { transform: rotate(1deg); box-shadow: 0 0 0 0 rgba(204,169,44, 0);}
+
+  43% { transform: rotate(0); }
+  100% { transform: rotate(0); }
+}
+
+.pls-integration-ltllc-icon {
+	background-image: url('../img/ll-icon.png');
+	width:15px;
+	height:9px;
+	display:inline-block;
+}
+
+.pls-vltl-icon {
+    background-image: url('../img/vltl-icon.png');
+    background-repeat: no-repeat;
+    width:15px;
+    height:9px;
+    display:inline-block;
+}

@@ -1,0 +1,136 @@
+<div data-ng-controller="BuildOrderCtrl" class="container-fluid">
+    <div class="row-fluid" data-ng-init="initStep()">
+        <h4 class="span2">Build Order</h4>
+
+        <div class="span5 padding-top10">
+                <span data-ng-show="$root.isFieldRequired('VIEW_PLS_CUSTOMER_COST')"
+                class="a_customer"><strong>Customer:&nbsp;</strong>{{wizardData.selectedCustomer.name}}&nbsp;&nbsp;&nbsp;&nbsp;</span>
+                <span class="a_carrier"><strong>Carrier:&nbsp;</strong>{{wizardData.shipment.selectedProposition.carrier.name}}</span>
+        </div>
+        <div class="padding-top10 text-right">
+            <strong>Line Items :</strong> {{quoteMaterialsCopy.length}}
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="well well-small">
+            <div class="row-fluid">
+                <div class="span4">
+                    <span> <strong>Origin:</strong></span>
+                    <span data-ng-bind="wizardData.shipment.originDetails.zip | zip"></span>
+                </div>
+                <div class="span4">
+                    <span> <strong>Destination:</strong></span>
+                    <span data-ng-bind="wizardData.shipment.destinationDetails.zip | zip"></span>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span4">
+                    <span> <strong>Selected Accessorials:</strong></span>
+                    <span data-ng-bind="getAccessorialsNames(wizardData.shipment.originDetails.accessorials)"></span>
+                </div>
+                <div class="span4">
+                    <span> <strong>Selected Accessorials:</strong></span>
+                    <span data-ng-bind="getAccessorialsNames(wizardData.shipment.destinationDetails.accessorials)"></span>
+                </div>
+                <div class="span4">
+                    <span data-ng-show="requoteRequired" class="label label-warning">Re-Quote required, please select Re-Quote button at the bottom of the screen</span>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <form name="itemGridForm" novalidate>
+                    <div class="gridStyle span12 a_itemsGridOptions" style="height: 140px;" data-ng-grid="itemsGridOptions"></div>
+                </form>
+            </div>
+            <div class="row-fluid">
+			    <div class="span7">
+			        Total Weight: {{totals.weight | number}} lbs
+			    </div>
+			    <div class="span5">
+			        <div class="row-fluid">
+			            <div class="offset2 span3">
+			                Q-Ty: {{totals.quantity}}
+			            </div>
+			             <div class="offset3 span2">
+			                Pieces: {{totals.pieces}}
+			            </div>
+			        </div>
+			    </div>
+			</div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class="span3">
+            <div data-pls-quote-address="wizardData.shipment.originDetails.address" data-origin="true"
+                 data-customer-id="wizardData.selectedCustomer.id" data-view-id="originAddressPanel"
+                 data-parent-view-id="build-order" data-address-form="wizardData.origForm"></div>
+        </div>
+        <div class="span3">
+            <div data-pls-quote-address="wizardData.shipment.destinationDetails.address" data-origin="false"
+                 data-customer-id="wizardData.selectedCustomer.id" data-view-id="destinationAddressPanel"
+                 data-parent-view-id="build-order" data-address-form="wizardData.destForm"></div>
+        </div>
+        <div class="span3 well well-small">
+            <div class="row-fluid">
+                <div data-pls-bill-to data-shipment="wizardData.shipment" data-customer="wizardData.selectedCustomer"
+                     data-location-form="wizardData.locationForm" data-bill-to-form="wizardData.billToForm"></div>
+            </div>
+            <form name="customsBrokerForm" novalidate>
+	            <div data-ng-if="wizardData.showCustomsBroker">
+	                <hr/>
+	            </div>
+	            <div class="row-fluid" data-ng-if="wizardData.showCustomsBroker">
+	                <label class="control-label span4" for="customsBroker">Customs Broker:</label>
+	                <input id="customsBroker" class="span8" type="text" maxlength="255" required data-ng-model="wizardData.shipment.customsBroker.name">
+	            </div>
+	            <div class="row-fluid" data-ng-if="wizardData.showCustomsBroker">
+	                <label class="control-label span4" for="phone">Phone:</label>
+	                +
+	                <input class="span2" type="text" data-ng-model="wizardData.shipment.customsBroker.phone.countryCode" data-ng-minlength="1"
+	                       required data-ng-maxlength="3" data-ng-pattern="/^\d+$/">
+	                (
+	                <input class="span2" type="text" data-ng-model="wizardData.shipment.customsBroker.phone.areaCode" data-ng-minlength="1"
+	                       required data-ng-maxlength="3" data-ng-pattern="/^\d+$/">
+	                )
+	                <input id="phone" class="span3" type="text" data-ng-model="wizardData.shipment.customsBroker.phone.number" placeholder="#######"
+	                       required data-ng-minlength="7" data-ng-maxlength="7" data-ng-pattern="/^\d+$/">
+	                <div class="span4"></div>
+	                Ext.:
+	                <input id="extension" class="span3" type="text" data-ng-model="wizardData.shipment.customsBroker.phone.extension" placeholder="######"
+                           data-ng-maxlength="6" data-ng-pattern="/^\d+$/">
+	            </div>
+	        </form>
+        </div>
+
+        <div class="span3">
+            <div data-pls-quote-price-info="wizardData.shipment" data-view-id="priceInfoPanel" data-parent-view-id="build-order"></div>
+
+            <div data-ng-show="$root.isPlsPermissions('CAN_ADD_FREIGHT_BILL_TO_ON_SHIPMENT_ENTRY_AND_QUOTES')" class="row-fluid">
+                <div class="span12 well well-small">
+                    <div class="row-fluid">
+                        <div class="span4 label-middle">Freight Bill Pay To:</div>
+                        <div data-pls-freight-bill-pay-to data-selected-customer="wizardData.selectedCustomer"
+                             data-shipment="wizardData.shipment" class="pls-dropdown-float-right">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div data-ng-if="$root.isFieldRequired('CAN_VIEW_INTERNAL_NOTES')">
+                <textarea readonly id="internalNote" data-ng-model="wizardData.selectedCustomer.internalNote"
+                    class="span12 pls-font-bold pls-font-14" rows="14" maxlength="2000"></textarea>
+            </div>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        <div class="btn-block span2 offset10">
+            <button class="btn a_backButton" type="button" data-ng-click="back()"><i class="icon-chevron-left"></i>Back</button>
+            <button class="btn a_nextButton" type="button" data-ng-click="next()" data-ng-disabled="!canNextStep()">Next
+                <i class="icon-chevron-right"></i>
+            </button>
+            <button type="button" class="btn" data-ng-click="reQuote();" data-ng-disabled="!requoteRequired">Re-Quote</button>
+        </div>
+    </div>
+
+    <div data-ng-include="'pages/content/address-book/add-edit-address.html'"></div>
+    <div data-google-maps data-origin="wizardData.shipment.originDetails.address" data-destination="wizardData.shipment.destinationDetails.address"></div>
+</div>

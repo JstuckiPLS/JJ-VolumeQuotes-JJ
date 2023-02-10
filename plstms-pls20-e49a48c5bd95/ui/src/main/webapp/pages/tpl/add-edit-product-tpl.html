@@ -1,0 +1,171 @@
+<div id="addEditProductDialog" data-pls-modal="editProductModel.showEditProduct" data-close="closeEditProductDialog()"
+     class="a_products_add_edit modalWidth11" data-options="editProductModel.editProductModalOptions"
+     data-enter-allowed="{{!addEditProductForm.$invalid}}" data-enter="saveEditProductDialog()">
+    <div class="modal-header">
+        <h4>
+            <span ng-if="!editProductModel.product.id">Add</span>
+            <span ng-if="editProductModel.product.id">Edit</span> Product
+        </h4>
+    </div>
+    <div>
+        <br/>
+        <div class="row-fluid">
+            <form name="addEditProductForm" novalidate class="margin0">
+                <div class="span6">
+                    <div class="row-fluid">
+                        <label class="control-label span3 offset1 text-right">
+                            Customer:
+                        </label>
+                        <div class="span7 controls a_customerName" data-ng-bind="editProductModel.selectedCustomerName"></div>
+                    </div>
+                    <div class="row-fluid">
+                        <label class="control-label span3 offset1 label-middle text-right" for="product-description">
+                            <strong>Product Description:</strong>&nbsp;
+                        </label>
+                        &nbsp;
+                        <input id="product-description" class="span7 a_description" type="text" data-ng-model="editProductModel.product.description" required maxlength="1000">
+                    </div>
+                    <div class="row-fluid">
+                        <label class="control-label span3 offset1 label-middle text-right" for="nmfc-class">NMFC #:</label>
+                        &nbsp;
+                        <input id="nmfc-class" type="text" data-ng-model="editProductModel.product.nmfc" class="span3 a_nmfc"
+                               data-ng-pattern="/^[^\-]*$/" data-ng-required="editProductModel.product.nmfcSubNum" maxlength="14">
+                        -
+                        <input type="text" data-ng-model="editProductModel.product.nmfcSubNum" class="span3 a_nmfc2" maxlength="14">
+                    </div>
+                    <div class="row-fluid">
+                        <label class="control-label span3 offset1 label-middle text-right" for="commodity-class-select">
+                            <strong>Class:</strong>
+                        </label>
+                        &nbsp;
+                        <select id="commodity-class-select" data-ng-model="editProductModel.product.commodityClass" class="span6 controls a_commodityClass"
+                                data-ng-options="cc as cc | commodityClass for cc in editProductModel.commodityClasses"
+                                data-ng-disabled="editProductModel.commodityClassDefined" data-required></select>
+                        <button type="button" class="btn btn-mini a_commodityClassButton" data-ng-click="open()" data-pls-class-estimator="addEditProductDialog"
+                                data-ng-disabled="editProductModel.commodityClassDefined"
+                                data-ng-model="editProductModel.product">
+                            <i class="icon-question-sign icon-white"></i>
+                        </button>
+                    </div>
+                    <div class="row-fluid">
+                        <label class="control-label span3 offset1 label-middle text-right" for="product-code">SKU/Product Code:</label>
+                        &nbsp;
+                        <input id="product-code" type="text" class="span7 a_productCode" data-ng-model="editProductModel.product.productCode" maxlength="30">
+                    </div>
+                    <div class="row-fluid">
+                        <div class="form-inline" data-ng-show="$root.isFieldRequired('PRODUCT_LIST_CREATE_SELF')">
+                            <input id="productSelfPermission" type="checkbox" class="offset4" 
+                                    data-ng-model="editProductModel.product.sharedProduct"
+                                    data-ng-disabled="!_.isUndefined(editProductModel.product.createdBy) && editProductModel.product.createdBy !== $root.authData.personId">
+                            <label class="control-label" for="productSelfPermission">Shared</label>
+                        </div>
+                    </div>
+                </div>
+                <div class="span5 a_add_product_hazmat_div well well-small">
+                    <div class="form-inline">
+                        <input type="checkbox" id="prod-hazmat-checkbox" data-ng-disabled="!$root.isFieldRequired('ADD_EDIT_HAZMAT_PRODUCT')" data-ng-model="editProductModel.product.hazmat" class="a_hazmat">
+                        <label for="prod-hazmat-checkbox" class="control-label">Hazmat</label>
+                        <hr/>
+                    </div>
+                    <div class="row-fluid">
+                        <label data-ng-class="{muted:!editProductModel.product.hazmat}" for="hazmat-un-num" class="span4 control-label label-middle  text-right">
+                            <strong>UN #:</strong>
+                        </label>
+                        &nbsp;
+                        <input id="hazmat-un-num" type="text" data-ng-model="editProductModel.product.hazmatUnNumber"
+                               data-ng-disabled="!editProductModel.product.hazmat" class="span7 controls a_hazmatUnNum"
+                               data-ng-required="editProductModel.product.hazmat && !editProductModel.product.hazmatUnNumber" maxlength="32">
+                    </div>
+                    <div class="row-fluid">
+                        <label data-ng-class="{muted:!editProductModel.product.hazmat}" for="hazmat-pack-group-num" class="span4 control-label label-middle text-right">
+                            <strong>Packaging Group #:</strong>
+                        </label>
+                        <fieldset class="span8 control-label label-middle text-left" name="hazmat-pack-group-num" data-ng-disabled="!editProductModel.product.hazmat">
+                        <span class="pls-font-13"><input type="radio" name="hazmatPackingGroup" data-ng-model="editProductModel.product.hazmatPackingGroup" value ="PGI">I</span>
+                        <span class="pls-font-13"><input type="radio" name="hazmatPackingGroup" data-ng-model="editProductModel.product.hazmatPackingGroup" value ="PGII">II</span>
+                        <span class="pls-font-13"><input type="radio" name="hazmatPackingGroup" data-ng-model="editProductModel.product.hazmatPackingGroup" value ="PGIII">III</span>
+                        <span class="pls-font-13"><input type="radio" name="hazmatPackingGroup" data-ng-model="editProductModel.product.hazmatPackingGroup" value ="">Not Applicable</span>
+                        </fieldset >
+                    </div>
+                    <div class="row-fluid">
+                        <label data-ng-class="{muted:!editProductModel.product.hazmat}" for="hazmat-class-select" class="span4 control-label label-middle text-right">
+                            <strong>Hazmat Class:</strong>
+                        </label>
+                        &nbsp;
+                        <select id="hazmat-class-select" data-ng-model="editProductModel.product.hazmatClass" class="span7 controls a_hazmatClass"
+                                data-ng-options="hazmatClassValue as hazmatClassLabel for (hazmatClassValue, hazmatClassLabel) in editProductModel.hazmatClasses"
+                                data-ng-disabled="!editProductModel.product.hazmat"
+                                data-ng-required="editProductModel.product.hazmat && !editProductModel.product.hazmatClass"></select>
+                        <span class="icon-question-sign" data-pls-popover="hazmat-classes-popover-content" data-ng-show="editProductModel.product.hazmat"></span>
+
+                        <div id="hazmat-classes-popover-content">
+                            <div data-ng-repeat="hazmatClass in editProductModel.hazmatClasses" data-ng-bind="hazmatClass"></div>
+                        </div>
+                    </div>
+
+                    <br />
+
+                    <div class="row-fluid">
+                        <span data-ng-class="{muted:!editProductModel.product.hazmat}" class="span6 control-label">
+                            Emergency Response
+                        </span>
+                    </div>
+                    <hr/>
+                    <div class="row-fluid">
+                        <label data-ng-class="{muted:!editProductModel.product.hazmat}" for="emergencyCompanyInp" class="span3 control-label label-middle text-right">
+                            <strong>Company:</strong>
+                        </label>
+                        &nbsp;
+                        <input data-ng-disabled="!editProductModel.product.hazmat" data-ng-required="editProductModel.product.hazmat"
+                               id="emergencyCompanyInp" type="text"
+                               class="span9 controls a_emergencyCompany" maxlength="32" data-ng-model="editProductModel.product.hazmatEmergencyCompany">
+                    </div>
+                    <div class="row-fluid">
+                        <label data-ng-class="{muted:!editProductModel.product.hazmat}" class="span3 control-label label-middle text-right" for="phoneCountryCodeInp">
+                            <strong>Phone:</strong>
+                        </label>
+                        &nbsp;
+                        +
+                        <input data-ng-disabled="!editProductModel.product.hazmat" data-ng-required="editProductModel.product.hazmat"
+                               id="phoneCountryCodeInp" placeholder="###"
+                               class="span1 a_phoneCountryCode" type="text" data-ng-minlength="1" data-ng-maxlength="3"  maxlength="3"
+                               data-ng-model="editProductModel.product.hazmatEmergencyPhone.countryCode" data-pls-digits-validation>
+                        (
+                        <input data-ng-disabled="!editProductModel.product.hazmat" data-ng-required="editProductModel.product.hazmat"
+                               class="span2 a_phoneAreaCode" type="text" placeholder="###"
+                               data-ng-minlength="1" data-ng-maxlength="3" maxlength="3" data-ng-model="editProductModel.product.hazmatEmergencyPhone.areaCode" data-pls-digits-validation>
+                        )
+                        <input data-ng-disabled="!editProductModel.product.hazmat" data-ng-required="editProductModel.product.hazmat"
+                               data-ng-minlength="7"
+                               data-ng-maxlength="7" maxlength="7" class="span3 a_phoneNumber" type="text" placeholder="#######"
+                               data-ng-model="editProductModel.product.hazmatEmergencyPhone.number" data-pls-digits-validation>
+                        &nbsp;Ext.:
+                        <input data-ng-disabled="!editProductModel.product.hazmat" data-pls-digits-validation
+                               data-ng-maxlength="6" maxlength="6" class="span2" type="text" placeholder="######"
+                               data-ng-model="editProductModel.product.hazmatEmergencyPhone.extension">
+                    </div>
+                    <div class="row-fluid">
+                        <label data-ng-class="{muted:!editProductModel.product.hazmat}" for="emergencyContractInp" class="span3 control-label label-middle text-right">
+                            <strong>Contract #:</strong>
+                        </label>
+                        &nbsp;
+                        <input data-ng-disabled="!editProductModel.product.hazmat" data-ng-required="editProductModel.product.hazmat"
+                               id="emergencyContractInp" type="text"
+                               class="span9 controls a_emergencyContractInp" maxlength="32" data-ng-model="editProductModel.product.hazmatEmergencyContract">
+                    </div>
+                    <div class="row-fluid form-vertical">
+                        <label data-ng-class="{muted:!editProductModel.product.hazmat}" for="emergencyInstructionTxt" class="span4 control-label label-middle">
+                            Instructions:
+                        </label>
+                        <textarea data-ng-disabled="!editProductModel.product.hazmat" id="emergencyInstructionTxt" style="width: 90%" rows="3"
+                                  maxlength="2000" data-ng-model="editProductModel.product.hazmatInstructions" class="a_emergencyInstructionTxt"></textarea>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn a_add_product_cancel" data-ng-click="closeEditProductDialog()">Cancel</button>
+        <button type="button" class="btn btn-primary a_add_product_ok" data-ng-click="saveEditProductDialog()" data-ng-disabled="addEditProductForm.$invalid">OK</button>
+    </div>
+</div>

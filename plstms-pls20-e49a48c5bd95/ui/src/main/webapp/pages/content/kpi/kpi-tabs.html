@@ -1,0 +1,181 @@
+<div class="row-fluid" data-ng-controller="KpiCtrl"
+    data-pls-ignore-location-change-check="true" id="kpi">
+    <div class="span12">
+        <div class="span2">
+            <div class="well" style="background-color: #A4CFE8">
+                <div class="control-group">
+                    <label for="customer" class="span10 section-header">Customer:</label>
+                    <div>
+                        <input id="customer"
+                            data-pls-customer-lookup="selectedCustomer"
+                            data-count="5">
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label for="status" class="span10 section-header">Order
+                            Status:</label> <select id="status" class="span12"
+                        data-ng-init="status = listStatus[3].key"
+                        data-ng-model="status"
+                        data-ng-change="updateButton = false"
+                        data-ng-options="s.key as s.value for s in listStatus"></select>
+                </div>
+                <div class="control-group">
+                    <button type="button" class="btn"
+                        data-ng-disabled="updateButton"
+                        data-ng-click="update()">Update</button>
+                </div>
+            </div>
+            <div>
+                <div>
+                    <data-accordion class="dashbord-accordion" close-others="true">
+                        <data-accordion-group is-open="true" data-ng-if="$root.isFieldRequired('DASHBOARD_SUMMARIES_VIEW')">
+                            <accordion-heading>
+                                <h4>
+                                    <i class="icon-list"></i>Summaries
+                                </h4>
+                            </accordion-heading>
+                            <ul class="nav nav-tabs nav-stacked">
+                                <li data-ng-class="activeClassDefault">
+                                    <a data-ng-click="loadReport('summaries','destination-report', $event)">Destination Report</a>
+                                </li>
+                                <li><a data-ng-click="loadReport('summaries','carrier-summary', $event)">Carrier Summary</a></li>
+                                <li><a data-ng-click="loadReport('summaries','class-summary', $event)">Class Summary</a></li>
+                                <li><a data-ng-click="loadReport('summaries','geographic-summary', $event)">GeographicSummary</a></li>
+                                <li><a data-ng-click="loadReport('summaries','vendor-summary', $event)">Vendor Summary</a></li>
+                                <li><a data-ng-click="loadReport('summaries','customer-summary', $event)">Customer Summary</a></li>
+                                <li><a data-ng-click="loadReport('summaries','shipment-seasonally', $event)">Shipment Seasonally</a></li>
+                            </ul>
+                        </data-accordion-group>
+                        <data-accordion-group is-open="true" data-ng-if="$root.isFieldRequired('DASHBOARD_ACTIVITIES_VIEW')">
+                            <accordion-heading>
+                                <h4>
+                                    <i class="icon-list"></i> Activities
+                                </h4>
+                            </accordion-heading>
+                            <ul class="nav nav-tabs nav-stacked">
+                                <li><a
+                                    data-ng-click="loadReport('activities','daily-load-activity', $event)">Daily
+                                        Order Activity</a></li>
+                                <li><a
+                                    data-ng-click="loadReport('activities','carrier-trends', $event)">Carrier
+                                        Trends</a></li>
+                                <li><a
+                                    data-ng-click="loadReport('activities','weekly-load-activity', $event)">Weekly
+                                        Order Activity</a></li>
+                            </ul>
+                        </data-accordion-group>
+                        <data-accordion-group is-open="true" data-ng-if="$root.isFieldRequired('DASHBOARD_ANALISYS_VIEW')">
+                            <accordion-heading>
+                                <h4>
+                                    <i class="icon-list"></i> Analysis
+                                </h4>
+                            </accordion-heading>
+                            <ul class="nav nav-tabs nav-stacked">
+                                <li><a
+                                    data-ng-click="loadReport('analysis','freight-spend-analysis', $event)">Freight
+                                        Spend Analysis</a></li>
+                                <li><a
+                                    data-ng-click="loadReport('analysis','weight-analysis', $event)">Weight
+                                        Analysis</a></li>
+                                <li><a
+                                    data-ng-click="loadReport('analysis','shipment-overview', $event)">Shipment
+                                        Overview</a></li>
+                            </ul>
+                        </data-accordion-group>
+                    </data-accordion>
+                </div>
+            </div>
+        </div>
+        <div class="span10 well">
+            <div class="span12 filtersBlock">
+                <div class="control-group span4"
+                    data-ng-show="scacFilterShow">
+                    <label>TOP 20 Carriers:</label>
+                    <div class="span12 table-bordered plsCheckList divHeight150" style="background-color: #fff">
+                        <label data-ng-repeat="element in scacFilterList">
+                            <input type="checkbox"
+                            data-checklist-model="scacFilter"
+                            data-checklist-value="element.scac"
+                            class="checkbox-label-spacing"/>{{element.label}}
+                        </label>
+                    </div>
+                </div>
+                <div class="control-group span1"
+                    data-ng-show="origFilterShow">
+                    <label>Origin:</label>
+                    <div data-pls-check-list data-list="origFilterList"
+                        data-model="origFilter" class="divHeight150"></div>
+                </div>
+                <div class="control-group span1"
+                    data-ng-show="destFilterShow">
+                    <label>Destination:</label>
+                    <div data-pls-check-list data-list="destFilterList"
+                        data-model="destFilter" class="divHeight150"></div>
+                </div>
+                <div class="control-group span2"
+                    data-ng-show="classFilterShow">
+                    <label>Class:</label>
+                    <div data-pls-check-list data-list="classFilterList"
+                        data-model="classFilter" class="divHeight150"></div>
+                </div>
+                <div class="control-group span2"
+                    data-ng-show="yearFilterShow">
+                    <label>Year:</label>
+                    <div data-pls-check-list data-list="yearFilterList"
+                        data-model="yearFilter" class="divHeight150"></div>
+                </div>
+                <div class="control-group span2"
+                    data-ng-show="weightFilterShow">
+                    <label>Weight:</label>
+                    <div data-pls-check-list
+                        data-list="weightFilterList"
+                        data-model="weightFilter" class="divHeight150"></div>
+                </div>
+                <div class="control-group span2"
+                    data-ng-show="monthFilterShow">
+                    <label>Month:</label>
+                    <div data-pls-check-list data-list="monthFilterList"
+                        data-model="monthFilter" class="divHeight150"></div>
+                </div>
+                <div class="control-group span2"
+                    data-ng-show="weekdayFilterShow">
+                    <label>Weekday:</label>
+                    <div data-pls-check-list
+                        data-list="weekdayFilterList"
+                        data-model="weekdayFilter" class="divHeight150"></div>
+                </div>
+                <div class="control-group span2"
+                    data-ng-show="ioFlagFilterShow">
+                    <label for="ioFlagFilter">Inbound/Outbound
+                        flag:</label> <label
+                        data-ng-repeat="element in ioFlagFilterList">
+                        <input id="ioFlagFilter" type="checkbox"
+                        data-checklist-model="ioFlagFilter"
+                        data-checklist-value="element"
+                        class="checkbox-label-spacing">{{element}}
+                    </label>
+                </div>
+            </div>
+            <div class="control-group">
+                <a class="btn " data-ng-click="refresh()"><i
+                    class="icon-white icon-refresh"></i> Refresh</a> <a
+                    class="btn" data-ng-click="uncheck()"><i
+                    class="icon-white icon-remove"></i> Uncheck All</a>
+            </div>
+            <div class="control-group ">
+                <div id="views" class="span12 white-background"></div>
+            </div>
+        </div>
+    </div>
+    <div data-pls-modal="noDataDialog.shown" data-close="noDataDialog.show(false)" class="modalWidth2 modalHeight7">
+        <div class="modal-header">
+            <h5>Export</h5>
+        </div>
+        <div class="modal-body">
+            No data
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-ng-click="noDataDialog.show(false)">Close</button>
+        </div>
+    </div>
+</div>

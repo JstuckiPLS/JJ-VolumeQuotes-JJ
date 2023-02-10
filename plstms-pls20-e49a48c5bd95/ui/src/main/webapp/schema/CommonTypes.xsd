@@ -1,0 +1,1173 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- Created with Liquid XML 2015 Designer Edition 13.1.0.5909 (http://www.liquid-technologies.com) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+    elementFormDefault="qualified" attributeFormDefault="unqualified">
+    <xs:complexType name="LtlLoadMessage">
+        <xs:annotation>
+            <xs:documentation>Motor Carrier Load Tender for LTL Loads</xs:documentation>
+            <xs:appinfo>Load Build Schema for LTL Loads</xs:appinfo>
+        </xs:annotation>
+        <xs:sequence id="loadMessage" minOccurs="1" maxOccurs="1">
+            <xs:element name="CustomerName" type="CustomerName" minOccurs="0" maxOccurs="1" />
+            <xs:element name="MessageType" type="MessageType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Scac" type="Scac" minOccurs="0" maxOccurs="1" />
+            <xs:element name="ShipmentNo" type="ShipmentNo" minOccurs="0" maxOccurs="1" />
+            <xs:element name="ProNumber" type="ProNumber" minOccurs="0" maxOccurs="1" />
+            <xs:element name="InboundOutbound" type="InbOtb" minOccurs="0" maxOccurs="1" />
+            <xs:element name="OperationType" type="OperationType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="LoadStatus" type="LoadStatus" minOccurs="0" maxOccurs="1" />
+            <xs:element name="LoadId" type="LoadId" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Priority" type="Priority" minOccurs="0" maxOccurs="1" />
+            <xs:element name="PayTerms" type="PayTerms" minOccurs="0" maxOccurs="1" />
+            <xs:element name="InvoiceNumber" type="InvoiceNumber" minOccurs="0" maxOccurs="1" />
+            <xs:element name="InvoiceDate" type="InvoiceDate" minOccurs="0" maxOccurs="1" />
+            <xs:element name="InvoiceAmount" type="InvoiceAmt" minOccurs="0" maxOccurs="1" />
+            <xs:element name="InvoiceDueDate" type="InvoiceDueDate" minOccurs="0" maxOccurs="1" />
+            <xs:element name="InvoicePayTerms" type="InvoicePayTerms" minOccurs="0" maxOccurs="1" />
+            <xs:element name="GlNumber" type="GlNumber" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Bol" type="Bol" minOccurs="0" maxOccurs="1" />
+            <xs:element name="PoNum" type="PoNum" minOccurs="0" maxOccurs="1" />
+            <xs:element name="OriginatingSystem" type="OriginatingSys" minOccurs="0" maxOccurs="1" />
+            <xs:element name="FileType" type="FileType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="B2biFileName" type="B2biFileName" minOccurs="0" maxOccurs="1" />
+            <xs:element name="PickupNum" type="PickupNum" minOccurs="0" maxOccurs="1" />
+            <xs:element name="PreferredCarrier" type="PreferredCarrier" minOccurs="0" maxOccurs="1" />
+            <xs:element name="SoNum" type="SoNum" minOccurs="0" maxOccurs="1" />
+            <xs:element name="TrailerNum" type="TrailerNum" minOccurs="0" maxOccurs="1" />
+            <xs:element name="PickupNotes" type="PickupNotes" minOccurs="0" maxOccurs="1" />
+            <xs:element name="DeliveryNotes" type="DeliveryNotes" minOccurs="0" maxOccurs="1" />
+            <xs:element name="ShippingLabelNotes" type="ShippingLabelNotes" minOccurs="0" maxOccurs="1" />
+            <xs:element name="GuaranteedBy" type="GuaranteedBy" minOccurs="0" />
+            <xs:element name="ProhibitedCommodities" type="ProhibitedCommodities" minOccurs="0" />
+            <xs:element name="MessageByCarrier" type="MsgByCarrier" minOccurs="0" />
+            <xs:element name="MessageByCustomer" type="MsgByCustomer" minOccurs="0" />
+            <xs:element name="SelectCarrierBy" type="SelectCarrierBy" minOccurs="0" />
+            <xs:element name="TotalMiles" type="TotalMiles" minOccurs="0" />
+            <xs:element name="TotalWeight" type="Weight" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Total Weight</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="TotalPieces" type="Pieces" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Total Pieces</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="TotalQuantity" type="Quantity" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Total Quantity</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="TotalCost" type="TotalCost" minOccurs="0" />
+            <xs:element name="TotalRevenue" type="TotalRevenue" minOccurs="0" />
+            <xs:element name="TotalBenchmark" type="TotalBenchmark" minOccurs="0" />
+            <xs:element name="OverrideCost" type="YesNo" minOccurs="0" default="N">
+                <xs:annotation>
+                    <xs:documentation>Override Cost</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="OverrideRevenue" type="YesNo" minOccurs="0" default="N">
+                <xs:annotation>
+                    <xs:documentation>Override Revenue</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="VolumeQuoteId" type="VolumeQuoteId" minOccurs="0" />
+            <xs:element name="UseHighValueFor" type="UseHighValueFor" minOccurs="0" />
+            <xs:element name="PersonId" type="PersonId" minOccurs="0" />
+            <xs:element name="CustomerOrgId" type="CustomerOrgId" minOccurs="0" />
+            <xs:element name="CustomerLocationId" type="CustLocationId" minOccurs="0" />
+            <xs:element name="CustomerLocName" type="CustLocationName" minOccurs="0" />
+            <xs:element name="CustomerBillToId" type="BillToId" minOccurs="0" />
+            <xs:element name="BillingCurrencyCode" type="BillingCurrencyCode" minOccurs="0" />
+            <xs:element name="PaymentCurrencyCode" type="PaymentCurrencyCode" minOccurs="0" />
+            <xs:element name="ExchangeRate" type="ExchangeRate" minOccurs="0" />
+            <xs:element name="EdiAccountNum" type="EdiAccountNum" minOccurs="0" />
+            <xs:element name="RecvDateTime" type="RecvDateTime" minOccurs="0" />
+			<xs:element name="Notes" type="xs:string" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Internal Notes</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="NotesAuthor" type="PersonId" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Author of the Notes</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="NotesDate" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Date Notes is created (CCYY/MM/DD)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="NotesTime" type="xs:string" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Time Notes is created (HH:MI:SS)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="AddlRefNumbers" type="AddlRefNumbers" minOccurs="0" />
+            <xs:element name="Materials" type="Materials" minOccurs="0" />
+            <xs:element name="Addresses" type="Addresses" minOccurs="0" />
+            <xs:element name="TransactionDates" type="TransactionDates" minOccurs="0" />
+            <xs:element name="TrackingNotifications" type="TrackingNotifications" minOccurs="0" />
+            <xs:element name="BaseRates" type="BaseRates" minOccurs="0" />
+            <xs:element name="Accessorials" type="Accessorials" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AddlRefNumber">
+        <xs:annotation>
+            <xs:documentation>Additional reference Number</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Qualifier" type="Qualifier" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Number" type="RefNumber" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="AddlRefNumbers">
+        <xs:annotation>
+            <xs:documentation>Additional Reference Numbers Set</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="AddlRefNumber" type="AddlRefNumber" minOccurs="1" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Accessorial">
+        <xs:annotation>
+            <xs:documentation>Accessorial</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Code" type="AccesorialCode" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Description" type="AccessorialDesc" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Group" type="AccessorialDesc" minOccurs="0" maxOccurs="1" />
+            <xs:group ref="RateGroup" />
+            <xs:element name="AutoApplied" type="AccAutoApplied" minOccurs="0" maxOccurs="1" default="N">
+                <xs:annotation>
+                    <xs:documentation />
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Accessorials">
+        <xs:annotation>
+            <xs:documentation>Accessorial Set</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Accessorial" type="Accessorial" minOccurs="1" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Address">
+        <xs:annotation>
+            <xs:documentation>Address Information</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="AddressType" type="AddressType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Name" type="Name" minOccurs="0" />
+            <xs:element name="AddressCode" type="AddressCode" minOccurs="0" />
+            <xs:element name="Address1" type="AddressSt" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Address 1</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Address2" type="AddressSt" minOccurs="0">
+                <xs:annotation>
+                    <xs:documentation>Address 2</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="City" type="City" minOccurs="1" />
+            <xs:element name="StateCode" type="StateCode" minOccurs="1" />
+            <xs:element name="PostalCode" type="PostalCode" minOccurs="1" maxOccurs="1" />
+            <xs:element name="CountryCode" type="CountryCode" minOccurs="1" />
+            <xs:element name="ContactName" type="ContactName" minOccurs="0" />
+            <xs:element name="ContactPhone" type="ContactPhone" minOccurs="0" />
+            <xs:element name="ContactFax" type="ContactFax" minOccurs="0" />
+            <xs:element name="ContactEmail" type="ContactEmail" minOccurs="0" />
+            <xs:element name="AccountNum" type="AddrAccount" minOccurs="0" />
+            <xs:element name="Notes" type="Notes" minOccurs="0" />
+            <xs:element name="TransitDate" type="TransitDate" minOccurs="0" />
+            <xs:element name="AddToAddressBook" type="YesNo" minOccurs="0" maxOccurs="1" default="N">
+                <xs:annotation>
+                    <xs:documentation>Add to Address Book (Shared)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Addresses">
+        <xs:annotation>
+            <xs:documentation>Addresses Set</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Address" type="Address" minOccurs="2" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType id="BaseRate" name="BaseRate">
+        <xs:annotation>
+            <xs:documentation>Base Rate Info</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:group ref="RateGroup" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType id="BaseRates" name="BaseRates">
+        <xs:annotation>
+            <xs:documentation>Base Rates</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="BaseRate" type="BaseRate" minOccurs="1" maxOccurs="3" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="HazmatInfo">
+        <xs:annotation>
+            <xs:documentation>Hazmat Info</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="UNNum" type="HazmatUNNum" minOccurs="0" />
+            <xs:element name="PackagingGroupNum" type="HazmatPackagingGrpNum" minOccurs="0" />
+            <xs:element name="EmergencyCompany" type="HazmatEmergencyCompany" minOccurs="0" />
+            <xs:element name="EmergencyPhone" type="HazmatEmergencyPhone" minOccurs="0" maxOccurs="1" />
+            <xs:element name="EmergencyContractNum" type="HazmatEmergencyContractNum" minOccurs="0" maxOccurs="1" />
+            <xs:element name="EmergencyInstr" type="HazmatEmergencyInstr" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Class" type="HazmatClass" minOccurs="0" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Material">
+        <xs:annotation>
+            <xs:documentation>Material Info</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Weight" type="Weight" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Weight</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="CommodityClassCode" type="CommodityClass" minOccurs="1" maxOccurs="1" />
+            <xs:element name="ProductCode" type="ProductCode" minOccurs="0" maxOccurs="1" />
+            <xs:element name="ProductDesc" type="ProductDesc" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Length" type="Length" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Width" type="Width" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Height" type="Height" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Quantity" type="Quantity" minOccurs="0" maxOccurs="1" />
+            <xs:element name="PackagingType" type="PackagingType" minOccurs="0" maxOccurs="1" />
+            <xs:element name="PackagingDesc" type="PackagingDesc" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Stackable" type="YesNo" minOccurs="0" maxOccurs="1" default="N">
+                <xs:annotation>
+                    <xs:documentation>Is Stackable</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="Pieces" type="Pieces" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Nmfc" type="Nmfc" minOccurs="0" maxOccurs="1" />
+            <xs:element name="DimensionsUOM" type="DimensionsUOM" minOccurs="0" maxOccurs="1" fixed="INCH" />
+            <xs:element name="WeightUOM" type="WeightUOM" minOccurs="1" maxOccurs="1" fixed="LBS" />
+            <xs:element name="Hazmat" type="YesNo" minOccurs="0" maxOccurs="1" default="N">
+                <xs:annotation>
+                    <xs:documentation>Is Hazmat</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="HazmatInfo" type="HazmatInfo" minOccurs="0" maxOccurs="1" />
+            <xs:element name="OrderNum" type="OrderNum" minOccurs="0" maxOccurs="1" />
+            <xs:element name="Subtotal" type="Amount" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Subtotal</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="SpecialChargeCode" type="SpecialChargeCode" minOccurs="0" maxOccurs="1" />
+            <xs:element name="UnitCost" type="Amount" minOccurs="0" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Unit Cost</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="AddToProducts" type="YesNo" minOccurs="0" maxOccurs="1" default="N">
+                <xs:annotation>
+                    <xs:documentation>Add to Products (Shared)</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="Materials">
+        <xs:annotation>
+            <xs:documentation>Materials Set</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Material" type="Material" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TransactionDate">
+        <xs:annotation>
+            <xs:documentation>Transaction Date</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="TransDateType" type="TransDateType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Year" type="Year" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Month" type="Month" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Day" type="Day" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Hour" type="Hour" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Min" type="Minutes" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TransactionDates">
+        <xs:annotation>
+            <xs:documentation>Transaction Dates</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="TransactionDate" type="TransactionDate" minOccurs="1" maxOccurs="6" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TransitDate">
+        <xs:annotation>
+            <xs:documentation>Transit Date</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Year" type="Year" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Month" type="Month" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Day" type="Day" minOccurs="1" maxOccurs="1" />
+            <xs:element name="HourFrom" type="Hour" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Hour From</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="MinFrom" type="Minutes" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Minutes From</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="HourTo" type="Hour" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Hour To</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+            <xs:element name="MinTo" type="Minutes" minOccurs="1" maxOccurs="1">
+                <xs:annotation>
+                    <xs:documentation>Minutes To</xs:documentation>
+                </xs:annotation>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TrackingNotification">
+        <xs:annotation>
+            <xs:documentation>Tracking Notification</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="EmailAddress" type="EmailAddress" minOccurs="1" maxOccurs="1" />
+            <xs:element name="NotificationType" type="NotificationType" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="TrackingNotifications">
+        <xs:sequence>
+            <xs:element name="TrackingNotification" type="TrackingNotification" maxOccurs="unbounded" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="UseHighValueFor">
+        <xs:annotation>
+            <xs:documentation>Use High Value</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="Miles" minOccurs="0" maxOccurs="1" default="N">
+                <xs:annotation>
+                    <xs:documentation>For Miles</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="YesNo">
+                        <xs:minLength value="1" />
+                        <xs:maxLength value="1" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="Revenue" minOccurs="0" maxOccurs="1" default="N">
+                <xs:annotation>
+                    <xs:documentation>For Revenue</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="YesNo">
+                        <xs:minLength value="1" />
+                        <xs:maxLength value="1" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+            <xs:element name="Cost" minOccurs="0" maxOccurs="1" default="N">
+                <xs:annotation>
+                    <xs:documentation>For Cost</xs:documentation>
+                </xs:annotation>
+                <xs:simpleType>
+                    <xs:restriction base="YesNo">
+                        <xs:minLength value="1" />
+                        <xs:maxLength value="1" />
+                    </xs:restriction>
+                </xs:simpleType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+    <xs:simpleType name="AccAutoApplied">
+        <xs:annotation>
+            <xs:documentation>Auto Applied</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="YesNo">
+            <xs:minLength value="1" />
+            <xs:maxLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="AccesorialCode" name="AccesorialCode">
+        <xs:annotation>
+            <xs:documentation>Accessorial Code</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="AccessorialDesc" name="AccessorialDesc">
+        <xs:annotation>
+            <xs:documentation>Accessorial Description</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="AccessorialGroup" name="AccessorialGroup">
+        <xs:annotation>
+            <xs:documentation>Accessorial Group</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="PICKUP" />
+            <xs:enumeration value="DEL" />
+            <xs:minLength value="3" />
+            <xs:maxLength value="6" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="AddrAccount" name="AddrAccount">
+        <xs:annotation>
+            <xs:documentation>Account</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="AddressCode" name="AddressCode">
+        <xs:annotation>
+            <xs:documentation>Address Code</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="AddressType" name="AddressType">
+        <xs:annotation>
+            <xs:documentation>Address Type</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="AddressSt" name="AddressSt">
+        <xs:annotation>
+            <xs:documentation>Address </xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="Amount" name="Amount">
+        <xs:annotation>
+            <xs:documentation>Amount</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="B2biFileName" name="B2biFileName">
+        <xs:annotation>
+            <xs:documentation>B2Bi File Name</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="BillToId" name="BillToId">
+        <xs:annotation>
+            <xs:documentation>Customer Bill To ID</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:long" />
+    </xs:simpleType>
+    <xs:simpleType id="Bol" name="Bol">
+        <xs:annotation>
+            <xs:documentation>BOL</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="City" name="City">
+        <xs:annotation>
+            <xs:documentation>City</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="Comment" name="Comment">
+        <xs:annotation>
+            <xs:documentation>Comment</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="CommodityClass" name="CommodityClass">
+        <xs:annotation>
+            <xs:documentation>Commodity Class</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="50" />
+            <xs:enumeration value="55" />
+            <xs:enumeration value="60" />
+            <xs:enumeration value="65" />
+            <xs:enumeration value="70" />
+            <xs:enumeration value="77.5" />
+            <xs:enumeration value="85" />
+            <xs:enumeration value="92.5" />
+            <xs:enumeration value="100" />
+            <xs:enumeration value="110" />
+            <xs:enumeration value="125" />
+            <xs:enumeration value="150" />
+            <xs:enumeration value="175" />
+            <xs:enumeration value="200" />
+            <xs:enumeration value="250" />
+            <xs:enumeration value="300" />
+            <xs:enumeration value="400" />
+            <xs:enumeration value="500" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="ContactEmail" name="ContactEmail">
+        <xs:annotation>
+            <xs:documentation>Contact Email</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="ContactFax" name="ContactFax">
+        <xs:annotation>
+            <xs:documentation>Contact Fax</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="ContactName" name="ContactName">
+        <xs:annotation>
+            <xs:documentation>Contact Name</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="ContactPhone" name="ContactPhone">
+        <xs:annotation>
+            <xs:documentation>Contact Phone</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType name="CountryCode">
+        <xs:annotation>
+            <xs:documentation>Country Code</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="2" />
+            <xs:maxLength value="3" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="CustLocationId" name="CustLocationId">
+        <xs:annotation>
+            <xs:documentation>Customer Location ID</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:long" />
+    </xs:simpleType>
+    <xs:simpleType id="CustLocationName" name="CustLocationName">
+        <xs:annotation>
+            <xs:documentation>Csutomer Location Name</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="CustomerName" name="CustomerName">
+        <xs:annotation>
+            <xs:documentation>Customer Name</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="CustomerOrgId" name="CustomerOrgId">
+        <xs:annotation>
+            <xs:documentation>Customer Org ID</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:long" />
+    </xs:simpleType>
+    <xs:simpleType id="Day" name="Day">
+        <xs:annotation>
+            <xs:documentation>Day</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="2" />
+            <xs:maxLength value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="DeliveryNotes" name="DeliveryNotes">
+        <xs:annotation>
+            <xs:documentation>Load Delivery Notes</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="DimensionsUOM" name="DimensionsUOM">
+        <xs:annotation>
+            <xs:documentation>Dimensions Unit Code</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="INCH" />
+            <xs:enumeration value="CM" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="EmailAddress" name="EmailAddress">
+        <xs:annotation>
+            <xs:documentation>Email Addresses</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="FileType" name="FileType">
+        <xs:annotation>
+            <xs:documentation>File Type</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+            <xs:maxLength value="10" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="InvoiceAmt" name="InvoiceAmt">
+        <xs:annotation>
+            <xs:documentation>Invoice Amount</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="InvoiceDate" name="InvoiceDate">
+        <xs:annotation>
+            <xs:documentation>Invoice Date</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="InvoiceDueDate" name="InvoiceDueDate">
+        <xs:annotation>
+            <xs:documentation>Invoice Due Date</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="InvoiceNumber" name="InvoiceNumber">
+        <xs:annotation>
+            <xs:documentation>Invoice Number</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="InvoicePayTerms" name="InvoicePayTerms">
+        <xs:annotation>
+            <xs:documentation>Invoice Pay terms</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="GlNumber" name="GlNumber">
+        <xs:annotation>
+            <xs:documentation>GL Number</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="GuaranteedBy" name="GuaranteedBy">
+        <xs:annotation>
+            <xs:documentation>Guaranteed By</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="HazmatClass" name="HazmatClass">
+        <xs:annotation>
+            <xs:documentation>Hazmat Class</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType name="HazmatEmergencyCompany">
+        <xs:annotation>
+            <xs:documentation>Hazmat Emergency Company</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType name="HazmatEmergencyContractNum">
+        <xs:annotation>
+            <xs:documentation>Hazmat Emergency Contract Number</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType name="HazmatEmergencyInstr">
+        <xs:annotation>
+            <xs:documentation>Hazmat Emergency Instructions</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType name="HazmatEmergencyPhone">
+        <xs:annotation>
+            <xs:documentation>Hazmat Emergency Phone</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType name="HazmatPackagingGrpNum">
+        <xs:annotation>
+            <xs:documentation>Hazmat Packaging Group Num</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="HazmatUNNum" name="HazmatUNNum">
+        <xs:annotation>
+            <xs:documentation>Hazmat UN Number</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="Height" name="Height">
+        <xs:annotation>
+            <xs:documentation>Height</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal" />
+    </xs:simpleType>
+    <xs:simpleType id="Hour" name="Hour">
+        <xs:annotation>
+            <xs:documentation>Hour</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="2" />
+            <xs:maxLength value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="InbOtb" name="InbOtb">
+        <xs:annotation>
+            <xs:documentation>Inbound/Outbound</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="I" />
+            <xs:enumeration value="O" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="Length" name="Length">
+        <xs:annotation>
+            <xs:documentation>Length</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal" />
+    </xs:simpleType>
+    <xs:simpleType id="LoadId" name="LoadId">
+        <xs:restriction base="xs:long" />
+    </xs:simpleType>
+    <xs:simpleType id="LoadStatus" name="LoadStatus">
+        <xs:annotation>
+            <xs:documentation>Load Status (O/B/D)</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="O" />
+            <xs:enumeration value="B" />
+            <xs:enumeration value="D" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="Minutes" name="Minutes">
+        <xs:annotation>
+            <xs:documentation>Minute</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="2" />
+            <xs:maxLength value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="Month" name="Month">
+        <xs:annotation>
+            <xs:documentation>Month</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="2" />
+            <xs:maxLength value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="MsgByCarrier" name="MsgByCarrier">
+        <xs:annotation>
+            <xs:documentation>Message by Carrier</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="MsgByCustomer" name="MsgByCustomer">
+        <xs:annotation>
+            <xs:documentation>Message by Customer</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="Name" name="Name">
+        <xs:annotation>
+            <xs:documentation>Name</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="Nmfc" name="Nmfc">
+        <xs:annotation>
+            <xs:documentation>NMFC</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="Notes" name="Notes">
+        <xs:annotation>
+            <xs:documentation>Notes</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="NotificationType" name="NotificationType">
+        <xs:annotation>
+            <xs:documentation>Tracking Notification Type</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="DISP" />
+            <xs:enumeration value="PICK_UP" />
+            <xs:enumeration value="OUT_FOR_DEL" />
+            <xs:enumeration value="DEL" />
+            <xs:enumeration value="TRACK_UPD" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="OperationType" name="OperationType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="CREATE" />
+            <xs:enumeration value="UPDATE" />
+            <xs:enumeration value="CANCEL" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="OriginatingSys" name="OriginatingSys">
+        <xs:annotation>
+            <xs:documentation>Originating System</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="PackagingDesc" name="PackagingDesc">
+        <xs:annotation>
+            <xs:documentation>Packaging Description</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="PackagingType" name="PackagingType">
+        <xs:annotation>
+            <xs:documentation>Packaging Type</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="PayTerms" name="PayTerms">
+        <xs:annotation>
+            <xs:documentation>Payment terms</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="PPD" />
+            <xs:enumeration value="COL" />
+            <xs:enumeration value="TPL" />
+            <xs:enumeration value="TPD" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="PersonId" name="PersonId">
+        <xs:annotation>
+            <xs:documentation>Person ID</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:long" />
+    </xs:simpleType>
+    <xs:simpleType id="PickupNotes" name="PickupNotes">
+        <xs:annotation>
+            <xs:documentation>Load Pickup Notes</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="PickupNum" name="PickupNum">
+        <xs:annotation>
+            <xs:documentation>Pickup Number</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="Pieces" name="Pieces">
+        <xs:annotation>
+            <xs:documentation>Pieces</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int" />
+    </xs:simpleType>
+    <xs:simpleType id="PoNum" name="PoNum">
+        <xs:annotation>
+            <xs:documentation>Purchase Order Number</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="PostalCode" name="PostalCode">
+        <xs:annotation>
+            <xs:documentation>Postal Code</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="3" />
+            <xs:maxLength value="15" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="PreferredCarrier" name="PreferredCarrier">
+        <xs:annotation>
+            <xs:documentation>Is Carrier Preferred</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="YesNo">
+            <xs:minLength value="1" />
+            <xs:maxLength value="1" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="Priority" name="Priority">
+        <xs:annotation>
+            <xs:documentation>Priority of the load</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="N" />
+            <xs:enumeration value="M" />
+            <xs:enumeration value="C" />
+            <xs:enumeration value="R" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="ProNumber" name="ProNumber">
+        <xs:annotation>
+            <xs:documentation>Carrier's identification Number (PRO Number)</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="ProductCode" name="ProductCode">
+        <xs:annotation>
+            <xs:documentation>Product Code</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="ProductDesc" name="ProductDesc">
+        <xs:annotation>
+            <xs:documentation>Product Description</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="ProhibitedCommodities" name="ProhibitedCommodities">
+        <xs:annotation>
+            <xs:documentation>Prohibited Commodities</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="Quantity" name="Quantity">
+        <xs:annotation>
+            <xs:documentation>Quantity</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int" />
+    </xs:simpleType>
+    <xs:simpleType id="RateType" name="RateType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1" />
+            <xs:maxLength value="1" />
+            <xs:enumeration value="S" />
+            <xs:enumeration value="C" />
+            <xs:enumeration value="B" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="MessageType" name="MessageType">
+        <xs:annotation>
+            <xs:documentation>Message Type</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="Scac" name="Scac">
+        <xs:annotation>
+            <xs:documentation>Carrier SCAC (Standard Carrier Alpha Code)</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="4" />
+            <xs:maxLength value="4" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="SelectCarrierBy">
+        <xs:annotation>
+            <xs:documentation>Select Carrier By</xs:documentation>
+            <xs:appinfo>
+                LC - By Least Cost
+                LT - By Least Transit Time
+            </xs:appinfo>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="LC" />
+            <xs:enumeration value="LT" />
+            <xs:minLength value="2" />
+            <xs:maxLength value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="ShipmentNo" name="ShipmentNo">
+        <xs:annotation>
+            <xs:documentation>Shipment Identification Number</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="ShippingLabelNotes" name="ShippingLabelNotes">
+        <xs:annotation>
+            <xs:documentation>Shipping Label Notes</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="SoNum" name="SoNum">
+        <xs:annotation>
+            <xs:documentation>Sales Order Number</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="StateCode" name="StateCode">
+        <xs:annotation>
+            <xs:documentation>State or Province Code</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="2" />
+            <xs:maxLength value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="Subtotal" name="Subtotal">
+        <xs:annotation>
+            <xs:documentation>Subtotal</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="TotalMiles" name="TotalMiles">
+        <xs:annotation>
+            <xs:documentation>Total Miles</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal" />
+    </xs:simpleType>
+    <xs:simpleType id="TotalRevenue" name="TotalRevenue">
+        <xs:annotation>
+            <xs:documentation>Total Revenue on the load</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="TotalCost" name="TotalCost">
+        <xs:annotation>
+            <xs:documentation>Total Cost on the load</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="TotalBenchmark" name="TotalBenchmark">
+        <xs:annotation>
+            <xs:documentation>Total Benchmark on the load</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="TransDateType" name="TransDateType">
+        <xs:annotation>
+            <xs:documentation>Transaction Date Type</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="GATE_ARR" />
+            <xs:enumeration value="GATE_ADM" />
+            <xs:enumeration value="EST_PU" />
+            <xs:enumeration value="CONF_PU" />
+            <xs:enumeration value="GATE_DEP" />
+            <xs:enumeration value="LOADED" />
+            <xs:enumeration value="EST_DEL" />
+            <xs:enumeration value="CONF_DEL" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="TrailerNum" name="TrailerNum">
+        <xs:annotation>
+            <xs:documentation>Trailer(Equipment) Number</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="UnitCost" name="UnitCost">
+        <xs:annotation>
+            <xs:documentation>Unit Cost</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal">
+            <xs:fractionDigits value="2" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="UnitType" name="UnitType">
+        <xs:annotation>
+            <xs:documentation>Unit Type</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="VolumeQuoteId" name="VolumeQuoteId">
+        <xs:annotation>
+            <xs:documentation>Volume Quote ID</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="Weight" name="Weight">
+        <xs:annotation>
+            <xs:documentation>Weight</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal" />
+    </xs:simpleType>
+    <xs:simpleType id="WeightUOM" name="WeightUOM">
+        <xs:annotation>
+            <xs:documentation>Weight Unit Code</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="LBS" />
+            <xs:enumeration value="KG" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="Width" name="Width">
+        <xs:annotation>
+            <xs:documentation>Width</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal" />
+    </xs:simpleType>
+    <xs:simpleType id="Year" name="Year">
+        <xs:annotation>
+            <xs:documentation>Year</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string">
+            <xs:minLength value="4" />
+            <xs:maxLength value="4" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType name="YesNo">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="Y" />
+            <xs:enumeration value="N" />
+        </xs:restriction>
+    </xs:simpleType>
+    <xs:simpleType id="ExchangeRate" name="ExchangeRate">
+        <xs:annotation>
+            <xs:documentation>Exchange Rate</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:decimal" />
+    </xs:simpleType>
+    <xs:simpleType id="BillingCurrencyCode" name="BillingCurrencyCode">
+        <xs:annotation>
+            <xs:documentation>Billing Currency Code</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="PaymentCurrencyCode" name="PaymentCurrencyCode">
+        <xs:annotation>
+            <xs:documentation>Payment Currency Code</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="EdiAccountNum" name="EdiAccountNum">
+        <xs:annotation>
+            <xs:documentation>Edi Account Number</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="RecvDateTime" name="RecvDateTime">
+        <xs:annotation>
+            <xs:documentation>B2Bi File Received Date</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="Qualifier" name="Qualifier">
+        <xs:annotation>
+            <xs:documentation>Qualifier</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="RefNumber" name="RefNumber">
+        <xs:annotation>
+            <xs:documentation>Reference Number</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+    <xs:simpleType id="OrderNum" name="OrderNum">
+        <xs:annotation>
+            <xs:documentation>Order Number</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:int" />
+    </xs:simpleType>
+    <xs:simpleType id="SpecialChargeCode" name="SpecialChargeCode">
+        <xs:annotation>
+            <xs:documentation>Special Charge Code</xs:documentation>
+        </xs:annotation>
+        <xs:restriction base="xs:string" />
+    </xs:simpleType>
+
+    <xs:group name="RateGroup">
+        <xs:sequence>
+            <xs:element name="RateType" type="RateType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="UnitCost" type="UnitCost" minOccurs="0" />
+            <xs:element name="UnitType" type="UnitType" minOccurs="0" />
+            <xs:element name="Quantity" type="Quantity" minOccurs="0" />
+            <xs:element name="Subtotal" type="Subtotal" minOccurs="1" maxOccurs="1" />
+            <xs:element name="Comment" type="Comment" minOccurs="0" />
+        </xs:sequence>
+    </xs:group>
+</xs:schema>

@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans:beans xmlns="http://www.springframework.org/schema/security" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:beans="http://www.springframework.org/schema/beans"
+    xsi:schemaLocation="http://www.springframework.org/schema/security http://www.springframework.org/schema/security/spring-security.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!-- Configuration for public resource /ltlpricing/customer/getRates -->
+    <!-- Following shorter configuration can be used if all request types need to be public, not only POST:
+        <http pattern="/ltlpricing/customer/getRates" security="none" /> -->
+    <http entry-point-ref="http401UnauthorizedEntryPoint" pattern="/ltlpricing/customer/getRates" use-expressions="true" disable-url-rewriting="false">
+        <!-- configuration for POST method -->
+        <intercept-url pattern="/**" access="permitAll" method="POST" />
+        <intercept-url pattern="/**" access="permitAll" method="OPTIONS" />
+        <!-- configuration for all other methods -->
+        <intercept-url pattern="/**" access="isAuthenticated() AND (principal.plsUser OR principal.customerUser)" />
+
+        <csrf disabled="true"/>
+    </http>
+    <!-- End of configuration for public resource /ltlpricing/customer/getRates -->
+
+    <!-- Configuration for public resource /shipment/proposal/terminal-info -->
+    <http entry-point-ref="http401UnauthorizedEntryPoint" pattern="/shipment/proposal/terminal-info" use-expressions="true" disable-url-rewriting="false">
+        <!-- configuration for GET method -->
+        <intercept-url pattern="/**" access="permitAll" method="GET" />
+        <intercept-url pattern="/**" access="permitAll" method="OPTIONS" />
+        <!-- configuration for all other methods -->
+        <intercept-url pattern="/**" access="isAuthenticated() AND (principal.plsUser OR principal.customerUser)" />
+
+        <csrf disabled="true"/>
+    </http>
+    <!-- End of configuration for public resource /shipment/proposal/terminal-info -->
+
+    <!-- SOAP web service Configuarion starts -->
+    <http pattern="/endpoints" security="none"/>
+    <http pattern="/endpoints/*.wsdl" security="none"/>
+    <!-- SOAP web service Configuarion ends -->
+
+    <http pattern="/auth/*/password/reset" security="none" />
+    <http pattern="/customerdocs" security="none" />
+    <http pattern="/customerdocs/**" security="none" />
+    <http pattern="/unsubscribe/*" security="none" />
+    <http pattern="/bolTest" security="none" />
+
+    <http entry-point-ref="http401UnauthorizedEntryPoint" use-expressions="true" disable-url-rewriting="false">
+        <!-- Allow all for login/logout urls -->
+        <intercept-url pattern="/auth/login" access="permitAll" />
+        <intercept-url pattern="/auth/logout" access="permitAll" />
+        <intercept-url pattern="/auth/switch_user" access="permitAll" />
+        <intercept-url pattern="/auth/exit_user" access="permitAll" />
+
+        <intercept-url pattern="/**" access="isAuthenticated() AND (principal.plsUser OR principal.customerUser)" />
+
+        <custom-filter ref="switchUserProcessingFilter" position="SWITCH_USER_FILTER" />
+        <form-login login-processing-url="/auth/login" authentication-success-handler-ref="http200SuccessHandler"
+            authentication-failure-handler-ref="http404FailureHandler" username-parameter="login"
+            password-parameter="password" />
+        <logout logout-url="/auth/logout" success-handler-ref="http200LogoutSuccessHandler" delete-cookies="JSESSIONID" />
+        <remember-me remember-me-parameter="remember-me" key="pls2RememberMeKey" user-service-ref="pls20DetailsService" />
+        <anonymous enabled="false" />
+
+        <session-management>
+            <concurrency-control max-sessions="2147483647" session-registry-alias="sessionRegistry" />
+        </session-management>
+
+        <csrf disabled="true"/>
+
+        <headers>
+            <frame-options policy="SAMEORIGIN"/>
+        </headers>
+    </http>
+    <beans:bean id="http401UnauthorizedEntryPoint" class="com.pls.core.service.impl.security.handler.Http401UnauthorizedEntryPoint" />
+    <beans:bean id="http200SuccessHandler" class="com.pls.core.service.impl.security.handler.Http200SuccessHandler" />
+    <beans:bean id="http404FailureHandler" class="com.pls.core.service.impl.security.handler.Http403FailureHandler" />
+    <beans:bean id="http200LogoutSuccessHandler" class="com.pls.core.service.impl.security.handler.Http200LogoutSuccessHandler" />
+
+    <authentication-manager>
+        <authentication-provider user-service-ref="pls20DetailsService">
+            <password-encoder ref="pls20PasswordEncoder" />
+        </authentication-provider>
+    </authentication-manager>
+
+    <beans:bean id="pls20PasswordEncoder" class="com.pls.core.service.impl.security.PlsMD5Encoder" />
+
+    <beans:bean id="switchUserProcessingFilter" class="org.springframework.security.web.authentication.switchuser.SwitchUserFilter">
+        <beans:property name="userDetailsService" ref="pls20DetailsService" />
+        <beans:property name="switchUserUrl" value="/auth/switch_user" />
+        <beans:property name="exitUserUrl" value="/auth/exit_user" />
+        <beans:property name="successHandler" ref="http200SuccessHandler" />
+        <beans:property name="failureHandler" ref="http404FailureHandler" />
+    </beans:bean>
+</beans:beans>

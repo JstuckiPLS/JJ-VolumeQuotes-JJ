@@ -1,0 +1,75 @@
+<div data-ng-controller="EditCustomerBillToCtrl">
+    <div class="row-fluid" data-ng-if="billToListModel.billToData">
+        <div class="span7">
+            <div class="row-fluid">
+                Customer: {{editCustomerModel.customerName}}
+            </div>
+            <br/>
+            <div class="row-fluid">
+                <div class="gridStyle gridHeight3 span12 table a_optionsGrid" data-ng-grid="billToGrid.options"></div>
+            </div>
+
+            <div class="row-fluid" data-ng-if="$root.isFieldRequired('CUSTOMER_PROFILE_VIEW')">
+                <div class="span2">
+                    <button type="button" class="btn btn-block a_addButton" data-ng-click="addBillTo()">Add</button>
+                </div>
+                <div class="span2">
+                    <button type="button" class="btn btn-block a_editButton" data-ng-disabled="_.isEmpty(billToListModel.selectedBillTos)" data-ng-click="editBillTo()">
+                        Edit
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="span5 well well-small">
+            <div class="row-fluid">
+                <div class="span12"><strong>Name:</strong>&nbsp;&nbsp;{{billToListModel.selectedBillTos[0].address.addressName}}</div>
+                <br/>
+            </div>
+            <div class="row-fluid">
+                <div class="tabbable tabbable-bordered">
+                    <ul class="nav nav-tabs">
+                        <li data-ng-class="{active:billToListModel.selectedTab=='address'}">
+                            <a data-ng-click="billToListModel.selectedTab='address'">
+                                <span data-ng-bind ="changeLabelAccordingToPermission('CUSTOMER_PROFILE_VIEW','Client Bill To Address','Bill To Address')"></span>
+                            </a>
+                        </li>
+                        <li data-ng-class="{active:billToListModel.selectedTab=='invoicePreferences'}" data-ng-if="$root.isFieldRequired('CUSTOMER_PROFILE_VIEW')">
+                            <a data-ng-click="billToListModel.selectedTab='invoicePreferences'">Invoice Preferences</a>
+                        </li>
+                        <li data-ng-class="{active:billToListModel.selectedTab=='ediSettings'}" data-ng-if="$root.isFieldRequired('CUSTOMER_PROFILE_VIEW')">
+                            <a data-ng-click="billToListModel.selectedTab='ediSettings'">EDI Settings</a>
+                        </li>
+                        <!--<li data-ng-class="{active:billToListModel.selectedTab=='reqFields'}" data-ng-if="$root.isFieldRequired('CUSTOMER_PROFILE_VIEW')">
+                            <a data-ng-click="billToListModel.selectedTab='reqFields'">Req. Fields</a>
+                        </li>-->
+                        <li data-ng-class="{active:billToListModel.selectedTab=='defaultValues'}" data-ng-if="$root.isFieldRequired('CUSTOMER_PROFILE_VIEW')">
+                            <a data-ng-click="billToListModel.selectedTab='defaultValues'">Default Values</a>
+                        </li>
+                        <li data-ng-class="{active:billToListModel.selectedTab=='reqDocs'}" data-ng-if="$root.isFieldRequired('CUSTOMER_PROFILE_VIEW')">
+                            <a data-ng-click="billToListModel.selectedTab='reqDocs'">Req. Docs</a>
+                        </li>
+                        <li data-ng-class="{active:billToListModel.selectedTab=='auditPreferences'}" data-ng-if="$root.isFieldRequired('CUSTOMER_PROFILE_VIEW')">
+                            <a data-ng-click="billToListModel.selectedTab='auditPreferences'">Auditing Preferences</a>
+                        </li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active">
+                            <div data-ng-if="billToListModel.selectedTab=='address'" data-ng-include="'pages/content/customer/billTo/view/billto-view-address.html'"></div>
+                            <div data-ng-if="billToListModel.selectedTab=='invoicePreferences'" data-ng-include="'pages/content/customer/billTo/view/billto-view-invoice-preferences.html'"></div>
+                            <div data-ng-if="billToListModel.selectedTab=='ediSettings'" data-ng-include="'pages/content/customer/billTo/view/billto-view-edi-settings.html'"></div>
+                            <!--<div data-ng-if="billToListModel.selectedTab=='reqFields'" data-ng-include="'pages/content/customer/billTo/view/billto-view-req-fields.html'"></div>-->
+                            <div data-ng-if="billToListModel.selectedTab=='defaultValues'" data-ng-include="'pages/content/customer/billTo/view/billto-view-default-values.html'"></div>
+                            <div data-ng-if="billToListModel.selectedTab=='reqDocs'" data-ng-include="'pages/content/customer/billTo/view/billto-view-req-docs.html'"></div>
+                            <div data-ng-if="billToListModel.selectedTab=='auditPreferences'" data-ng-include="'pages/content/customer/billTo/view/billto-view-audit-preferences.html'"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div data-ng-controller="AddEditBillToCtrl">
+        <div data-ng-include="'pages/content/customer/billTo/add-billto.html'"></div>
+        <div data-ng-include="'pages/content/customer/billTo/edit-billto.html'"></div>
+    </div>
+</div>

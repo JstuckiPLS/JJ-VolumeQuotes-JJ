@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://com.pls.load" targetNamespace="http://com.pls.load"
+    elementFormDefault="qualified" attributeFormDefault="unqualified">   
+     <xs:element name="LTLAcknowledgement" type="LTLAcknowledgement"/>
+        <xs:complexType name="LTLAcknowledgement">
+            <xs:sequence>
+                <xs:element name="MessageType" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Type Of The Message Received.</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Scac" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Standard Carrier Alpha Code</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="PersonId" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>EDI User</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="CustomerOrgId" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Customer Organization ID</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="LoadId" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Load ID</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Bol" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Bill of Lading</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ShipmentNo" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Shipment Number</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="ControlNo" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Control Number</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="TransactionSetId" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Transaction Set</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+                <xs:element name="Status" type="xs:string">
+                    <xs:annotation>
+                        <xs:documentation>Status</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+		<xs:element name="SegmentError" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Segment Error</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+		<xs:element name="ElementError" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Element Error</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+		<xs:element name="ErrorCode" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Error Code</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+		<xs:element name="ErrorMessage" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Error Message</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+		<xs:element name="B2biFileName" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>B2Bi File Name</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+		<xs:element name="RecvDateTime" type="xs:string" minOccurs="0">
+                    <xs:annotation>
+                        <xs:documentation>Received Date and Time</xs:documentation>
+                    </xs:annotation>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+</xs:schema>

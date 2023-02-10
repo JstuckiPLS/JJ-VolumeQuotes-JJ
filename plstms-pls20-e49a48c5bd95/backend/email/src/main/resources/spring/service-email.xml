@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:amq="http://activemq.apache.org/schema/core"
+    xsi:schemaLocation="
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+           http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <context:component-scan base-package="com.pls.email" />
+
+    <bean id="servicePropertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="nullValue" value="null" />
+        <property name="ignoreUnresolvablePlaceholders" value="true"/>
+        <property name="ignoreResourceNotFound" value="true" />
+        <property name="locations">
+            <list>
+                <value>classpath*:spring/*.properties</value>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="systemPrereqs" class="org.springframework.beans.factory.config.MethodInvokingFactoryBean">
+        <property name="targetObject" value="#{@systemProperties}" />
+        <property name="targetMethod" value="putAll" />
+        <property name="arguments">
+            <!-- System property for active MQ -->
+            <util:properties>
+                <prop key="org.apache.activemq.default.directory.prefix">${user.home}/</prop>
+            </util:properties>
+        </property>
+    </bean>
+
+    <amq:queue id="PLS.MailQueue" physicalName="PLS.MailQueue"/>
+    <amq:redeliveryPolicy id="emailRedeliveryPolicy" destination="#PLS.MailQueue"
+        useExponentialBackOff="true"
+        backOffMultiplier="3"
+        maximumRedeliveries="4"
+        initialRedeliveryDelay="3000"/>
+    <amq:connectionFactory id="emailConnectionFactory" brokerURL="${activeMQ.brokerURL}"
+        redeliveryPolicy="#emailRedeliveryPolicy" trustAllPackages="true" nonBlockingRedelivery="true"/>
+    <bean id="emailCachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="emailConnectionFactory" />
+        <property name="sessionCacheSize" value="10" />
+        <property name="exceptionListener" ref="emailCachingConnectionFactory"/>
+    </bean>
+    <bean id="emailJMSTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="emailCachingConnectionFactory" />
+        <property name="defaultDestination" ref="PLS.MailQueue" />
+        <property name="sessionTransacted" value="true" />
+        <qualifier value="emailTemplate"/>
+    </bean>
+
+    <bean id="emailSender" class="com.pls.email.consumer.EmailSenderImpl">
+        <property name="defaultEncoding" value="${email.defaultEncoding}" />
+        <property name="host" value="${email.host}"/>
+        <property name="port" value="${email.port}"/>
+        <property name="username" value="${email.username}"/>
+        <property name="password" value="${email.password}"/>
+        <property name="protocol" value="${email.protocol}"/>
+        <property name="javaMailProperties">
+            <value>
+                mail.smtp.auth=${email.auth}
+                mail.debug=${email.debug}
+                mail.smtp.socketFactory.class=${email.socketFactory.class}
+                mail.smtp.socketFactory.fallback=${email.socketFactory.fallback}
+            </value>
+        </property>
+    </bean>
+</beans>

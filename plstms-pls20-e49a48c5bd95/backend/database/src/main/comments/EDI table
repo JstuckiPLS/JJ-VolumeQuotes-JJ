@@ -1,0 +1,4 @@
+EDI table is a log table. It contains all EDI messages we get from Adeptia. CARRIERS.EDI_CAPABLE is an flag to identify if we can generate EDI
+messages for Carriers. Some carriers wont support EDI and for those carriers we need to make webservice call or phone call.
+EDI.status values:
+R = Running, C = Completed, P = Processing, X = Cancelled, E = Errored. We wont use EDI table for this business scenario

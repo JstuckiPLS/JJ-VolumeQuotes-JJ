@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:jaxws="http://cxf.apache.org/jaxws"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://cxf.apache.org/jaxws http://cxf.apache.org/schemas/jaxws.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <import resource="classpath*:spring/carrier-info.xml"/>
+
+    <util:properties id="smc3ClientConfiguration" location="classpath:spring/smc3-client.properties" />
+    <context:property-placeholder properties-ref="smc3ClientConfiguration" />
+
+    <jaxws:client id="rateWareClient" serviceClass="com.smc.webservices.RateWareXLPortType"
+                  address="http://applications.smc3.com/AdminManager/services/RateWareXL" />
+
+    <jaxws:client id="carrierConnectClient" serviceClass="com.smc.carrierconnectxl.webservice.v3.CarrierConnectXLPortTypeV3"
+                  address="https://ccxl.smc3.com/CarrierConnectXL/services/soap/v3_1" />
+
+    <bean id="carrierToken" class="com.smc.webservices.AuthenticationToken">
+        <property name="licenseKey" value="${carrier.connect.license.key}"/>
+        <property name="password" value="${carrier.connect.user.password}"/>
+        <property name="username" value="${carrier.connect.user.name}"/>
+    </bean>
+
+    <bean id="rateToken" class="com.smc.webservices.AuthenticationToken">
+        <property name="licenseKey" value="${rate.ware.license.key}"/>
+        <property name="password" value="${rate.ware.user.password}"/>
+        <property name="username" value="${rate.ware.user.name}"/>
+    </bean>
+
+    <context:component-scan base-package="com.pls.smc3"/>
+</beans>

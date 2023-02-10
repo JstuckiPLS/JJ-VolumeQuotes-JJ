@@ -1,0 +1,80 @@
+<div data-ng-controller="FinancialBoardConsolidatedController" data-ng-init="init()" data-pls-ignore-location-change-check="true">
+    <div class="divHeight500 relative-block">
+        <div ui-layout pls-stateful-splitter on-action="closeDatepicker()">
+            <div ui-layout-container size="60%">
+                <div class="row-fluid">
+                    <div class="span4">
+                        <span class="pls-font-bold">Consolidated data by Customer:</span>
+                        <span>(Customers: {{gridCustomers}}, Approved: {{gridCustomersApproved}})</span>
+                    </div>
+                    <div class="span8 text-right form-inline">
+                        <label for="inputFilterDate" class="control-label">Release all Shipments Equal or Prior to:
+                            <p class="text-warning pls-pull-left pls-custom-warn">Also used to determine GL Date</p>
+                        </label>
+                        <label for="inputFilterDate" class="control-label input-small text-center pls-font-bold">
+                            {{parseISODate(cbiModel.filterDate) | date:'EEEE'}}
+                        </label>
+
+                        <div class="input-append">
+                            <input name="dateField" type="text" id="inputFilterDate" data-ng-model="cbiModel.filterDate" data-date-format="mm/dd/yy"
+                                   data-min-date="cbiModel.minFilterDate" data-max-date="cbiModel.maxFilterDate" data-pls-datepicker
+                                   class="input-small"/>
+                            <button type="button" class="btn" data-toggle="datepicker">
+                                <i class="icon-calendar"></i>
+                            </button>
+                        </div>
+                        &nbsp;
+                        <button data-ng-click="processInvoices()" data-ng-if="$root.isFieldRequired('CAN_PROCESS_INVOICE')"
+                                data-ng-disabled="!canProcess()" type="button" class="btn">Process Invoice
+                        </button>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span1">&nbsp; </div>
+                    <div data-ng-show = "!checkIsSameSelectedCustomer()" class="text-error text-right span11">
+                    Please select only Bill To's that belong to one Customer for Invoice Processing</div>
+                </div>
+                <div data-ng-grid="cbiModel.consolidatedInvoicesGrid" data-ng-model="cbiModel.cbiInvoiceData" class="gridStyle full-width" ></div>
+                <div class="row-fluid">&nbsp;</div>
+            </div>
+            <div ui-layout-container class="z-index1010 " size="40%">
+                <div class="row-fluid white-background2">&nbsp;</div>
+                <div class="row-fluid  white-background2">
+                    <div class="span6">
+                        <span class="control-label">
+                            <span class="pls-font-bold">Orders by Customer:</span>
+                            <span>(Records: {{gridRecords}}, Approved:{{recordsUpdate(cbiModel.consolidatedLoadsGrid.ngGrid.filteredRows)}})</span>
+                        </span>
+                    </div>
+                    <div class="span6 text-right">
+                        <button type="button" class="btn"
+                                data-ng-if="$root.isPlsPermissions('BOARD_CAN_EDIT_SALES_ORDER')"
+                                data-ng-click="editLoad('notes')"
+                                data-ng-disabled="cbiModel.selectedCBILoads.length != 1">Add Note</button>
+                        <button type="button" class="btn" data-ng-click="editLoad()" data-ng-disabled="cbiModel.selectedCBILoads.length != 1">Edit
+                        </button>
+                        <button type="button" class="btn" data-ng-click="exportLoads()" data-ng-if="$root.isFieldRequired('CAN_EXPORT_INVOICE')"
+                                data-ng-disabled="cbiModel.consolidatedLoadsGrid.ngGrid.filteredRows.length === 0 ||_.isEmpty(cbiModel.cbiLoads)">Export
+                        </button>
+                        <button type="button" class="btn" data-ng-click="sendToInvoiceAudit()"
+                                data-ng-if="$root.isFieldRequired('FIN_BOARD_SEND_TO_AUDIT')"
+                                data-ng-disabled="_.isEmpty(cbiModel.selectedCBILoads) || checkIfSelectedRecordsAreNotApproved()">Send To Invoice
+                            Audit
+                        </button>
+                        <button type="button" class="btn" data-ng-click="sendToPriceAudit()"
+                                data-ng-if="$root.isFieldRequired('FIN_BOARD_SEND_TO_AUDIT')"
+                                data-ng-disabled="_.isEmpty(cbiModel.selectedCBILoads) || checkIfSelectedRecordsAreNotApproved()">Send To Billing Hold
+                        </button>
+                    </div>
+                </div>
+                <div class="row-fluid white-background2">&nbsp;</div>
+                <div class="gridStyle full-width ui-layout-container-grid horizontal-column-select" data-ng-grid="cbiModel.consolidatedLoadsGrid"
+                     data-ng-model="cbiModel.cbiLoads"></div>
+            </div>
+        </div>
+    </div>
+    <div data-pls-process-invoice-dialog></div>
+
+    <div data-ng-include="'pages/content/sales-order/edit-sales-order.html'"></div>
+    <div data-ng-include="'pages/content/financialBoard/send-to-audit.html'"></div>
+</div>

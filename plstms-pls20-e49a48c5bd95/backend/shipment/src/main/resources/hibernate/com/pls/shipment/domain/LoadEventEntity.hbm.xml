@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.shipment.domain.LoadEventEntity.Q_BY_LOAD_ID">
+        <![CDATA[
+                select
+                    e.id as eventId,
+                    e.loadId as loadId,
+                    et.description as description,
+                    cu.firstName as firstName,
+                    cu.lastName as lastName,
+                    e.createdDate as createdDate,
+                    d.eventDataPK.ordinal as ordinal,
+                    d.data as data,
+                    e.eventTypeCode as eventType
+                from LoadEventEntity e
+                left join e.eventType et
+                left join e.data d
+                left join e.createdUser cu
+                where
+                    e.loadId = :loadId
+                order by e.createdDate desc
+        ]]>
+    </query>
+</hibernate-mapping>

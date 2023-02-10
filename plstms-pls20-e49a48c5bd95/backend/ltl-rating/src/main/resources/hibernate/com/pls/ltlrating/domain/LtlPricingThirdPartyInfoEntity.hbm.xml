@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.ltlrating.domain.LtlPricingThirdPartyInfoEntity.UPDATE_STATUS_STATEMENT">
+        <![CDATA[
+                UPDATE LtlPricingThirdPartyInfoEntity lpti SET lpti.status = :status,
+                lpti.modification.modifiedDate = LOCALTIMESTAMP, lpti.modification.modifiedBy = :modifiedBy
+                WHERE lpti.pricProfDetailId = :id
+        ]]>
+    </query>
+    <sql-query name="com.pls.ltlrating.domain.LtlPricingThirdPartyInfoEntity.FIND_CSP_ENTITY_BY_COPIED_FROM">
+        <return class="com.pls.ltlrating.domain.LtlPricingThirdPartyInfoEntity"/>
+        <![CDATA[
+                SELECT tpi.*
+                FROM ltl_pricing_third_party_info tpi
+                JOIN ltl_pricing_profile_details ppd ON ppd.ltl_pric_prof_detail_id = tpi.ltl_pric_prof_detail_id
+                JOIN ltl_pricing_profile pp ON pp.ltl_pricing_profile_id = ppd.ltl_pricing_profile_id AND pp.ltl_pricing_type = 'BLANKET_CSP'
+                WHERE tpi.copied_from = :id
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.ltlrating.domain.LtlPricingThirdPartyInfoEntity.FIND_THIRD_PARTY_BY_PROFILE_ID">
+        <return class="com.pls.ltlrating.domain.LtlPricingThirdPartyInfoEntity"/>
+        <![CDATA[
+                SELECT tpi.*
+                FROM ltl_pricing_third_party_info tpi
+                JOIN ltl_pricing_profile_details ppd ON ppd.ltl_pric_prof_detail_id = tpi.ltl_pric_prof_detail_id AND (ppd.pricing_detail_type IS NULL OR ppd.pricing_detail_type = 'BUY')
+                WHERE ppd.ltl_pricing_profile_id = :id AND tpi.status = 'A'
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.ltlrating.domain.LtlPricingThirdPartyInfoEntity.INACTIVATE_CSP_BY_DETAIL_ID">
+        <![CDATA[
+                UPDATE ltl_pricing_third_party_info ltpi SET status = 'I', modified_by = :modifiedBy, date_modified = LOCALTIMESTAMP
+                WHERE ltpi.ltl_pric_prof_detail_id IN
+                (SELECT pd.ltl_pric_prof_detail_id
+                FROM ltl_pricing_profile p
+                JOIN ltl_pricing_profile_details pd ON pd.ltl_pricing_profile_id = p.ltl_pricing_profile_id
+                WHERE p.ltl_pricing_type = 'BLANKET_CSP' AND p.copied_from = (SELECT pp.ltl_pricing_profile_id
+                FROM ltl_pricing_profile pp
+                JOIN ltl_pricing_profile_details ppd ON ppd.ltl_pricing_profile_id = pp.ltl_pricing_profile_id
+                AND ppd.ltl_pric_prof_detail_id = :ownerId))
+        ]]>
+    </sql-query>
+</hibernate-mapping>

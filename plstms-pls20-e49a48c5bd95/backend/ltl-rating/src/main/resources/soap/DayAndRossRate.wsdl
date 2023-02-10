@@ -1,0 +1,299 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions
+    xmlns:http="http://schemas.xmlsoap.org/wsdl/http/"
+    xmlns:soap12="http://schemas.xmlsoap.org/wsdl/soap12/"
+    xmlns:tns="http://dayrossgroup.com/web/public/webservices/shipmentServices"
+    xmlns:s="http://www.w3.org/2001/XMLSchema"
+    xmlns:mime="http://schemas.xmlsoap.org/wsdl/mime/"
+    xmlns:tm="http://microsoft.com/wsdl/mime/textMatching/"
+    xmlns:soapenc="http://schemas.xmlsoap.org/soap/encoding/"
+    xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+    xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" targetNamespace="http://dayrossgroup.com/web/public/webservices/shipmentServices">
+ 
+  <wsdl:types>
+    <s:schema elementFormDefault="qualified" targetNamespace="http://dayrossgroup.com/web/public/webservices/shipmentServices">
+      <s:element name="GetRate2">
+        <s:complexType>
+          <s:sequence>
+              <s:element name="division" type="tns:Division" maxOccurs="1" minOccurs="1"/>
+              <s:element name="emailAddress" type="s:string" maxOccurs="1" minOccurs="0"></s:element>
+              <s:element name="password" type="s:string" maxOccurs="1" minOccurs="0"></s:element>
+              <s:element name="shipment" type="tns:Shipment" maxOccurs="1" minOccurs="0"></s:element>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:element name="GetRate2Response">
+        <s:complexType>
+          <s:sequence>
+            <s:element name="GetRate2Result" type="tns:ArrayOfServiceLevels" maxOccurs="1" minOccurs="0"/>
+          </s:sequence>
+        </s:complexType>
+      </s:element>
+      <s:complexType name="DataMapping" abstract="true"/>
+      
+      <s:simpleType name="Division">
+          <s:restriction base="s:string">
+          <s:enumeration value="Testing"/>
+          <s:enumeration value="All"/>
+          <s:enumeration value="Unknown"/>
+          <s:enumeration value="GeneralFreight"/>
+          <s:enumeration value="Sameday"/>
+          <s:enumeration value="Fastrax"/>
+          <s:enumeration value="Intranet"/>
+          <s:enumeration value="DayRossGroup"/>
+          <s:enumeration value="DayRossDedicated"/>
+          <s:enumeration value="Sable"/>
+          <s:enumeration value="Ottaway"/>
+          <s:enumeration value="BrokerRecruitment"/>
+          <s:enumeration value="DRTN"/>
+          </s:restriction>
+      </s:simpleType>
+
+      <s:complexType name="Shipment">
+          <s:complexContent>
+              <s:extension base="tns:DataMapping">
+                  <s:sequence>
+                      <s:element name="ShipperAddress" type="tns:ShipmentAddress" maxOccurs="1" minOccurs="0"></s:element>
+                      <s:element name="ConsigneeAddress" type="tns:ShipmentAddress" maxOccurs="1" minOccurs="0"></s:element>
+                      <s:element name="BillToAccount" type="s:string" maxOccurs="1" minOccurs="0"></s:element>
+                      <s:element name="Items" type="tns:ArrayOfShipmentItem" maxOccurs="1" minOccurs="0"></s:element>
+                      <s:element name="SpecialServices" type="tns:ArrayOfShipmentSpecialService" maxOccurs="1" minOccurs="0"></s:element>
+                      <s:element name="ShipmentType" type="tns:ShipmentType" maxOccurs="1" minOccurs="1"></s:element>
+                      <s:element name="PaymentType" type="tns:PaymentType" maxOccurs="1" minOccurs="1"></s:element>
+                      <s:element name="MeasurementSystem" type="tns:MeasurementSystem" maxOccurs="1" minOccurs="1"></s:element>
+                      <s:element name="Division" type="tns:Division" maxOccurs="1" minOccurs="1"></s:element>
+
+                  </s:sequence>
+              </s:extension>
+          </s:complexContent>
+      </s:complexType>
+      <s:complexType name="ShipmentAddress">
+          <s:complexContent mixed="false">
+              <s:extension base="tns:DataMapping">
+                  <s:sequence>
+                      <s:element minOccurs="0" maxOccurs="1" name="Address1" type="s:string"/>
+                      <s:element minOccurs="0" maxOccurs="1" name="Address2" type="s:string"/>
+                      <s:element minOccurs="0" maxOccurs="1" name="City" type="s:string"/>
+                      <s:element minOccurs="0" maxOccurs="1" name="Country" type="s:string"/>
+                      <s:element minOccurs="0" maxOccurs="1" name="Name" type="s:string"/>
+                      <s:element minOccurs="0" maxOccurs="1" name="PostalCode" type="s:string"/>
+                      <s:element minOccurs="0" maxOccurs="1" name="Province" type="s:string"/>
+                      <s:element minOccurs="0" maxOccurs="1" name="CompanyName" type="s:string"/>
+                      <s:element minOccurs="0" maxOccurs="1" name="EmailAddress" type="s:string"/>
+                      <s:element minOccurs="0" maxOccurs="1" name="PhoneNumber" type="s:string"/>
+                  </s:sequence>
+                  </s:extension>
+              </s:complexContent>
+          </s:complexType>
+        
+      <s:complexType name="ArrayOfShipmentItem">
+          <s:sequence>
+              <s:element minOccurs="0" maxOccurs="unbounded" name="ShipmentItem" nillable="true"
+                  type="tns:ShipmentItem" />
+          </s:sequence>
+      </s:complexType>
+
+      <s:simpleType name="WeightUnit">
+          <s:restriction base="s:string">
+          <s:enumeration value="Pounds"/>
+          <s:enumeration value="Kilograms"/>
+          </s:restriction>
+      </s:simpleType>
+
+      <s:simpleType name="ShipmentType">
+          <s:restriction base="s:string">
+          <s:enumeration value="Regular"/>
+          <s:enumeration value="Return"/>
+          <s:enumeration value="ThirdParty"/>
+          <s:enumeration value="Exchange"/>
+          <s:enumeration value="Quote"/>
+          <s:enumeration value="CapacityPRO"/>
+          <s:enumeration value="LineH"/>
+          </s:restriction>
+      </s:simpleType>
+
+      <s:simpleType name="MeasurementSystem">
+          <s:restriction base="s:string">
+          <s:enumeration value="Unknown"/>
+          <s:enumeration value="MixedImperial"/>
+          <s:enumeration value="Imperial"/>
+          <s:enumeration value="Metric"/>
+          </s:restriction>
+      </s:simpleType>
+
+      <s:simpleType name="PaymentType">
+          <s:restriction base="s:string">
+          <s:enumeration value="Unknown"/>
+          <s:enumeration value="Prepaid"/>
+          <s:enumeration value="CashPrepaid"/>
+          <s:enumeration value="Collect"/>
+          <s:enumeration value="CashCollect"/>
+          <s:enumeration value="ThirdParty"/>
+          <s:enumeration value="CreditCard"/>
+          </s:restriction>
+      </s:simpleType>
+
+      <s:simpleType name="LengthUnit">
+        <s:restriction base="s:string">
+        <s:enumeration value="Inches"/>
+        <s:enumeration value="Feet"/>
+        <s:enumeration value="Centimeters"/>
+        <s:enumeration value="Meters"/>
+        </s:restriction>
+     </s:simpleType>
+
+     <s:complexType name="ArrayOfServiceLevels">
+         <s:sequence>
+         <s:element minOccurs="0" maxOccurs="unbounded" name="ServiceLevels" nillable="true" type="tns:ServiceLevels"/>
+         </s:sequence>
+     </s:complexType>
+     <s:complexType name="ServiceLevels">
+         <s:complexContent mixed="false">
+             <s:extension base="tns:DataMapping">
+             <s:sequence>
+             <s:element minOccurs="1" maxOccurs="1" name="Division" type="tns:Division"/>
+             <s:element minOccurs="0" maxOccurs="1" name="ServiceLevelCode" type="s:string"/>
+             <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string"/>
+             <s:element minOccurs="0" maxOccurs="1" name="ShipmentCharges" type="tns:ArrayOfShipmentCharge"/>
+             <s:element minOccurs="1" maxOccurs="1" name="ExpectedDeliveryDate" nillable="true" type="s:dateTime"/>
+             <s:element minOccurs="1" maxOccurs="1" name="TotalAmount" type="s:decimal"/>
+             <s:element minOccurs="0" maxOccurs="1" name="TransitTime" type="s:string"/>
+             </s:sequence>
+         </s:extension>
+         </s:complexContent>
+     </s:complexType>
+
+<s:complexType name="ArrayOfShipmentCharge">
+<s:sequence>
+<s:element minOccurs="0" maxOccurs="unbounded" name="ShipmentCharge" nillable="true" type="tns:ShipmentCharge"/>
+</s:sequence>
+</s:complexType>
+
+<s:simpleType name="Currency">
+<s:restriction base="s:string">
+<s:enumeration value="Unknown"/>
+<s:enumeration value="CAD"/>
+<s:enumeration value="USD"/>
+<s:enumeration value="Mixed"/>
+</s:restriction>
+</s:simpleType>
+
+<s:simpleType name="DataActions">
+<s:list>
+<s:simpleType>
+<s:restriction base="s:string">
+<s:enumeration value="Default"/>
+<s:enumeration value="Insert"/>
+<s:enumeration value="Associate"/>
+<s:enumeration value="Update"/>
+<s:enumeration value="Disassociate"/>
+<s:enumeration value="Delete"/>
+<s:enumeration value="InsertAndAssociate"/>
+<s:enumeration value="UpdateAndAssociate"/>
+<s:enumeration value="UpdateAndDisassociate"/>
+<s:enumeration value="DisassociateAndDelete"/>
+</s:restriction>
+</s:simpleType>
+</s:list>
+</s:simpleType>
+
+<s:complexType name="DataEntity" abstract="true">
+<s:complexContent mixed="false">
+<s:extension base="tns:DataMapping">
+<s:sequence>
+<s:element minOccurs="1" maxOccurs="1" name="Id" nillable="true" type="s:int"/>
+<s:element minOccurs="1" maxOccurs="1" name="RowVersion" type="s:long"/>
+<s:element minOccurs="1" maxOccurs="1" name="DataActions" type="tns:DataActions"/>
+</s:sequence>
+</s:extension>
+</s:complexContent>
+</s:complexType>
+
+<s:complexType name="ShipmentCharge">
+<s:complexContent mixed="false">
+<s:extension base="tns:DataEntity">
+<s:sequence>
+<s:element minOccurs="0" maxOccurs="1" name="IdentityValue" type="s:string"/>
+<s:element minOccurs="0" maxOccurs="1" name="ServiceLevelCode" type="s:string"/>
+<s:element minOccurs="1" maxOccurs="1" name="Sequence" type="s:int"/>
+<s:element minOccurs="0" maxOccurs="1" name="ChargeCode" type="s:string"/>
+<s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string"/>
+<s:element minOccurs="1" maxOccurs="1" name="Amount" type="s:decimal"/>
+<s:element minOccurs="1" maxOccurs="1" name="Currency" type="tns:Currency"/>
+<s:element minOccurs="1" maxOccurs="1" name="AlternateExchangeRate" type="s:decimal"/>
+<s:element minOccurs="1" maxOccurs="1" name="AlternateCurrency" type="tns:Currency"/>
+<s:element minOccurs="0" maxOccurs="1" name="Result" type="s:string"/>
+<s:element minOccurs="0" maxOccurs="1" name="AdditionalInfo" type="s:string"/>
+<s:element minOccurs="1" maxOccurs="1" name="ExpectedDeliveryDate" type="s:dateTime"/>
+<s:element minOccurs="0" maxOccurs="1" name="TransitTime" type="s:string"/>
+<s:element minOccurs="1" maxOccurs="1" name="TotalAmount" type="s:decimal"/>
+</s:sequence>
+</s:extension>
+</s:complexContent>
+</s:complexType>
+
+      <s:complexType name="ShipmentItem">
+           <s:complexContent mixed="false">
+           <s:extension base="tns:DataMapping">
+           <s:sequence>
+           <s:element minOccurs="0" maxOccurs="1" name="Description" type="s:string"/>
+           <s:element minOccurs="1" maxOccurs="1" name="Height" type="s:int"/>
+           <s:element minOccurs="1" maxOccurs="1" name="Length" type="s:int"/>
+           <s:element minOccurs="1" maxOccurs="1" name="LengthUnit" type="tns:LengthUnit"/>
+           <s:element minOccurs="1" maxOccurs="1" name="Pieces" type="s:int"/>
+           <s:element minOccurs="1" maxOccurs="1" name="Weight" type="s:int"/>
+           <s:element minOccurs="1" maxOccurs="1" name="WeightUnit" type="tns:WeightUnit"/>
+           <s:element minOccurs="1" maxOccurs="1" name="Width" type="s:int"/>
+           </s:sequence>
+           </s:extension>
+           </s:complexContent>
+      </s:complexType>
+
+      <s:complexType name="ArrayOfShipmentSpecialService">
+          <s:sequence>
+              <s:element name="ShipmentSpecialService" type="tns:ShipmentSpecialService" maxOccurs="unbounded" minOccurs="0"></s:element>
+          </s:sequence>
+      </s:complexType>
+
+            <s:complexType name="ShipmentSpecialService">
+                <s:complexContent mixed="false">
+                <s:extension base="tns:DataMapping">
+                <s:sequence>
+                <s:element minOccurs="0" maxOccurs="1" name="Code" type="s:string"/>
+                <s:element minOccurs="0" maxOccurs="1" name="AccessorialValue" type="s:string"/>
+                </s:sequence>
+                </s:extension>
+                </s:complexContent>
+            </s:complexType>
+        </s:schema>
+  </wsdl:types>
+  <wsdl:message name="GetRate2Request">
+    <wsdl:part element="tns:GetRate2" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="GetRate2Response">
+    <wsdl:part element="tns:GetRate2Response" name="parameters"/>
+  </wsdl:message>
+  <wsdl:portType name="ShipmentServicesSoap">
+    <wsdl:operation name="GetRate2">
+      <wsdl:input message="tns:GetRate2Request"/>
+      <wsdl:output message="tns:GetRate2Response"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="ShipmentServicesSoap" type="tns:ShipmentServicesSoap">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="GetRate2">
+      <soap:operation soapAction="http://dayrossgroup.com/web/public/webservices/shipmentServices/GetRate2" style="document"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="ShipmentServices">
+    <wsdl:port binding="tns:ShipmentServicesSoap" name="ShipmentServicesSoap">
+      <soap:address location="http://dayross.ca/public/shipmentservices.asmx"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>

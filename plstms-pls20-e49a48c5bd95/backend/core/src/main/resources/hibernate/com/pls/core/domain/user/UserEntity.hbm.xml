@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.core.domain.user.UserEntity.Q_GET_ID_BY_LOGIN">
+        <![CDATA[
+                SELECT u.id FROM UserEntity u
+                WHERE UPPER(u.login) = UPPER(:userId)
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_GET_BY_ID">
+        <![CDATA[
+                FROM UserEntity u WHERE u.id = :personId
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_PARENT">
+        <![CDATA[
+                SELECT p FROM UserEntity u LEFT JOIN u.parentUser p WHERE u.id = :userId
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_COUNT_ADMIN_USERS_BY_CUSTOMER">
+        <![CDATA[
+                SELECT COUNT(u) FROM UserEntity u WHERE u.parentOrgId = :organizationId
+                AND u.masterUser = 'Y' AND u.userStatus = 'A'
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_UPDATE_USER_STATUS">
+        <![CDATA[
+                UPDATE UserEntity u
+                SET u.userStatus=:status, u.modification.modifiedDate = LOCALTIMESTAMP,
+                u.modification.modifiedBy = :modifiedBy
+                WHERE u.id=:personId
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_FIND_ACCOUNT_EXECUTIVES_USERS_LIST">
+        <![CDATA[
+                SELECT DISTINCT new com.pls.core.domain.bo.SimpleValue ( u.id, u.firstName || ' ' || u.lastName )
+                FROM AccountExecutiveEntity uc
+                join uc.user u with u.userStatus = 'A' AND UPPER(u.firstName || ' ' || u.lastName) LIKE UPPER(:filter)
+                where LOCALTIMESTAMP BETWEEN uc.effectiveDate AND uc.expirationDate
+                ORDER BY u.firstName || ' ' || u.lastName
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_GET_USERS_NOTIFICATIONS">
+        <![CDATA[
+                select u.id,
+                case when u.customerServiceContactInfoType = 'SAME_AS_USER_PROFILE' then u.email
+                when u.customerServiceContactInfoType = 'CUSTOM' then info.email
+                else :defaultEmail end,
+                notifications.notificationType
+                from CustomerUserEntity cu
+                join cu.user u
+                join cu.notifications notifications with notifications.status = 'A'
+                left join u.additionalInfo info
+                where cu.customer.id = :customerId and cu.status = 'A' and cu.locationId =:locationId
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_SAVE_LAST_LOGIN_DATE_BY_USER_ID">
+        <![CDATA[
+                UPDATE UserEntity u SET u.lastLoginDate = :newDate WHERE u.id = :personId
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_GET_USERS_BY_LOGIN">
+        <![CDATA[
+                FROM UserEntity u
+                WHERE UPPER(u.login) = UPPER(:userId)
+        ]]>
+    </query>
+    <sql-query name="com.pls.core.domain.user.UserEntity.Q_LOAD_ORGANIZATIONS">
+        <![CDATA[
+                SELECT org.org_id
+                FROM FLATBED.ORGANIZATION_USERS org_users
+                INNER JOIN FLATBED.users u ON u.person_id = org_users.person_id AND u.status = 'A'
+                INNER JOIN FLATBED.ORGANIZATIONS org ON org_users.ORG_ID = org.ORG_ID AND (org.status = 'A' OR org.status = 'H' OR u.org_id = 38941)
+                WHERE org_users.PERSON_ID = :personId
+                    AND org_users.status = 'A'
+
+                UNION
+
+                SELECT org.org_id
+                FROM FLATBED.users u
+                INNER JOIN FLATBED.ORGANIZATIONS org ON u.org_id = org.org_id
+                WHERE u.PERSON_ID = :personId
+                    AND u.status = 'A'
+                    AND (org.status = 'A' OR org.status = 'H')
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.core.domain.user.UserEntity.Q_LOAD_CAPABILITIES">
+        <![CDATA[
+                SELECT C.NAME AS CAPABILITY
+                FROM FLATBED.CAPABILITIES C
+                JOIN FLATBED.USER_CAPABILITIES_XREF UC ON C.CAPABILITY_ID =  UC.CAPABILITY_ID AND UC.STATUS = 'A'
+                WHERE C.SYS_20 = 'Y'
+                    AND UC.PERSON_ID = :personId
+
+                UNION
+
+                SELECT C.NAME AS CAPABILITY
+                FROM FLATBED.CAPABILITIES C
+                JOIN FLATBED.GROUP_CAPABILITIES GC ON GC.CAPABILITY_ID =  C.CAPABILITY_ID AND GC.STATUS = 'A'
+                JOIN FLATBED.GROUPS G ON G.GROUP_ID = GC.GROUP_ID AND G.STATUS = 'A'
+                JOIN FLATBED.USER_GROUPS GU ON GU.GROUP_ID = G.GROUP_ID AND GU.STATUS = 'A'
+                WHERE C.SYS_20 = 'Y'
+                    AND GU.PERSON_ID = :personId
+        ]]>
+    </sql-query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_USER_NETWORK_CUSTOMER">
+        <![CDATA[
+                select distinct 1
+                from CustomerEntity c
+                join c.network n
+                join n.networkUsers nu
+                where nu.userId = :personId
+                    and c.id = :customerId
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_FIND_USER_INFO">
+        <![CDATA[
+                select
+                    u.id as personId,
+                    u.firstName as firstName,
+                    u.lastName as lastName,
+                    o.id as parentOrgId,
+                    o.name as parentOrgName,
+                    o.statusReason as parentOrgStatusReason,
+                    case when (count(distinct c.id) = 1 and count(nu.id) = 0) then min(c.id) else null end as assignedOrgId,
+                    case when (count(distinct c.id) = 1 and count(nu.id) = 0) then min(c.name) else null end as assignedOrgName
+                from UserEntity u
+                join u.parentOrganization o
+                left join u.networkUsers nu with nu.status = 'A'
+                left join u.customerUsers cu with cu.status = 'A'
+                left join cu.customer c with c.status = 'A'
+                where u.id = :personId
+                group by u.id, u.firstName, u.lastName, o.id, o.name, o.statusReason
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_FIND_BY_USER_ID">
+        <![CDATA[
+                select
+                    id as personId,
+                    parentOrgId as parentOrgId,
+                    login as userId,
+                    userStatus as status,
+                    password as password
+                from UserEntity u
+                where
+                    upper(login) = :userId
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_GET_EMAIL_BY_FILTER_VALUE">
+        <![CDATA[
+                select distinct
+                    firstName as firstName,
+                    lastName as lastName,
+                    email as email
+                FROM UserEntity
+                where userStatus = 'A'
+                    AND (upper(firstName) like :filterValue
+                        OR upper(lastName) like :filterValue
+                        OR upper(email) like :filterValue
+                    )
+                    AND (parentOrgId in (select parentOrgId FROM UserEntity where id = :personId)
+                        OR parentOrgId in (select customer.id FROM CustomerUserEntity where user.id = :personId AND status = 'A')
+                    )
+                ORDER BY firstName, lastName, email
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_SEARCH_USERS">
+        <![CDATA[
+                select distinct
+                    u.id as personId,
+                    u.login as userId,
+                    u.email as email,
+                    u.firstName as firstName,
+                    u.lastName as lastName,
+                    u.parentOrgId as parentOrgId,
+                    o.name as parentOrgName
+                FROM UserEntity u
+                join u.parentOrganization o
+                left join u.networkUsers nu
+                left join nu.network n
+                where u.userStatus = :status
+                AND (o.id in (select distinct cu.customer.id FROM CustomerUserEntity cu where cu.user.id = :personId AND cu.status = 'A')
+                    or o.networkId in (select nu.networkId from NetworkUserEntity nu where nu.userId = :personId and nu.status = 'A'))
+                AND (:company is null or upper(o.name) like :company)
+                AND (n.id = :businessUnitId OR (:allBusinessUnits = false and :businessUnitId is null) or (:allBusinessUnits = true and n.id is not null))
+                AND
+                (
+                    :searchValue is null
+                    or (:searchName = 'ID' AND upper(u.login) like :searchValue)
+                    OR (:searchName = 'NAME' AND (upper(u.firstName || ' ' || u.lastName) like :searchValue))
+                    OR (:searchName = 'EMAIL' AND upper(u.email) like :searchValue)
+                )
+                ORDER BY u.id
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.user.UserEntity.Q_GET_USER_INFO_BY_LOGIN">
+        <![CDATA[
+                select
+                    id as personId,
+                    parentOrgId as parentOrgId,
+                    login as userId,
+                    userStatus as status,
+                    password as password
+                from UserEntity
+                where
+                    upper(login) = :login
+        ]]>
+    </query>
+</hibernate-mapping>

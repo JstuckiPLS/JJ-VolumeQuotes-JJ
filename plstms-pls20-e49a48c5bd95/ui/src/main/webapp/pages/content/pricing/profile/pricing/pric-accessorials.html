@@ -1,0 +1,446 @@
+<div class="row-fluid" data-ng-controller="AccessorialsCtrl">
+    <!--FIRST COLUMN -->
+    <form name="formArea" novalidate>
+        <div class="span6 green-block">
+            <div class="span12">
+                <!-- Copy From Controls -->
+                <div class="form-horizontal" data-ng-hide="customerMarginSetup || _.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">
+                    <label class="control-label" for="inputCopyFrom"><b>Copy from:</b></label>
+                    <div class="controls" >
+                        <select class="span11" id="inputCopyFrom"
+                            data-ng-change="selectedProfileToCopy()"
+                            data-ng-model="selectedRateToCopy"
+                            data-ng-options="prof.id as prof.rateName for prof in copyProfiles">
+                        </select>
+                    </div>
+                </div>
+                <br/>
+                <div class="row-fluid">
+                    <form name="formArea" novalidate>
+                        <!-- Accessorials Panel -->
+                        <div class="span12">
+                            <div class="span12 well well-small">
+                                <!-- data-ng-show="_.contains(['buy', 'details'], tabUrl) ">  -->
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <b>Accessorial:</b>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="span6">
+                                        <select class="span12" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                                            id="inputAccessorialType" required
+                                            data-ng-model="accessorial.accessorialType"
+                                            data-ng-options="acc.id as acc.id +' - '+ acc.description for acc in accessorialTypes | orderBy:'description'">
+                                        </select>
+                                    </div>
+                                    <label class="checkbox span6" data-ng-if="!(profileDetails.isCSPAndCarrierApi() || profileDetails.isLTLLCApi())">
+                                        <input type="checkbox" data-ng-model="accessorial.applyBeforeFuel"
+                                               data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">
+                                        Apply Before Fuel
+                                    </label>
+                                </div>
+                                <div data-ng-if="!(profileDetails.isCSPAndCarrierApi() || profileDetails.isLTLLCApi())">
+	                                <div class="row-fluid" data-ng-if="!(profileDetails.isCSPAndCarrierApi() || profileDetails.isLTLLCApi())">
+	                                    <div class="span6" data-ng-hide="customerMarginSetup">
+	                                        <div class="span8 text-left">
+	                                            <label><br> Cost Type</label>
+	                                        </div>
+	                                        <div class="span4 text-center">
+	                                            <label><br> Cost</label>
+	                                        </div>
+	                                    </div>
+	                                    <div class="span6">
+	                                        <div data-ng-if="accessorial.accessorialType === 'ODM'" class="span3 text-center">
+	                                            <label>Min Length<br>
+	                                                (Inch)
+	                                            </label>
+	                                        </div>
+	                                        <div data-ng-if="accessorial.accessorialType !== 'ODM'" class="span3 text-center">
+	                                            <label>Min<br>
+	                                                (lbs)
+	                                            </label>
+	                                        </div>
+	                                        <div data-ng-if="accessorial.accessorialType === 'ODM'" class="span3 text-center">
+	                                            <label>Max Length<br>
+	                                                (Inch)
+	                                            </label>
+	                                        </div>
+	                                        <div data-ng-if="accessorial.accessorialType !== 'ODM'" class="span3 text-center">
+	                                            <label>Max<br>
+	                                                (lbs)
+	                                            </label>
+	                                        </div>
+	                                        <div class="span3 text-center">
+	                                            <label>Min<br>
+	                                                (miles)
+	                                            </label>
+	                                        </div>
+	                                        <div class="span3 text-center">
+	                                            <label>Max<br>
+	                                                (miles)
+	                                            </label>
+	                                        </div>
+	                                    </div>
+	                                </div>
+	                                <div class="row-fluid">
+	                                    <div class="span6" data-ng-hide="customerMarginSetup">
+	                                        <div class="span8">
+	                                            <select class="span12"
+	                                                id="inputCostType" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+	                                                data-ng-model="accessorial.costType"
+	                                                data-ng-options="type.value as  type.label for type in ltlCostTypes">
+	                                            </select>
+	                                        </div>
+	                                        <div class="span4">
+	                                            <div data-ng-if="_.contains(['PC'], accessorial.costType)">
+	                                                <input class="input-block-level"
+	                                                   type="text"
+	                                                   data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+	                                                   data-ng-model="accessorial.unitCost"
+	                                                   maxlength="5">
+	                                                  <!--  data-ng-pattern="/^100$|^[0-9]{1,2}$|^[0-9]{1,2}\.[0-9]{1,3}$/"> -->
+	                                            </div>
+	                                            <div data-ng-if="!_.contains(['PC'], accessorial.costType)">
+	                                                <input class="input-block-level"
+	                                                   type="text"
+	                                                   data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+	                                                   data-ng-model="accessorial.unitCost"
+	                                                   maxlength="6"
+	                                                   data-pls-number>
+	                                                </div>
+	                                        </div>
+	                                    </div>
+	                                    <div class="span6">
+	                                        <div data-ng-if="accessorial.accessorialType !== 'ODM'" class="span3">
+	                                            <input class="input-block-level"
+	                                                type="text"
+	                                                id="inputMinLbsValue" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+	                                                data-ng-model="accessorial.costApplMinWt"
+	                                                maxLength="6"
+	                                                data-pls-number>
+	                                        </div>
+	                                        <div data-ng-if="accessorial.accessorialType !== 'ODM'" class="span3">
+	                                            <input class="input-block-level"
+	                                                type="text"
+	                                                id="inputMaxLbsValue" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+	                                                data-ng-model="accessorial.costApplMaxWt"
+	                                                maxLength="6"
+	                                                data-pls-number>
+	                                        </div>
+	                                        <div data-ng-if="accessorial.accessorialType === 'ODM'" class="span3">
+	                                            <input class="input-block-level"
+	                                                type="text"
+	                                                id="inputMinLenValue" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+	                                                data-ng-model="accessorial.costApplMinLength"
+	                                                maxLength="6"
+	                                                data-pls-number>
+	                                        </div>
+	                                        <div data-ng-if="accessorial.accessorialType === 'ODM'" class="span3">
+	                                            <input class="input-block-level"
+	                                                type="text"
+	                                                id="inputMaxLenValue" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+	                                                data-ng-model="accessorial.costApplMaxLength"
+	                                                maxLength="6"
+	                                                data-pls-number>
+	                                        </div>
+	                                        <div class="span3">
+	                                            <input class="input-block-level"
+	                                                type="text"
+	                                                id="inputMinMilesValue" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+	                                                data-ng-model="accessorial.costApplMinDist"
+	                                                maxLength="6"
+	                                                data-pls-number>
+	                                        </div>
+	                                        <div class="span3">
+	                                            <input class="input-block-level"
+	                                                type="text" id="inputMaxMilesValue"
+	                                                data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+	                                                data-ng-model="accessorial.costApplMaxDist"
+	                                                maxLength="6"
+	                                                data-pls-number>
+	                                        </div>
+	                                    </div>
+	                                </div>
+                                    <div class="row-fluid">
+                                       <div class="span12" data-ng-hide="customerMarginSetup">
+                                           <div class="span3 text-center">
+                                               <label>Min Cost </label>
+                                           </div>
+                                           <div class="span3 text-center">
+                                               <label>Max Cost</label>
+                                           </div>
+                                           <div class="span3 text-center">
+                                               <label>Type</label>
+                                           </div>
+                                           <div class="span3 text-center">
+                                               <label>Mov. Type</label>
+                                           </div>
+                                       </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span12" data-ng-hide="customerMarginSetup">
+                                            <div class="span3">
+                                                <input class="input-block-level" type="text" id="inputMinCostValue" 
+                                                        data-ng-model="accessorial.minCost"
+                                                        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)" 
+                                                        data-pls-number>
+                                            </div>
+                                            <div class="span3">
+                                                <input class="input-block-level" type="text" id="inputMaxCostValue" 
+                                                        data-ng-model="accessorial.maxCost"
+                                                        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                                                        data-pls-number>
+                                            </div>
+                                            <div class="span3">
+                                               <select class="input-small span12" id="inputType" 
+                                                        data-ng-model="accessorial.serviceType" data-ng-disabled="isBlanketCSP"
+                                                        data-ng-options="type.value as  type.label for type in detailsDictionary.ltlServiceTypes">
+                                               </select>
+                                            </div>
+                                            <div class="span3">
+                                               <select class="input-small span12" id="inputMovType"
+                                                        data-ng-model="accessorial.movementType" 
+                                                        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">
+                                                        <option value="BOTH">Both</option>
+                                                        <option value="INTRA">Intra State</option>
+                                                        <option value="INTER">Inter State</option>
+                                               </select>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid"
+                                    data-ng-hide="(_.contains(['BUY', 'BUY_SELL'], pricingType) && _.contains(['BUY_SELL'], profileDetails.pricingType.ltlPricingType))
+                                || _.contains(['BLANKET','BENCHMARK'], profileDetails.pricingType.ltlPricingType)">
+                                    <div class="span6">
+                                        <div class="span8 text-left">
+                                            <label> Margin Type</label>
+                                        </div>
+                                        <div class="span4 text-center">
+                                            <label> Margin </label>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid"
+                                    data-ng-hide="(_.contains(['BUY', 'BUY_SELL'], pricingType) && _.contains(['BUY_SELL'], profileDetails.pricingType.ltlPricingType))
+                                || _.contains(['BLANKET','BENCHMARK'], profileDetails.pricingType.ltlPricingType)">
+                                    <div class="span6">
+                                        <div class="span8">
+                                            <select class="span12"
+                                                id="inputMarginType"
+                                                data-ng-model="accessorial.marginType"
+                                                data-ng-options="type.value as  type.label for type in detailsDictionary.ltlMarginTypes">
+                                            </select>
+                                        </div>
+                                        <div class="span4">
+                                            <input class="input-block-level"
+                                                type="text"
+                                                data-ng-model="accessorial.unitMargin"
+                                                maxLength="6"
+                                                data-pls-number>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="span2 text-right">
+                                            <label> Min $: </label>
+                                        </div>
+                                        <div class="span4">
+                                            <input class="input-block-level"
+                                                type="text"
+                                                data-ng-model="accessorial.marginDollarAmt"
+                                                maxLength="6"
+                                                data-pls-number>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="row-fluid">
+                                        <div class="offset1">
+                                            <p class="muted">Only if need to be overridden</p>
+                                        </div>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span6">
+                                            <div class="row-fluid">
+                                                <div class="control-group form-horizontal span12">
+                                                    <label class="control-label span3 text-left"
+                                                            for="inputEffectiveDate">Effective:</label>
+                                                    <div class="controls span9">
+                                                        <div class="input-append span12">
+                                                            <input name="dateField"
+                                                                type="text"
+                                                                id="inputEffectiveDate"
+                                                                data-ng-model="accessorial.effDate"
+                                                                maxLength="10"
+                                                                data-date-format="mm/dd/yy"
+                                                                data-max-date="accessorial.expDate"
+                                                                data-pls-datepicker
+                                                                data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                                                                data-pls-highlighting-date data-effective='accessorial.effDate' data-expired='accessorial.expDate'
+                                                                class="input-small"/>
+                                                            <button type="button"
+                                                                class="btn"
+                                                                data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                                                                data-toggle="datepicker">
+                                                                <i class="icon-calendar"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row-fluid"  data-ng-hide="customerMarginSetup || _.contains(['BENCHMARK'], profileDetails.pricingType.ltlPricingType)">
+                                                <div class="control-group form-horizontal span12">
+                                                    <label class="control-label span3 text-left" for="inputExtNotes">External Notes:</label>
+                                                    <div class="controls span9">
+                                                        <div class="input-append span12">
+                                                         <textarea id="inputExtNotes"
+                                                             class="input-xlarge span12"
+                                                             rows="3" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                                                             data-ng-model="accessorial.extNotes">
+                                                         </textarea>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="span6">
+                                            <div class="row-fluid">
+                                                <div class="control-group form-horizontal span12">
+                                                    <label class="control-label span3 text-left"
+                                                        for="inputExpiredDate">Expired:</label>
+                                                    <div class="controls span9">
+                                                        <div class="input-append span12">
+                                                            <input name="dateField"
+                                                                type="text"
+                                                                id="inputExpiredDate"
+                                                                data-ng-model="accessorial.expDate"
+                                                                maxLength="10"
+                                                                data-date-format="mm/dd/yy"
+                                                                data-min-date="accessorial.effDate"
+                                                                data-pls-datepicker
+                                                                data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                                                                class="input-small" />
+                                                            <button type="button"
+                                                                class="btn"
+                                                                data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                                                                data-toggle="datepicker">
+                                                                <i class="icon-calendar"></i>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="row-fluid"  data-ng-hide="customerMarginSetup || _.contains(['BENCHMARK'], profileDetails.pricingType.ltlPricingType)">
+                                             <div class="control-group form-horizontal span12">
+                                                 <label class="control-label span3 text-left" for="inputIntNotes">Internal Notes:</label>
+                                                 <div class="controls span9">
+                                                    <div class="input-append span12">
+                                                      <textarea id="inputIntNotes"
+                                                          class="input-xlarge span12"
+                                                          rows="3" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                                                          data-ng-model="accessorial.intNotes">
+                                                      </textarea>
+                                                    </div>
+                                                 </div>
+                                             </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row-fluid">
+                                    <div class="row-fluid">
+                                        <b>Origin (City/State/Zip/Country):</b>
+                                    </div>
+                                    <div class="row-fluid">
+                                        <div class="span5">
+                                            <textarea rows="3" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                                                class="input-block-level"
+                                                data-ng-model="editOrigin">
+                                            </textarea>
+                                            <b>Destination (City/State/Zip/Country):</b>
+                                            <textarea rows="3" data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)"
+                                                class="input-block-level"
+                                                data-ng-model="editDestination">
+                                            </textarea>
+                                            <div class="row-fluid">
+                                                <div class="offset8 span3 controls-row">
+                                                    <button class="btn btn-block" type="button" data-ng-click="setZips()">Set &gt;</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="span5">
+                                            <div class="gridStyle gridHeight2 span12" data-ng-grid="addressGrid"></div>
+                                        </div>
+                                        <div class="span2">
+                                            <div class="row-fluid">
+                                                <button class="btn btn-block" type="button"
+                                                        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType) || selectedAddresses.length != 1"
+                                                        data-ng-click="editZips()">Edit</button>
+                                            </div>
+                                            <br>
+                                            <div class="row-fluid">
+                                                <button class="btn btn-block" type="button"
+                                                        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType) || selectedAddresses.length != 1"
+                                                        data-ng-click="deleteZips()">Delete</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <br/>
+                                    <div class="row-fluid ">
+                                        <div class="span5">&nbsp;</div>
+                                        <button class="btn btn-block span2" type="button" data-ng-click="resetAccessorial()">Clear</button>
+                                        <button class="btn btn-primary span3" type="button" data-ng-click="saveAccessorial(true)"
+                                                data-ng-disabled="formArea.$invalid || !isEditAccessorial || _.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">Save As New</button>
+                                        <button class="btn btn-primary span2" type="button" data-ng-click="saveAccessorial(false)"
+                                            data-ng-disabled="formArea.$invalid || (!isEditAccessorial && _.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType))">Save</button>
+                                    </div>
+                                </div>
+    
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </form>
+    <!--END FIRST COLUMN -->
+
+    <!--SECOND COLUMN -->
+    <div class="span6">
+        <div class="tabbable tabbable-bordered span12">
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="" data-toggle="tab"
+                    data-ng-click="loadListItems('ACTIVE')">Active</a></li>
+                <li><a href="" data-toggle="tab"
+                    data-ng-click="loadListItems('EXPIRED')">Expired</a></li>
+                <li><a href="" data-toggle="tab"
+                    data-ng-click="loadListItems('ARCHIVED')">Archived</a></li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="tab1">
+                    <div class="span10">
+                        <div class="gridStyle gridHeight4 span12" data-ng-grid="gridOptions" data-ng-dblclick="editAccessorial()"></div>
+                    </div>
+                    <div class="span2">
+                        <div class="row-fluid">
+                            <button class="btn btn-block" type="button" data-ng-click="editAccessorial()" data-ng-disabled="currentTabName == 'ARCHIVED' || selectedItems.length != 1">Edit</button>
+                        </div>
+                        <br>
+                        <div class="row-fluid">
+                            <button class="btn btn-block" type="button" data-ng-click="expireAccessorials()" 
+                                data-ng-disabled="currentTabName != 'ACTIVE' || selectedItems.length != 1 || _.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">Expire</button>
+                        </div>
+                        <br>
+                        <div class="row-fluid">
+                            <button class="btn btn-block" type="button" data-ng-click="updateAccessorialStatus()" 
+                                data-ng-disabled="selectedItems.length != 1 || _.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">{{changeStatusButtonName}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END SECOND COLUMN -->
+</div>

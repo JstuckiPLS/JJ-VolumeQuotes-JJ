@@ -1,0 +1,5 @@
+<input type="text" data-ng-model="plsZipSearch"
+    autocomplete="off"
+    data-typeahead-auto-select="true" data-ng-disabled="zipDisabled"
+    data-get-selected-item-index-fn="getSelectedItemIndex"
+    data-pls-typeahead="zip as showViewValue(zip) lbl zip | zip for zip in findZip($viewValue)">

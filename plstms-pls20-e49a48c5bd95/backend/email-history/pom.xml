@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <prerequisites>
+        <maven>3.3.9</maven>
+    </prerequisites>
+
+    <artifactId>email-history</artifactId>
+    
+    <name>PLS2.0 - Email history module</name>
+    <description>Module for email history functionality</description>
+
+    <organization>
+        <name>PLS Logistics Services</name>
+        <url>http://www.plslogistics.com/</url>
+    </organization>
+
+    <parent>
+        <artifactId>backend</artifactId>
+        <groupId>com.pls</groupId>
+        <version>1.0.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <properties>
+        <rootProject.location>${project.basedir}/../..</rootProject.location>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>document</artifactId>
+        </dependency>
+
+        <!-- Tests related libs -->
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>test-utils</artifactId>
+        </dependency>
+    </dependencies>
+</project>

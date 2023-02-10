@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <FLATBED.BILL_TO_DEFAULT_VALUES bill_to_default_value_id="1" bill_to_id="1" inbound_outbound="O" edi_inbound_outbound="O" pay_terms="PREPAID" edi_pay_terms="PREPAID" date_created="2016-02-18" created_by="1" date_modified="2016-02-18" modified_by="1" version="1"/>
+</dataset>

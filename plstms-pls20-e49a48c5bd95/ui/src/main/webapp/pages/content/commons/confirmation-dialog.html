@@ -1,0 +1,12 @@
+<div data-pls-modal="shouldBeOpen" data-close="close()" class="modalWidth4 a_confirmationDialog"  data-enter="ok()" data-options="confirmDialogOptions">
+    <div class="modal-header">
+        <h5>{{caption}}</h5>
+    </div>
+    <div class="modal-body">
+       <p data-ng-bind-html="message"></p>
+    </div>
+    <div class="modal-footer">
+       <button type="button" class="btn a_cancelButton" data-ng-hide ="closeButtonHide" data-ng-click="close()">{{closeButtonLabel}}</button>
+       <button type="button" class="btn btn-primary a_okButton" data-ng-hide ="confirmButtonHide" data-ng-click="ok()">{{confirmButtonLabel}}</button>
+    </div>
+</div>

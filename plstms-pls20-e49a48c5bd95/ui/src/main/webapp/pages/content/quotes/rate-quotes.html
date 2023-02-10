@@ -1,0 +1,162 @@
+<div data-ng-controller="RateQuoteCtrl" data-pls-ignore-location-change-check="{{isFormClean()}}" data-pls-input-cleaning>
+    <div class="row-fluid">
+        <h4>Start Quote</h4>
+    </div>
+    <div class="row-fluid form-inline">
+        <div class="span6">
+            <div class="control-group">
+               <div class="row-fluid span8">
+                     <div class="span2">
+                        <label class="span12 label-middle customer-label">Customer:</label>
+                    </div>
+                    <div class="span7">
+                        <div id="customerInput" data-is-optional="$root.isFieldRequired('ADD_QUOTE_WITHOUT_CUSTOMER')"
+                             data-pls-customer-lookup-required data-pls-customer-lookup="wizardData.selectedCustomer" tabindex="1"></div>
+                    </div>
+                    <div class="span3">
+                        <button class="btn a_copyFromButton" type="button" data-ng-click="openCopyFromDialog()" data-ng-disabled="!wizardData.selectedCustomer.id" tabindex="-1">Copy Shipment</button>
+                        <div data-ng-include="'pages/content/quotes/copyfrom/copy-from.html'"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="span4 offset2">
+            <div class="control-group">
+                <label class="control-label" for="pickupDate">Pickup Date:</label>
+                <label class="control-label input-small text-center" for="pickupDate"><strong>{{parseISODate(wizardData.shipment.finishOrder.pickupDate) | date:'EEEE'}}</strong></label>
+
+                <div class="input-append">
+                    <input name="dateField" type="text" id="pickupDate"
+                           data-ng-model="wizardData.shipment.finishOrder.pickupDate"
+                           data-ng-init="wizardData.shipment.finishOrder.pickupDate"
+                           data-min-date="wizardData.minPickupDate"
+                           data-pls-datepicker
+                           tabindex="4"
+                           required
+                           class="input-small a_pickupDate"/>
+                    <button type="button" class="btn" data-toggle="datepicker" tabindex="-1">
+                        <i class="icon-calendar"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <form name="addressesForm" novalidate data-ng-init="init()">
+            <div class="span4">
+                <div class="span6 form-inline well well-small">
+                    <div class="control-group">
+                        <h5 class="text-center">Pickup</h5>
+                    </div>
+                    <div class="a_pickupZip">
+                    <div class="control-group">
+                        <label class="control-label span4 label-middle" for="addressInp">Address name:</label>
+                    <div class="span8">
+                         <input id="pickupAddressInp" class="span12"  
+                         data-pls-address-name-search tabindex="-1"
+                         data-address-name-update="updateAddressName"
+                         data-pls-address-values="dataAddressNames"
+                         data-current-address-name="wizardData.shipment.originDetails" 
+                         data-selected-customer="wizardData.selectedCustomer"
+                         data-ng-disabled="isAllowSelectAddressName()"/>
+                    </div>
+                    </div><div class="row-fluid"></div>
+                        <div data-ng-init="wizardData.shipment.originDetails.zip" data-validate-warning="true"
+                             data-pls-zip-select="wizardData.shipment.originDetails.zip" data-zip-tab-index="1"></div>
+                    </div>
+                    <div class="control-group" data-ng-if="!_.isUndefined(wizardData.pickupLimitedAccess)">
+                        <label class="checkbox">
+                            <input type="checkbox" data-checklist-model="wizardData.shipment.originDetails.accessorials"
+                                data-checklist-value="wizardData.pickupLimitedAccess" tabindex="2"
+                                data-ng-disabled="_.contains(wizardData.shipment.originDetails.accessorials, 'REP') || _.contains(wizardData.shipment.originDetails.accessorials, 'RES')"> Limited Access
+                        </label>
+                        <i class="icon-info-sign" data-pls-popover="pickupNonCommercialHelp" data-placement="right"></i>
+    
+                        <div class="container-fluid" id="pickupNonCommercialHelp">
+                            <div class="row-fluid" data-ng-repeat="nonCommercial in nonCommercials">{{nonCommercial}}</div>
+                        </div>
+                    </div>
+                    <div class="control-group" data-ng-show="!_.isEmpty(wizardData.allPickupAccessorials)">
+                        <div class="span12 table-bordered plsCheckList" style="height: 320px; background-color: #fff">
+                            <label data-ng-repeat="accessorial in wizardData.allPickupAccessorials" style="display: block">
+                                <input type="checkbox"
+                                    data-checklist-model="wizardData.shipment.originDetails.accessorials"
+                                    data-checklist-value="accessorial"
+                                    tabindex="-1"
+                                    class="checkbox-label-spacing"/>{{accessorial | ref}}
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="span6 form-inline well well-small">
+                    <div class="control-group">
+                        <h5 class="text-center">Delivery</h5>
+                    </div>
+                    <div class="a_deliveryZip">
+                    <div class="control-group">
+                        <label class="control-label span4 label-middle" for="addressInp">Address name:</label>
+                    <div class="span8">
+                         <input id="addressInp" class="span12"  
+                         data-pls-address-name-search
+                         data-address-name-update="updateAddressName"
+                         data-pls-address-values="dataAddressNames"
+                         data-is-delivery-address= 'true'
+                         data-current-address-name="wizardData.shipment.destinationDetails"
+                         data-selected-customer="wizardData.selectedCustomer"
+                         tabindex="-1"
+                         data-ng-disabled="isAllowSelectAddressName()"/>
+                    </div>
+                    </div><div class="row-fluid"></div>
+                        <div data-ng-init="wizardData.shipment.destinationDetails.zip" data-validate-warning="true"
+                             data-pls-zip-select="wizardData.shipment.destinationDetails.zip" data-zip-tab-index="2"></div>
+                    </div>
+                    <div class="control-group" data-ng-if="!_.isUndefined(wizardData.deliveryLimitedAccess)">
+                        <label class="checkbox">
+                            <input type="checkbox" data-checklist-model="wizardData.shipment.destinationDetails.accessorials"
+                                data-checklist-value="wizardData.deliveryLimitedAccess" tabindex="3"
+                                data-ng-disabled="_.contains(wizardData.shipment.destinationDetails.accessorials, 'REP') || _.contains(wizardData.shipment.destinationDetails.accessorials, 'RES')"> Limited Access
+                        </label>
+                        <i class="icon-info-sign" data-pls-popover="deliveryNonCommercialHelp" data-placement="right"></i>
+    
+                        <div class="container-fluid" id="deliveryNonCommercialHelp">
+                            <div class="row-fluid" data-ng-repeat="nonCommercial in nonCommercials">{{nonCommercial}}</div>
+                        </div>
+                    </div>
+                    <div class="control-group" data-ng-show="!_.isEmpty(wizardData.allDeliveryAccessorials)">
+                        <div class="span12 table-bordered plsCheckList" style="height: 320px; background-color: #fff">
+                            <label data-ng-repeat="accessorial in wizardData.allDeliveryAccessorials" style="display: block">
+                                <input type="checkbox"
+                                    data-checklist-model="wizardData.shipment.destinationDetails.accessorials"
+                                    data-checklist-value="accessorial"
+                                    tabindex="-1"
+                                    class="checkbox-label-spacing"/>{{accessorial | ref}}
+                                    <i data-ng-if="accessorial === 'NDR'" class="icon-info-sign" data-pls-popover="deliveryAppointmentRequiredHelp" data-placement="top"></i>
+                            </label>
+                            <div id="deliveryAppointmentRequiredHelp" data-ng-if="_.contains(wizardData.allDeliveryAccessorials, 'NDR')" class="text-center">
+                                Standard transit times<br>may be longer when<br>opting for this appointment<br>service</div>
+                        </div>
+                    </div>
+                </div>
+                <div data-ng-if="$root.isFieldRequired('CAN_VIEW_INTERNAL_NOTES')">
+                     <textarea readonly id="internalNote" data-ng-model="wizardData.selectedCustomer.internalNote"
+                        class="span12 pls-font-bold pls-font-14" rows="8" maxlength="2000"></textarea>
+                </div>
+            </div>
+        </form>
+        <div class="span8">
+            <div class="a_products" data-pls-quote-products="wizardData.shipment" data-rate-quote-dictionary="rateQuoteDictionary"
+                data-selected-customer="wizardData.selectedCustomer" data-quote-processing="getQuote" data-class-not-required-for-canada="true"
+                data-show-large-load-message="true" data-dimensions-required="isOverDimensionSelected() || originAndDestinationAreCanada()"
+                data-start-quote-tab-index="getPickupDateIndex() + 1"></div>
+            <div class="row-fluid"><span>&nbsp;</span></div>
+            <div class="row-fluid">
+                <div class="span2">
+                    <strong>Line Items :</strong> {{wizardData.shipment.finishOrder.quoteMaterials.length}} of {{wizardData.maxCountOfProducts}}
+                </div>
+                <div class="span2 offset8">
+                    <button type="button" class="btn btn-block a_clearAllButton" data-ng-click="clearAll()">Clear All</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

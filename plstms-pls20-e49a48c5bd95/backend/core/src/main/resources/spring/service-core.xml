@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:amq="http://activemq.apache.org/schema/core"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+                           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+                           http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd
+                           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <context:component-scan base-package="com.pls.**.service" />
+
+    <import resource="classpath*:spring/holidays-calendar.xml"/>
+
+    <bean id="restTemplate" name="restTemplate" class="org.springframework.web.client.RestTemplate" autowire-candidate="true"/>
+
+    <util:list id="jaxbRelatedPackages">
+        <value>com.pls.invoice.domain.xml</value>
+        <value>com.pls.core.domain.xml</value>
+        <value>com.pls.shipment.domain.sterling</value>
+        <value>com.pls.shipment.domain.sterling.enums</value>
+    </util:list>
+
+    <!--  Configuring external integration message queue starts here -->
+    <amq:queue id="externalIntegrationQueue" physicalName="PLS.ExternalIntegrationQueue"/>
+    <amq:redeliveryPolicy id="externalIntegrationRedeliveryPolicy"
+                          destination="#externalIntegrationQueue"
+                          useExponentialBackOff="true"
+                          backOffMultiplier="3"
+                          maximumRedeliveries="4"
+                          initialRedeliveryDelay="3000"/>
+
+    <amq:connectionFactory id="externalIntegrationConnectionFactory" brokerURL="${activeMQ.brokerURL}"
+        redeliveryPolicy="#externalIntegrationRedeliveryPolicy" trustAllPackages="true" nonBlockingRedelivery="true"/>
+        
+    <bean id="externalIntegrationCachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="externalIntegrationConnectionFactory" />
+        <property name="sessionCacheSize" value="10" />
+        <property name="exceptionListener" ref="externalIntegrationCachingConnectionFactory"/>
+    </bean>
+    <bean id="externalIntegrationJMSTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="externalIntegrationCachingConnectionFactory" />
+        <property name="defaultDestination" ref="externalIntegrationQueue" />
+        <property name="sessionTransacted" value="true" />
+        <qualifier value="externalIntegrationTemplate"/>
+    </bean>
+    <!--  Configuring external integration message queue ends here -->
+
+    <!--  Configuring shipment integration message queue starts here -->
+    <amq:queue id="shipmentIntegrationQueue" physicalName="PLS.ShipmentIntegrationQueue"/>
+    <amq:redeliveryPolicy id="shipmentIntegrationRedeliveryPolicy"
+                          destination="#shipmentIntegrationQueue"
+                          useExponentialBackOff="true"
+                          backOffMultiplier="3"
+                          maximumRedeliveries="4"
+                          initialRedeliveryDelay="3000"/>
+
+    <amq:connectionFactory id="shipmentIntegrationConnectionFactory" brokerURL="${activeMQ.brokerURL}"
+        redeliveryPolicy="#shipmentIntegrationRedeliveryPolicy" trustAllPackages="true" nonBlockingRedelivery="true"/>
+    <bean id="shipmentIntegrationCachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="shipmentIntegrationConnectionFactory" />
+        <property name="sessionCacheSize" value="10" />
+        <property name="exceptionListener" ref="shipmentIntegrationCachingConnectionFactory"/>
+    </bean>
+    <bean id="shipmentIntegrationJMSTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="shipmentIntegrationCachingConnectionFactory" />
+        <property name="defaultDestination" ref="shipmentIntegrationQueue" />
+        <property name="sessionTransacted" value="true" />
+        <qualifier value="shipmentIntegrationTemplate"/>
+    </bean>
+    <!--  Configuring shipment integration message queue ends here -->
+</beans>

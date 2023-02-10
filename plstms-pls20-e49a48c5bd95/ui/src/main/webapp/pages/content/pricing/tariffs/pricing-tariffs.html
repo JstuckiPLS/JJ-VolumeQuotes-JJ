@@ -1,0 +1,141 @@
+<div class="row-fluid" data-ng-controller="ProfilesListCtrl">
+
+    <!--FIRST COLUMN -->
+    <div class="span4">
+        <div class="row-fluid form-inline control-group">
+            <label class="control-label span3 text-left" for="inputDateType">Date Type:</label>
+            <select id="inputDateType" class="span9"
+                    data-ng-model="profileModel.criteria.dateType"
+                    data-ng-options="type.id as type.label for type in profileModel.searchDateTypes"
+                    data-ng-change="searchByDateRange()"></select>
+        </div>
+        <div class="row-fluid form-inline control-group">
+            <label class="control-label span3 text-left" for="inputRange">Date Range:</label>
+            <select id="inputRange" class="span9"
+                    data-ng-model="profileModel.criteria.dateRange"
+                    data-ng-options="type.id as type.label for type in profileModel.searchDateRanges"
+                    data-ng-change="searchByDateRange()"
+                    data-ng-disabled = "profileModel.criteria.dateType == 'NONE'" >
+            </select>
+        </div>
+
+
+        <div class="row-fluid form-inline control-group">
+            <label class="control-label span3 text-left" for="fromDate">From:</label>
+            <div class="controls span3">
+                <div class="input-append">
+                    <input name="dateField" type="text" id="fromDate"
+                           data-ng-model="profileModel.criteria.fromDateTmp"
+                           data-date-format="mm/dd/yy"
+                           data-pls-datepicker
+                           data-max-date = "profileModel.criteria.toDateTmp"
+                           class="input-small" data-ng-change="searchByDateRange()"
+                           data-ng-disabled="profileModel.criteria.dateRange != 'CUSTOM'"/>
+                    <button type="button" class="btn" data-toggle="datepicker" data-ng-disabled="profileModel.criteria.dateRange != 'CUSTOM'">
+                        <i class="icon-calendar"></i>
+                    </button>
+                </div>
+            </div>
+            <label class="control-label offset1 span1 text-right" for="toDate">To:&nbsp;</label>
+            <div class="controls span3" >
+                <div class="input-append">
+                    <input name="dateField" type="text" id="toDate"
+                           data-ng-model="profileModel.criteria.toDateTmp"
+                           data-date-format="mm/dd/yy"
+                           data-pls-datepicker
+                           data-min-date = "profileModel.criteria.fromDateTmp"
+                           class="input-small" data-ng-change="searchByDateRange()"
+                           data-ng-disabled="profileModel.criteria.dateRange != 'CUSTOM'"/>
+                    <button type="button" class="btn" data-toggle="datepicker" data-ng-disabled="profileModel.criteria.dateRange != 'CUSTOM'">
+                        <i class="icon-calendar"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <label class="control-label text-left">Pricing Type:</label>
+        </div>
+        <div class="row-fluid">
+            <div class="span2 pull-left"></div>
+            <div class="controls span10">
+                <label class="checkbox ">
+                    <input type="checkbox" data-ng-model="allPricingTypes" data-ng-click="selectAll($event)"/>All
+                </label>
+                <label class="checkbox " data-ng-repeat="pricingType in profileDictionary.pricingTypes">
+                    <input type="checkbox" data-ng-model="pricingType.selected"/>{{pricingType.description}}
+                </label>
+            </div>
+        </div>
+        <br>
+        <div class="row-fluid">
+            <div class="controls span3 text-left">
+                <label class="control-label text-left">Customer:</label>
+            </div>
+            <div class="controls span9">
+                    <input id="inputOrganization" data-pls-customer-lookup="profileModel.customer.selected"/>
+            </div>
+        </div>
+    </div>
+    <!--END FIRST COLUMN -->
+    
+    <!--SECOND COLUMN -->
+    <div class="span8">
+        <div class="span12">
+            <div class="tabbable tabbable-bordered span12">
+                <ul class="nav nav-tabs">
+                    <li class="pls-menu-item">
+                        <a href="#/pricing/tariffs/active">Active</a>
+                    </li>
+                    <li class="pls-menu-item">
+                        <a href="#/pricing/tariffs/archived">Archived</a>
+                    </li>
+                    <li class="pls-menu-item">
+                        <a href="#/pricing/tariffs/analysis">Analysis</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active">
+                        <div class="span9">
+                            <div class="gridStyle gridHeight3_48 span12" data-ng-grid="gridOptions" data-ng-dblclick="editProfile()"
+                                 data-ng-if="profileModel.criteria.status === 'ACTIVE' || profileModel.criteria.status === 'INACTIVE'"></div>
+                        </div>
+                        <div class="span3">
+                            <div class="span6">
+                                <div class="row-fluid">
+                                    <button class="btn btn-block" type="button" data-ng-click="addProfile()"
+                                            data-ng-disabled="profileModel.criteria.status != 'ACTIVE'">Add</button>
+                                </div>
+                                <br>
+                                <div class="row-fluid">
+                                    <button class="btn btn-block" type="button" data-ng-click="editProfile()"
+                                            data-ng-disabled="profileModel.criteria.status != 'ACTIVE' || isNotPricingTariffSelected()">View / Edit</button>
+                                </div>
+                                <br>
+                                <div class="row-fluid">
+                                    <button class="btn btn-block" type="button" data-ng-click="copyProfile()"
+                                            data-ng-disabled="isCopyProhibited()">Copy From</button>
+                                </div>
+                                <br>
+                                <div class="row-fluid">
+                                    <button class="btn btn-block" type="button" data-ng-click="updateProfileStatus()"
+                                            data-ng-disabled="isNotPricingTariffSelected()"">{{profileModel.profileNextStatus}}</button>
+                                </div>
+                                <br>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="row-fluid">
+                                    <div class="span12">
+                                        <div class="gridStyle gridHeight1_5 span12" data-ng-if="profileModel.criteria.status === 'ACTIVE' || profileModel.criteria.status === 'INACTIVE'" data-ng-grid="profCustomersGridOptions" ></div>
+                                    </div>
+                                </div>
+                            </div>
+                            <br>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--END SECOND COLUMN -->
+</div>

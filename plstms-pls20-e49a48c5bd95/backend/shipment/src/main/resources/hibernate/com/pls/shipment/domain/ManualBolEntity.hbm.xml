@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.shipment.domain.ManualBolEntity.Q_FIND_FOR_CRITERIA">
+        <![CDATA[
+                select
+                    manualBol.id as Id,
+                    manualBol.numbers.bolNumber as bolNumber,
+                    manualBol.numbers.soNumber as soNumber,
+                    manualBol.numbers.glNumber as glNumber,
+                    manualBol.numbers.proNumber as proNumber,
+                    manualBol.numbers.refNumber as refNumber,
+                    manualBol.numbers.poNumber as poNumber,
+                    manualBol.numbers.puNumber as puNumber,
+                    origin.contact as shipper,
+                    destination.contact as consignee,
+                    manualBol.organization.id as customerId,
+                    originAddress.city as originCity,
+                    originAddress.stateCode as originState,
+                    originAddress.zip as originZip,
+                    destinationAddress.city as destinationCity,
+                    destinationAddress.stateCode as destinationState,
+                    destinationAddress.zip as destinationZip,
+                    carrier.name as carrier,
+                    carrier.scac as scac,
+                    carrier.id as carrierId,
+                    manualBol.status as status,
+                    manualBol.pickupDate as pickupDate,
+                    max(jobs.jobNumber) as jobNumber,
+                    TRIM(both ', ' from
+                            (case when exists (from manualBol.materials m where m.hazmat = true) then 'H, ' else '' end) ||
+                            (case when exists (from manualBol.documents doc where doc.documentType = 'FREIGHT_PICTURE' and doc.status = 'A') then 'FP, ' else '' end) ||
+                            (case when exists (from manualBol.documents doc where doc.documentType = 'CERTIFICATE_OF_INS' and doc.status = 'A') then 'CF, ' else '' end)
+                        ) as indicators,
+                    network.name as network,
+                    aeU.firstName || ' ' || aeU.lastName as accountExecutive,
+                    sum(prod.weight) as weight,
+                    sum(prod.quantity) as pieces
+                from ManualBolEntity manualBol
+                left outer join manualBol.origin as origin
+                left outer join manualBol.destination as destination
+                left outer join manualBol.origin.address as originAddress
+                left outer join manualBol.destination.address as destinationAddress
+                left outer join manualBol.carrier carrier
+                left outer join manualBol.location loc
+                left join loc.accountExecutives ae with ae.status = 'A' and LOCALTIMESTAMP between ae.effectiveDate and ae.expirationDate
+                left join ae.user aeU
+                left outer join manualBol.billTo billTo
+                left join manualBol.organization customer
+                left join customer.network network
+                left join manualBol.customerLocationUsers cu with cu.status = 'A' and cu.personId = :userId
+                left join network.networkUsers nu with nu.status = 'A' and nu.userId = :userId
+                left outer join manualBol.numbers.jobNumbers jobs
+                left join manualBol.materials prod
+                where (:orgId is null or manualBol.organization.id = :orgId)
+                    and (cu.personId is not null or nu.id is not null)
+                    and (:carrierId is null or carrier.id = :carrierId)
+                    and (:bol is null or upper(manualBol.numbers.bolNumber) like upper(:bol))
+                    and (:pro is null or upper(manualBol.numbers.proNumber) like upper(:pro))
+                    and (:job is null or upper(jobs.jobNumber) like upper(:job))
+                    and (:originZip is null or originAddress.zip = :originZip)
+                    and (:destinationZip is null or destinationAddress.zip = :destinationZip)
+                    and (:manualBolId is null or manualBol.id = :manualBolId)
+                       and (
+                        ((date_trunc('day', cast(:dateFrom as timestamp)) is null or date_trunc('day', manualBol.pickupDate) >= date_trunc('day', cast(:dateFrom as timestamp)))
+                            and (date_trunc('day', cast(:dateTo as timestamp)) is null or date_trunc('day', manualBol.pickupDate) <= date_trunc('day', cast(:dateTo as timestamp)))
+                            and :dateSearchField = 'PICKUP')
+                        OR
+                        ((date_trunc('day', cast(:dateFrom as timestamp)) is null or date_trunc('day', manualBol.modification.createdDate) >= date_trunc('day', cast(:dateFrom as timestamp)))
+                            and (date_trunc('day', cast(:dateTo as timestamp)) is null or date_trunc('day', manualBol.modification.createdDate) <= date_trunc('day', cast(:dateTo as timestamp)))
+                            and :dateSearchField = 'CREATED')
+                    )
+                group by
+                    manualBol.id, manualBol.numbers.bolNumber, manualBol.numbers.soNumber, manualBol.numbers.glNumber, manualBol.numbers.proNumber,
+                    manualBol.numbers.refNumber, manualBol.numbers.poNumber, manualBol.numbers.puNumber, origin.contact, destination.contact,
+                    manualBol.organization.id, originAddress.city, originAddress.stateCode, originAddress.zip, destinationAddress.city,
+                    destinationAddress.stateCode, destinationAddress.zip, carrier.name, carrier.scac, carrier.id, manualBol.status,
+                    manualBol.pickupDate, network.name, aeU.firstName, aeU.lastName
+       ]]>
+    </query>
+
+    <query name="com.pls.shipment.domain.ManualBolEntity.Q_CANCEL_BOL_BY_ID">
+        <![CDATA[
+                update ManualBolEntity mb set mb.status = 'C' where mb.id = :id
+       ]]>
+    </query>
+</hibernate-mapping>

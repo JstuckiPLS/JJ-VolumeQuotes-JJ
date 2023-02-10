@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.core.domain.organization.CarrierEntity.Q_FIND_CARRIER_INFO_BY_NAME">
+        <![CDATA[
+                SELECT ce.id as id , ce.scac||':'||ce.name as name, ce.currencyCode as currencyCode,
+                    (case when cos is not null and cos.pickup = 'API' then true else false end) as apiCapable
+                FROM CarrierEntity ce
+                left outer join ce.orgServiceEntity cos
+                where (LOWER(ce.scac) ||':'|| LOWER(ce.name) like :name or LOWER(ce.name) like :name)
+                    and ce.scac is not null and ce.status = 'A'
+                order by ce.name
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.organization.CarrierEntity.Q_FIND_DEFAULT_CARRIER">
+        <![CDATA[
+                SELECT ce.id as id , ce.scac||':'||ce.name as name, ce.currencyCode as currencyCode
+                FROM CarrierEntity ce
+                WHERE ce.scac = '1TRU'
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.organization.CarrierEntity.Q_REJECT_EDI_FOR_CUSTOMER">
+        <![CDATA[
+                SELECT 1
+                FROM CarrierEntity ce
+                JOIN ce.rejectedCustomers rej
+                JOIN rej.customer cust with cust.ediAccount = :ediAccount
+                WHERE ce.status = 'A' and ce.scac = :scac
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.organization.CarrierEntity.Q_FIND_CARRIER_BY_SCAC">
+        <![CDATA[
+                FROM CarrierEntity where upper(scac) = :scac
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.organization.CarrierEntity.Q_FIND_CARRIER_BY_SCAC_INCLUDING_ACTUAL">
+        <![CDATA[
+                FROM CarrierEntity where upper(scac) = :scac OR upper(actualScac) = :scac order by actualScac desc
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.organization.CarrierEntity.Q_FIND_CARRIER_BY_SCAC_AND_CURRENCY">
+        <![CDATA[
+                FROM CarrierEntity where (upper(scac) = :scac OR upper(actualScac) = :scac) and currencyCode = :currency order by actualScac desc
+        ]]>
+    </query>
+     <query name="com.pls.core.domain.organization.CarrierEntity.Q_FIND_CARRIER_BY_ID">
+        <![CDATA[
+                FROM CarrierEntity where id = :id
+        ]]>
+    </query>
+</hibernate-mapping>

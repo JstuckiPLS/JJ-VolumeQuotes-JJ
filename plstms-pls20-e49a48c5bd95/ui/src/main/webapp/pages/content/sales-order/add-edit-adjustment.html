@@ -1,0 +1,137 @@
+<div data-ng-if="wizardData.shipment.invoiceDate">
+    <div data-pls-modal="addEditAdjustmentDialogVisible" data-close="cancelEditAdjustment()"
+         data-ng-class="{modalWidth12: isRebillShipper(), modalWidth4: !isRebillShipper()}" class="modalHeight7"
+         data-options="addEditAdjustmentDialogOptions" data-ng-controller="AddEditAdjustmentCtrl"
+         data-enter-allowed="{{!adjustmentForm.$invalid && isValidRebill()}}" data-enter="saveAdjustment()" id="addEditAdjustmentDialog">
+
+        <div class="modal-header">
+            <h4>
+                <span data-ng-if="!isEdit">Add</span>
+                <span data-ng-if="isEdit">Edit</span> Adjustment
+            </h4>
+        </div>
+        <form name="adjustmentForm" novalidate>
+            <div class="modal-body modalHeight7" data-ng-if="addEditAdjustmentDialogVisible">
+                <div class="row-fluid">
+                    <div data-ng-class="{span6: isRebillShipper(), span12: !isRebillShipper()}">
+                        <div class="row-fluid">
+                            <label class="span4 label-middle" for="reason">Adjustment Reason:</label>
+                            <div class="span8">
+                                <select class="span12" id="reason" data-ng-model="adjustmentModel.reason" data-required
+                                    data-ng-disabled="isEdit" data-ng-change="adjustmentReasonChange()"
+                                    data-ng-options="type.value as type.label for type in finReasons"></select>
+                            </div>
+                        </div>
+                        <div class="row-fluid" data-ng-if="!isRebillShipper()">
+                            <div class="row-fluid">
+                                <label class="span4 label-middle" for="refType">Description:</label>
+                                <div class="span8">
+                                    <select class="span12" id="refType" data-ng-model="adjustmentModel.refType"
+                                        data-ng-disabled="isWrongCarrier() || isCanceled() || isEdit"
+                                        data-ng-required="!isWrongCarrier() && !isCanceled()"
+                                        data-ng-options="type.id as (type.id | refCodeAndDesc) for type in accessorialTypes"></select>
+                                    <div data-ng-show="false" data-ng-bind="adjustmentModel.refType">
+                                        <!-- Workaround to make the IE display the selected value correctly immediately-->
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row-fluid" data-ng-if="isWrongCarrier()">
+                                <label class="span4 label-middle" for="carrierInput">Carrier:</label>
+                                <div class="span8">
+                                    <input id="carrierInput" class="span12 " data-pls-scac-search="adjustmentLoadInfo.carrier"
+                                        data-scac-disabled="isEdit" required />
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <label class="span4 label-middle" for="revenue">Revenue:</label>
+                                <div class="span4">
+                                    <input class="span12" id="revenue" type="text" data-pls-number="cost" data-ng-model="adjustmentModel.revenue" 
+                                        data-ng-disabled="isCostDisabled()" data-pls-blur="validateRevenue()"/>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <label class="span4" for="revenueAdjNote">Revenue Comment:</label>
+                                <div class="span8">
+                                    <textarea class="span12" id="revenueAdjNote" data-ng-model="adjustmentModel.revenueNote" rows="3" maxlength="500" 
+                                    data-ng-disabled="isCostDisabled()"></textarea>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <label class="span4 label-middle" for="cost">Cost:</label>
+                                <div class="span4">
+                                    <input class="span12" id="cost" type="text" data-pls-number="cost" data-ng-model="adjustmentModel.cost"
+                                        data-ng-disabled="isCostDisabled()" data-pls-blur="validateCost()"/>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <label class="span4" for="costAdjNote">Cost Comment:</label>
+                                <div class="span8">
+                                    <textarea class="span12" id="costAdjNote" data-ng-model="adjustmentModel.costNote" rows="3" maxlength="500" 
+                                        data-ng-disabled="isCostDisabled()"></textarea>
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <label class="span4" for="notInvoice">Do Not Invoice:</label>
+                                <div class="span6">
+                                    <input id="notInvoice" type="checkbox" data-ng-model="adjustmentModel.notInvoice"
+                                        data-ng-disabled="isDonNotInvoiceDisabled()"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row-fluid" data-ng-if="isRebillShipper()">
+                            <div class="row-fluid">
+                                <label class="span4 label-middle" for="billToAddressName">Bill To:</label>
+                                <input id="billToAddressName" class="span7" data-pls-bill-to-list="adjustmentLoadInfo.billTo"
+                                    data-addresses="billToList" maxlength="50"/>
+                                <div class="pull-right label-middle" data-tooltip="Bill To search is limited by Currency Code of Carrier">
+                                    {{wizardData.shipment.billTo.currency || wizardData.shipment.selectedProposition.carrier.currencyCode}}&nbsp;
+                                </div>
+                            </div>
+                            <div class="row-fluid">
+                                <div class="span6">
+                                    <div data-pls-identifier="BOL" data-invalid-identifier="invalidIdentifier.bol"
+                                        data-shipment="adjustmentLoadInfo" data-pop-place="left" class="row-fluid">
+                                    </div>
+                                    <div data-pls-identifier="PO" data-invalid-identifier="invalidIdentifier.po"
+                                        data-shipment="adjustmentLoadInfo" data-pop-place="left" class="row-fluid">
+                                    </div>
+                                </div>
+                                <div class="span6">
+                                    <div data-pls-identifier="SR" data-invalid-identifier="invalidIdentifier.sr"
+                                        data-shipment="adjustmentLoadInfo" data-pop-place="left" class="row-fluid nowrap">
+                                    </div>
+                                    <div data-pls-identifier="SO" data-invalid-identifier="invalidIdentifier.so"
+                                        data-shipment="adjustmentLoadInfo" data-pop-place="left" class="row-fluid">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="span6" data-ng-if="isRebillShipper()">
+                        <div class="span9">
+                            <div class="gridStyle gridHeight1_25 span12" data-ng-grid="revenueGrid"></div>
+                            <div class="row-fluid">Total Revenue <span data-ng-bind="getTotalRevenue() | plsCurrency"></span></div>
+                        </div>
+                        <div class="span3">
+                            <button class="btn btn-block" type="button" data-ng-click="addCostDetails()">Add</button>
+                            <button class="btn btn-block" type="button" data-ng-click="editCostDetails()"
+                                    data-ng-disabled="!selectedCostItems.length">Edit</button>
+                            <button class="btn btn-block" type="button" data-ng-click="deleteSelectedCostDetails()"
+                                    data-ng-disabled="!selectedCostItems.length">Remove</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="row-fluid" data-ng-if="isRebillShipper()">
+                    <div data-pls-quote-products="adjustmentLoadInfo" data-rate-quote-dictionary="rateQuoteDictionary"
+                         data-selected-customer="wizardData.selectedCustomer"
+                         data-parent-dialog="adjastmentDialogDiv" data-description-required="true"></div>
+                </div>
+            </div>
+        </form>
+        <div class="modal-footer">
+            <button class="btn" type="button" data-ng-click="cancelEditAdjustment()">Cancel</button>
+            <button class="btn btn-primary" type="button" data-ng-disabled="adjustmentForm.$invalid || !isValidRebill()"
+                    data-ng-click="saveAdjustment()">Save</button>
+        </div>
+    </div>
+</div>

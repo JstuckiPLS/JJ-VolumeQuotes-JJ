@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.shipment.domain.LdBillAuditReasonCodeEntity.GET_REASON_CODE_FOR_REASON_TYPE">
+        <![CDATA[
+              from LdBillAuditReasonCodeEntity where reasonType in (:reasonType)
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LdBillAuditReasonCodeEntity.GET_REASON_FOR_REASON_CODE">
+        <![CDATA[
+              from LdBillAuditReasonCodeEntity where id = :reasonCode
+        ]]>
+    </query>
+</hibernate-mapping>

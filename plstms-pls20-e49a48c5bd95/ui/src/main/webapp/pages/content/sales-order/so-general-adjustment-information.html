@@ -1,0 +1,177 @@
+<div id="so-general-information" data-ng-controller="SOGeneralAdjustmentInfoCtrl" data-not-disable-me>
+    <form name="soGeneralForm" novalidate data-ng-init="init()">
+        <div class="row-fluid">
+            <div class="span3">
+                <span class="span5 text-right">Type:</span>
+                <span class="span7">LTL</span>
+            </div>
+            <div class="span3 offset1">
+                <span class="span6 text-right">Pickup Date:</span>
+                <span class="span6" data-ng-bind="parseISODate(wizardData.shipment.finishOrder.pickupDate) | date:wideAppDateFormat"></span>
+            </div>
+            <div class="span3 offset1">
+                <span class="span6 text-right">Est. Delivery Date:</span>
+                <span class="span6" data-ng-bind="parseISODate(wizardData.shipment.finishOrder.estimatedDelivery) | date:wideAppDateFormat"></span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span3">
+                <span class="span5 text-right">Status:</span>
+                <span class="span7" data-ng-bind="wizardData.shipment.status | shipmentStatus"></span>
+            </div>
+            <div class="span3 offset1">
+                <span class="span6 text-right">Actual Pickup Date:</span>
+                <span class="span6" data-ng-bind="parseISODate(wizardData.shipment.finishOrder.actualPickupDate) | date:wideAppDateFormat"></span>
+            </div>
+            <div class="span3 offset1">
+                <span class="span6 text-right">Actual Delivery Date:</span>
+                <span class="span6" data-ng-bind="parseISODate(wizardData.shipment.finishOrder.actualDeliveryDate) | date:wideAppDateFormat"></span>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span3">
+                <div class="row-fluid">
+                    <span class="span5 text-right">Customer:</span>
+                    <div class="span7" data-ng-bind="wizardData.selectedCustomer.name"></div>
+                </div>
+                <div class="row-fluid">
+                    <span class="span5 text-right">Carrier:</span>
+                    <span class="span7" data-ng-bind="wizardData.shipment.selectedProposition.carrier.name"></span>
+                </div>
+                <div class="row-fluid">
+                    <span class="span5 text-right">Freight Bill Pay To:</span>
+                    <span class="span7" data-ng-bind="wizardData.shipment.freightBillPayTo.company"></span>
+                </div>
+                <div class="row-fluid">
+                    <span class="span5 text-right">Origin:</span>
+                    <span class="span7" data-ng-bind="wizardData.shipment.originDetails.zip | zip"></span>
+                </div>
+                <div class="row-fluid">
+                    <span class="span5 text-right">Country:</span>
+                    <span class="span7" data-ng-bind="wizardData.shipment.originDetails.zip.country.id"></span>
+                </div>
+                <div class="row-fluid">
+                    <span class="span5 text-right">Destination:</span>
+                    <span class="span7" data-ng-bind="wizardData.shipment.destinationDetails.zip | zip"></span>
+                </div>
+                <div class="row-fluid">
+                    <span class="span5 text-right">Country:</span>
+                    <span class="span7" data-ng-bind="wizardData.shipment.destinationDetails.zip.country.id"></span>
+                </div>
+                <div class="row-fluid">
+                    <span class="span5 text-right">BOL:</span>
+                    <span class="span7" data-ng-bind="wizardData.shipment.bolNumber"></span>
+                </div>
+                <div class="row-fluid">
+                    <span class="span5 text-right">Guaranteed by:</span>
+                    <span class="span7" data-ng-bind="wizardData.shipment.guaranteedBy | longTime: false"></span>
+                </div>
+                <div class="row-fluid">
+                    <span class="span5 text-right">Pro #:</span>
+                    <span class="span7" data-ng-bind="wizardData.shipment.proNumber"></span>
+                </div>
+                <div class="row-fluid">
+                    <span class="span5 text-right">PO #:</span>
+                    <span class="span7" data-ng-bind="wizardData.shipment.finishOrder.poNumber"></span>
+                </div>
+                <div class="row-fluid">
+                    <span class="span5 text-right">PU #:</span>
+                    <span class="span7" data-ng-bind="wizardData.shipment.finishOrder.puNumber"></span>
+                </div>
+                <div class="row-fluid">
+                    <span class="span5 text-right">Shipper Ref #:</span>
+                    <span class="span7" data-ng-bind="wizardData.shipment.finishOrder.ref"></span>
+                </div>
+            </div>
+            <div class="span9">
+                <div class="row-fluid a_products">
+                    <div data-pls-quote-products="wizardData.shipment" data-render-grid="isPageOpen('general_information')" data-hide-controls="true"></div>
+                </div>
+                <div class="row-fluid"><span>&nbsp;</span></div>
+                <div class="row-fluid">
+                    <strong>Line Items :</strong> {{wizardData.shipment.finishOrder.quoteMaterials.length}}
+                </div>
+                <br/>
+                <div class="row-fluid">
+                    <div class="gridStyle gridHeight3 span12" data-ng-if="isPageOpen('general_information')" data-ng-grid="adjustmentsGrid"></div>
+                </div>
+                <br/>
+                <div class="row-fluid">
+                    <div class="span6">
+                        <div class="row-fluid">
+                            <button type="button" class="btn span4" data-ng-click="addAdjustment()" data-ng-if="$root.isFieldRequired('CAN_ADD_EDIT_ADJ')" data-ng-disabled="isAddAdjustmentProhibited()">Add Adjustment</button>
+                            <button type="button" class="btn span4" data-ng-click="editAdjustment()" data-ng-if="$root.isFieldRequired('CAN_ADD_EDIT_ADJ')" data-ng-disabled="isNotInvoicedAdjustmentSelected();">Edit Adjustment</button>
+                            <button type="button" class="btn span4" data-ng-click="deleteAdjustment()" data-ng-if="$root.isFieldRequired('CAN_ADD_EDIT_ADJ')" data-ng-disabled="isNotInvoicedAdjustmentSelected();">Delete Adjustment</button>
+                        </div>
+
+                        <br/>
+
+                        <div class="row-fluid" data-ng-if ="wizardData.shipment.volumeQuoteID">
+                            <span class="span5 text-left">Volume Quote ID:</span>
+                            <span data-ng-bind="wizardData.shipment.volumeQuoteID"></span>
+                        </div>
+
+                        <div class="row-fluid" data-ng-if ="wizardData.shipment.quoteRef">
+                            <span class="span5 text-left">Quote Ref #:</span>
+                            <span data-ng-bind="wizardData.shipment.quoteRef"></span>
+                        </div>
+
+                        <div class="row-fluid">
+                            <table class="table table-bordered">
+                                <tbody>
+                                    <tr>
+                                        <td></td>
+                                        <td><div class="text-center">Quoted</div></td>
+                                        <td><div class="text-center">Actual</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="text-center">Total Revenue:</div></td>
+                                        <td><div class="text-center">{{wizardData.shipment.quotedTotalRevenue | plsCurrency}}</div></td>
+                                        <td><div class="text-center">{{totalRevenue | plsCurrency}}</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="text-center">Total Cost:</div></td>
+                                        <td><div class="text-center">{{wizardData.shipment.quotedTotalCost | plsCurrency}}</div></td>
+                                        <td><div class="text-center">{{totalCost | plsCurrency}}</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="text-center">Margin:</div></td>
+                                        <td><div class="text-center">{{wizardData.shipment.quotedTotalRevenue - wizardData.shipment.quotedTotalCost | plsCurrency}}</div></td>
+                                        <td><div class="text-center">{{totalRevenue - totalCost | plsCurrency}}</div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="text-center">Margin %:</div></td>
+                                        <td><div class="text-center">{{wizardData.shipment.quotedTotalRevenue === 0 ? undefined : (1 - wizardData.shipment.quotedTotalCost/wizardData.shipment.quotedTotalRevenue) * 100 | number : 2}}</div></td>
+                                        <td><div class="text-center">{{totalRevenue === 0 ? undefined : (1 - totalCost/totalRevenue) * 100 | number : 2}}</div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div data-ng-if="wizardData.shipment.billTo.paymentMethod === 'PREPAID_ONLY'" class="row-fluid">
+                            <div class="span12">
+                                <button type="button" data-ng-click="showDialog = true" data-show-dialog="showDialog" data-parent-dialog-id="detailsDialogDiv"
+                                        data-pls-prepaid-details="wizardData.shipment.prepaidDetails" data-mode="modal" class="btn span4">Prepaid Details
+                                </button>
+
+                                <div data-pls-prepaid-amount data-prepaid-details="wizardData.shipment.prepaidDetails" data-total-revenue="totalRevenue"
+                                     data-type="right" class="span8"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="span6">
+                        <div class="row-fluid">
+                            <label for="revenueComments" class="control-label"><strong>Revenue Comment:</strong></label>
+                            <textarea class="span12" id="revenueComments" data-ng-model="selectedCostDetails[0].revenueNote" rows="3" maxlength="500" data-ng-disabled="true"></textarea>
+                        </div>
+                        <div class="row-fluid">
+                            <label for="costComments" class="control-label"><strong>Cost Comment:</strong></label>
+                            <textarea class="span12" id="costComments" data-ng-model="selectedCostDetails[0].costNote" rows="3" maxlength="500" data-ng-disabled="true"></textarea>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

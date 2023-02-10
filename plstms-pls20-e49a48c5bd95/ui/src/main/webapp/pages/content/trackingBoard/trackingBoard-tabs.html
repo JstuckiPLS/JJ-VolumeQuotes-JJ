@@ -1,0 +1,41 @@
+<div class="row-fluid" data-ng-controller="TrackingBoardController">
+    <div class="span12">
+        <div class="tabbable tabbable-bordered">
+            <ul class="nav nav-tabs">
+                <li class="pls-menu-item">
+                    <a href="#/trackingBoard/alerts">Alerts</a>
+                    <span class="badge badge-important pls-badge a_alertsCount" data-ng-controller="TrackingBoardAlertsSchedulerController"
+                        data-ng-init="initAlertsScheduler()"> {{alertsCount}} </span>
+                </li>
+                <li class="pls-menu-item">
+                    <a href="#/trackingBoard/booked">Booked</a>
+                </li>
+                <li class="pls-menu-item">
+                    <a href="#/trackingBoard/undelivered">Active Shipments</a>
+                </li>
+                <li class="pls-menu-item">
+                    <a href="#/trackingBoard/unbilled">Waiting For Vendor Bill</a>
+                </li>
+                <li class="pls-menu-item">
+                    <a href="#/trackingBoard/open">Open Shipments</a>
+                </li>
+                <li class="pls-menu-item">
+                    <a href="#/trackingBoard/hold">Hold</a>
+                </li>
+                <li class="pls-menu-item">
+                    <a href="#/trackingBoard/all">All Shipments</a>
+                </li>
+                <li class="pls-menu-item">
+                    <a href="#/trackingBoard/manualBol">Manual BOL</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div class="tab-pane active" id="boardTab">
+                    <div data-ng-include="route.current.boardTab"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-ng-include="'pages/content/sales-order/edit-sales-order.html'"></div>
+</div>

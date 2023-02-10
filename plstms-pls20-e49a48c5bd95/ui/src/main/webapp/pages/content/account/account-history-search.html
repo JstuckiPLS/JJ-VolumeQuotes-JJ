@@ -1,0 +1,190 @@
+<div data-ng-controller="AccountHistoryCtrl">
+    <div>
+        <form name="accountHistoryForm" class="form-horizontal">
+            <div class="row-fluid">
+                <div class="span11 well well-small" data-pls-input-cleaning>
+                    <!-- First row content -->
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <!-- Origin country block -->
+                            <div class="span3">
+                                <label class="span5 label-middle" for="originCountryInput">Country:</label>
+
+                                <div class="span5 offset1">
+                                    <input class="span12 a_originCountry" data-pls-country-search="originCountry" id="originCountryInput">
+                                </div>
+                                <div class="span1">
+                                  <i class="icon-info-sign label-middle" data-position="bottom" data-pls-popover="country"></i>
+                                </div>
+                            </div>
+
+                            <!-- Origin city state zip block -->
+                            <div class="span5">
+                                <label class="span2 label-middle" for="originZip" style="text-align: left">Origin:</label>
+
+                                <div class="span9 offset1">
+                                    <input id="originZip" class="span12 a_originZip" data-pls-zip-search="origin" data-input-label-filter="zip"
+                                           data-country="originCountry.id" data-zip-disabled="!originCountry" style="min-width: 160px">
+                                </div>
+                            </div>
+                            <!-- BOL block -->
+                            <div class="span4">
+                                <label class="span3 label-middle" for="bolInput">BOL:</label>
+
+                                <div class="span8 offset1">
+                                    <input id="bolInput" type="text" data-ng-model="bol" class="span12 a_bolInput" data-pls-wildcard-search>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="span6">
+                            <div class="span10">
+                                <div class="span2 control-group">
+                                    <label class="label-middle" for="carrierInput" style="text-align: left">Carrier:</label>
+                                </div>
+                                <div class="span10">
+                                    <input id="carrierInput" data-pls-scac-search="carrier" class="span11 a_carrier">
+                                </div>
+                            </div>
+
+                            <div class="span2">
+                                <button class="btn span8 a_searchButton" data-ng-disabled="!validData || accountHistoryForm.$invalid || noSearchFilterSelected()"
+                                        data-ng-click="searchAccountHistoryEntries()" style="min-width: 75px">Search
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Second row content -->
+                    <div class="row-fluid">
+                        <div class="span6">
+                            <!-- Destination country block -->
+                            <div class="span3">
+                                <label class="span5 label-middle" for="destinationCountryInput">Country:</label>
+
+                                <div class="span5 offset1">
+                                    <input id="destinationCountryInput" class="span12 a_destinationCountry" data-pls-country-search="destinationCountry">
+                                </div>
+                                <div class="span1">
+                                  <i class="icon-info-sign label-middle" data-position="bottom" data-pls-popover="country"></i>
+                                </div>
+                            </div>
+
+                            <!-- Destination city state zip block -->
+                            <div class="span5">
+                                <label class="span2 label-middle" for="destinationZip" style="text-align: left">Dest:</label>
+
+                                <div class="span9 offset1">
+                                    <input id="destinationZip" class="span12 a_destinationZip" data-pls-zip-search="destination"
+                                           data-input-label-filter="zip"
+                                           data-country="destinationCountry.id" data-zip-disabled="!destinationCountry"
+                                           style="min-width: 160px">
+                                </div>
+                            </div>
+
+                            <!-- Pro block -->
+                            <div class="span4">
+                                <label class="span3 label-middle" for="proInput">Pro#:</label>
+
+                                <div class="span8 offset1">
+                                    <input id="proInput" type="text" data-ng-model="pro" class="span12 a_proInput">
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="span6">
+                            <!-- Pick up dates block -->
+                            <div class="span10">
+                                <div class="span2">
+                                    <label class="label-middle" style="text-align: left">Pickup Date:</label>
+                                </div>
+                                <div class="span10">
+                                    <div class="span6">
+                                        <div class="span3"><label for="fromDateInput" class="span8 label-middle form-inline">From:</label></div>
+                                        <div class="span9">
+                                            <div class="input-append">
+                                                <input name="dateField" type="text" id="fromDateInput"
+                                                       data-ng-model="fromDate" data-date-format="mm/dd/yy"
+                                                       data-min-date="minFromDate" data-max-date="maxFromDate"
+                                                       data-pls-datepicker class="input-small a_fromDate span8"
+                                                       data-ng-class="{'ng-invalid':fromDateAlreadyExists}" style="min-width: 77px"/>
+                                                <button type="button" class="btn" data-toggle="datepicker" style="height: 30px">
+                                                    <i class="icon-calendar"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="span6">
+                                        <div class="span2"><label for="toDateInput" class="span8 label-middle">To:</label></div>
+                                        <div class="span10">
+                                            <div class="span12">
+                                                <div class="input-append span10">
+                                                    <input name="dateField" type="text" id="toDateInput"
+                                                           data-ng-model="toDate" data-date-format="mm/dd/yy"
+                                                           data-min-date="minToDate" data-max-date="maxToDate"
+                                                           data-pls-datepicker class="input-small a_toDate span8"
+                                                           data-ng-class="{'ng-invalid':toDateAlreadyExists}" style="min-width: 77px"/>
+                                                    <button type="button" class="btn" data-toggle="datepicker" style="height: 30px">
+                                                        <i class="icon-calendar"></i>
+                                                    </button>
+                                                </div>
+                                                <div class="span1" style="margin-left: 10px">
+                                                    <i class="icon-info-sign label-middle" data-position="bottom" data-pls-popover="description"></i>
+                                                    <div id="description" style="width: 280px">Actual Pickup Date is used for Orders which have
+                                                        statuses: In
+                                                        Transit, Out For Delivery, Delivered, Invoiced, Short Paid, Paid. Pickup Date is used for
+                                                        Orders which
+                                                        have statuses: Booked, Dispatched, Cancelled
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Clear button -->
+                            <div class="span2">
+                                <button type="button" class="btn span8 a_clearButton" data-ng-click="clearSearchCriteria()"
+                                        style="min-width: 75px">Clear
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- View and export buttons -->
+                <div class="span1 well-small">
+                    <div class="row-fluid">
+                        <button type="button" class="btn span12 a_viewButton control-group" data-ng-click="view()"
+                                data-ng-disabled="selectedEntries.length != 1" style="min-width: 75px; margin-left: -25%">View
+                        </button>
+                    </div>
+                    <div class="row-fluid">
+                        <button type="button" class="btn span12 a_exportButton" data-ng-click="exportAccountHistory()"
+                                data-ng-disabled="_.isEmpty(accountHistoryGrid.ngGrid.filteredRows)" style="min-width: 75px; margin-left: -25%">Export
+                        </button>
+                    </div>
+                </div>
+            </div>
+        <div id="country">Country is used only for ZIP filtering.</div>
+        </form>
+        <!-- Shipments grid -->
+        <div class="row-fluid">
+            <div class="gridStyle span12 gridHeight4 a_accountHistoryGrid" data-ng-grid="accountHistoryGrid" data-ng-model="accountHistoryEntries"></div>
+        </div>
+
+        <!-- Misc -->
+        <div class="row-fluid">
+            <div class="span3 offset9 text-right">
+                <div class="offset3 span4">
+                    Records: <strong><span data-ng-bind="accountHistoryGrid.ngGrid.filteredRows.length" class="a_records"></span></strong>
+                </div>
+                <div class="span5 text-right">
+                    Total: <strong><span data-ng-bind="totalSumm | plsCurrency" class="a_total"></span></strong>
+                </div>
+            </div>
+        </div>
+        <div data-ng-include="'pages/content/quotes/shipment-details.html'"></div>
+    </div>
+</div>

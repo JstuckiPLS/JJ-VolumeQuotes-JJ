@@ -1,0 +1,37 @@
+<div class="row-fluid">
+    <div class="span12">
+        <div class="tabbable tabbable-bordered">
+            <ul class="nav nav-tabs">
+                <li class="active pls-menu-item"><a
+                    href="#/dashboard/summaries/destination-report">Destination
+                        Report</a></li>
+              <!--   <li class="pls-menu-item"><a
+                    href="#/dashboard/summaries/volume-by-carrier">Volume
+                        by Carrier</a></li> -->
+                <li class="pls-menu-item"><a
+                    href="#/dashboard/summaries/carrier-summary">Carrier
+                        Summary</a></li>
+                <li class="pls-menu-item"><a
+                    href="#/dashboard/summaries/class-summary">Class
+                        Summary</a></li>
+                <li class="pls-menu-item"><a
+                    href="#/dashboard/summaries/geographic-summary">Geographic
+                        Summary</a></li>
+                <li class="pls-menu-item"><a
+                    href="#/dashboard/summaries/vendor-summary">Vendor
+                        Summary</a></li>
+                <li class="pls-menu-item"><a
+                    href="#/dashboard/summaries/customer-summary">Customer
+                        Summary</a></li>
+                <li class="pls-menu-item"><a
+                    href="#/dashboard/summaries/shipment-seasonally">Shipment
+                        Seasonally</a></li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active" id="summariesTabs">
+                    <div data-ng-include="route.current.params.subTab"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

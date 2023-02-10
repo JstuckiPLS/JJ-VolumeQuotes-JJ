@@ -1,0 +1,157 @@
+<div data-pls-modal="showDialog" data-options="dialogOptions" class="modal modalWidth5 modalHeight7" data-close="closeDialog()">
+    <div class="modal-header">
+        <h4>
+            <span data-ng-if="!selectedReqField[0]">Add</span><span data-ng-if="selectedReqField[0]">Edit</span> Identifier
+        </h4>
+    </div>
+    <div class="modal-body">
+        <form name="billToIdentifierForm" novalidate class="margin0">
+            <div class="row-fluid">
+                <div class="span12">
+                    <label for="reqFieldIdentifier" class="span4 label-middle pls-font-bold">Identifier:</label>
+                    <select id="reqFieldIdentifier" data-ng-options="reqField.value as reqField.label for reqField in identifiers" required
+                            data-ng-model="reqFieldModel.name" data-ng-disabled="selectedReqField[0]" class="span8"></select>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <label for="reqFieldRequired" class="span4">Required:</label>
+                    <input id="reqFieldRequired" type="checkbox" data-ng-model="reqFieldModel.required"/>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <label for="reqFieldInboundOutbound" class="span4 label-middle">Inbound/Outbound:</label>
+                    <select id="reqFieldInboundOutbound" data-ng-model="reqFieldModel.inboundOutbound"  class="span8"
+                            data-ng-disabled="($root.isSafway(customerId) || $root.isSafeworks(customerId) || $root.isSidHarvey(customerId)) && reqFieldModel.name === 'GL'">
+                        <option value="B">Both</option>
+                        <option value="I">Inbound</option>
+                        <option value="O">Outbound</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <label for="reqFieldAddressZip" class="span4 label-middle">Zip:</label>
+                    <input id="reqFieldAddressZip" type="text" data-ng-model="reqFieldModel.address.zip" maxlength="255" class="span8"
+                           data-ng-disabled="($root.isSafway(customerId) || $root.isSafeworks(customerId) || $root.isSidHarvey(customerId)) && reqFieldModel.name === 'GL'"/>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <label for="reqFieldAddressCity" class="span4 label-middle">City:</label>
+                    <input id="reqFieldAddressCity" type="text" data-ng-model="reqFieldModel.address.city" maxlength="255" class="span8"
+                           data-ng-disabled="($root.isSafway(customerId) || $root.isSafeworks(customerId) || $root.isSidHarvey(customerId)) && reqFieldModel.name === 'GL'"/>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <label for="reqFieldAddressState" class="span4 label-middle">State:</label>
+                    <input id="reqFieldAddressState" type="text" data-ng-model="reqFieldModel.address.state" maxlength="255" class="span8"
+                           data-ng-disabled="($root.isSafway(customerId) || $root.isSafeworks(customerId) || $root.isSidHarvey(customerId)) && reqFieldModel.name === 'GL'"/>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <label for="reqFieldAddressCountry" class="span4 label-middle">Country:</label>
+                    <input id="reqFieldAddressCountry" type="text" data-ng-model="reqFieldModel.address.country" maxlength="255" class="span8"
+                           data-ng-disabled="($root.isSafway(customerId) || $root.isSafeworks(customerId) || $root.isSidHarvey(customerId)) && reqFieldModel.name === 'GL'"/>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <label for="reqFieldOriginDestination" class="span4 label-middle">Origin/Destination:</label>
+                    <select id="reqFieldOriginDestination" data-ng-model="reqFieldModel.originDestination"
+                            data-ng-disabled="!enabledOriginDestination" class="span8">
+                        <option value="B">Both</option>
+                        <option value="O">Origin</option>
+                        <option value="D">Destination</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <label for="reqFieldDefaultValue" class="span4 label-middle">Default Value:</label>
+
+                    <input id="reqFieldDefaultValue" type="text" data-ng-if="reqFieldModel.name !== 'CARGO'" maxlength="{{defaultValueMaxLength}}"
+                           data-ng-model="reqFieldModel.defaultValue" data-ng-change="validateDefaultValueInput(); setActionForDefaultValues()"
+                           data-ng-disabled="($root.isSafway(customerId) || $root.isSafeworks(customerId) || $root.isSidHarvey(customerId)) && reqFieldModel.name === 'GL'"
+                           name="defaultValue" class="span8"/>
+
+                    <input id="reqFieldDefaultValue" type="text" data-ng-if="reqFieldModel.name === 'CARGO'" data-pls-digits-validation
+                           data-ng-model="reqFieldModel.defaultValue" data-ng-change="validateDefaultValueInput(); setActionForDefaultValues()"
+                           maxlength="6" min="1" max="999999" name="defaultValue" class="span8"/>
+
+                    <ul data-ng-if="billToIdentifierForm.defaultValue.$error.maxlength" class="offset4 span8 pls-margin-bottom-0">
+                        <li class="text-error">
+                            <small>
+                                "Default Value" length should be no more than <span data-ng-bind="defaultValueMaxLength"></span> chars
+                            </small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <label for="startWith" class="span4 label-middle">Start with:</label>
+
+                    <input id="startWith" type="text" data-ng-model="reqFieldModel.startWith" data-ng-change="setActionForDefaultValues()"
+                           data-ng-disabled="(($root.isSafway(customerId) || $root.isSafeworks(customerId) || $root.isSidHarvey(customerId)) && reqFieldModel.name === 'GL') ||
+                           ($root.isSafway(customerId) && reqFieldModel.name === 'JOB')" name="startWith" maxlength="255" class="span8"/>
+
+                    <ul data-ng-if="billToIdentifierForm.startWith.$error.maxlength" class="offset4 span8 pls-margin-bottom-0">
+                        <li class="text-error">
+                            <small>
+                                Entire rule for "Default Value" should be no more than <span data-ng-bind="defaultValueMaxLength"></span> chars
+                            </small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <label for="endWith" class="span4 label-middle">End with:</label>
+
+                    <input id="endWith" type="text" data-ng-model="reqFieldModel.endWith" data-ng-change="setActionForDefaultValues()"
+                           data-ng-disabled="(($root.isSafway(customerId) || $root.isSafeworks(customerId) || $root.isSidHarvey(customerId)) && reqFieldModel.name === 'GL') ||
+                           ($root.isSafway(customerId) && reqFieldModel.name === 'JOB')" name="endWith" maxlength="255" class="span8"/>
+
+                    <ul data-ng-if="billToIdentifierForm.endWith.$error.maxlength" class="offset4 span8 pls-margin-bottom-0">
+                        <li class="text-error">
+                            <small>
+                                Entire rule for "Default Value" should be no more than <span data-ng-bind="defaultValueMaxLength"></span> chars
+                            </small>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="row-fluid">
+                <div class="span12">
+                    <label for="actionForDefaultValues" class="span4 label-middle">Action:</label>
+                    <select id="actionForDefaultValues" data-ng-model="reqFieldModel.actionForDefaultValues"
+                            data-ng-disabled="!reqFieldModel.startWith && !reqFieldModel.endWith && !reqFieldModel.defaultValue" class="span8">
+                        <option value=""></option>
+                        <option value="R">Don't allow to use different format then Default or Start/End</option>
+                        <option value="A">Send to Invoice Audit if value differs from Default or Start/End</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-footer">
+        <button type="button" data-ng-click="closeDialog()" class="btn">Cancel</button>
+        <button type="button" data-ng-click="saveDialog()" data-ng-disabled="billToIdentifierForm.$invalid" class="btn btn-primary">Save</button>
+    </div>
+</div>

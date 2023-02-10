@@ -1,0 +1,20 @@
+<div data-pls-modal="pageModel.showAddressesList" data-close="closeAddressesListDialog()" class="modalWidth10"
+     data-options="pageModel.addressesListModalOptions" data-enter-allowed="{{!(_.isEmpty(pageModel.addressItems))}}">
+
+    <div class="modal-header">
+        <h4>Address Book</h4>
+    </div>
+    <div class="modal-body">
+        <div class="row-fluid">
+            <div class="gridStyle gridHeight3 gridWidth9 span10" data-ng-grid="pageModel.addressBookGridOptions"></div>
+            <div class=" pull-right">
+                <button type="button" class="btn" data-ng-disabled="pageModel.addressItems.length == 0" data-ng-click="selectAddresses()">Select</button>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <div class="text-center">
+            <button type="button" class="btn cancel" data-ng-click="closeAddressesListDialog()">Close</button>
+        </div>
+    </div>
+</div>

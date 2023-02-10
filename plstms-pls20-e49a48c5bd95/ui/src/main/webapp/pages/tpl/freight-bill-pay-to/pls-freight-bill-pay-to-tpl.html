@@ -1,0 +1,16 @@
+<div data-ng-form="freightBillForm">
+    <div class="span9">
+        <div data-pls-freight-bill-pay-to-search="shipment.freightBillPayTo"
+             data-customer-id="selectedCustomer.id"
+             data-input-disabled="!selectedCustomer.id"
+             class="span12"></div>
+    </div>
+
+    <div class="span3">
+        <button data-ng-click="showDialog = true" data-ng-disabled="!selectedCustomer.id || freightBillForm.$error.mistyped"
+                type="button" class="btn span12">
+            <i class="icon-pencil"></i>
+        </button>
+    </div>
+</div>
+<div data-pls-freight-bill-pay-to-dialog></div>

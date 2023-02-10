@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.core.domain.organization.BillToEntity.Q_GET_BILLTO_BY_NAME_AND_ORG_ID">
+        <![CDATA[
+                select billTo
+                from BillToEntity billTo
+                where billTo.name = :name AND billTo.organization.id = :orgId
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.organization.BillToEntity.Q_GET_DETAILS_AX">
+        <![CDATA[
+                select org.id as orgId,
+                    org.name as orgName,
+                    bt.id as billToId,
+                    bt.name as billToName,
+                    org.companyCode as companyCode,
+                    org.federalTaxId as employerNum,
+                    addr.id as addressId,
+                    addr.address1 as address1,
+                    addr.address2 as address2,
+                    addr.city as city,
+                    addr.stateCode as stateCode,
+                    addr.zip as postalCode,
+                    addr.country.id as countryCode,
+                    org.companyCode||bin.customerNumber||'-'||bin.customerId as accountNum,
+                    bt.currency as currency,
+                    coalesce(
+                        (select groupCode from FinanCustGroupEntity fcg where fcg.companyCode = org.companyCode and fcg.networkId = org.networkId),
+                        (select groupCode from FinanCustGroupEntity fcg where fcg.companyCode is null and fcg.networkId = org.networkId)
+                    ) as groupCode,
+                    coalesce(
+                        (select unitCode from FinanBusnUnitEntity fbu where fbu.orgId = org.id and fbu.networkId = org.networkId),
+                        (select unitCode from FinanBusnUnitEntity fbu where fbu.orgId = -1 and fbu.networkId = org.networkId)
+                    ) as unitCode,
+                    coalesce(
+                        (select costCenterCode from FinanCostCenterEntity fcc where fcc.companyCode = org.companyCode),
+                        (select costCenterCode from FinanCostCenterEntity fcc where fcc.companyCode = '00')
+                    ) as costCenterCode
+                from BillToEntity bt
+                join bt.billingInvoiceNode bin
+                join bin.address addr
+                join bt.organization org
+                where
+                    bt.id = :billTo
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.organization.BillToEntity.Q_GET_ID_AND_NAME_BY_ORG_ID">
+        <![CDATA[
+                SELECT bt.id as key, bt.name as value
+                FROM BillToEntity bt
+                WHERE bt.organization.id = :orgId
+                ORDER BY bt.name
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.organization.BillToEntity.Q_GET_EMAILS">
+        <![CDATA[
+                select
+                    case when ((invSet.invoiceType <> 'CBI' or (coalesce(invSet.documents, 'X') <> 'X' and invSet.cbiInvoiceType <> 'FIN')) and invSet.noInvoiceDocument != 'Y') then bt.id else null end as key,
+                    invNode.email as value
+                from BillToEntity bt
+                join bt.invoiceSettings invSet
+                join bt.billingInvoiceNode invNode
+                where bt.id IN (:billToIds)
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.organization.BillToEntity.Q_GET_FOR_SHIPMENT">
+        <![CDATA[
+                select bt
+                from BillToEntity bt
+                join fetch bt.organization org
+                join fetch org.address oa
+                join fetch org.phone op
+                join fetch bt.billingInvoiceNode bin
+                join fetch bin.address bina
+                join fetch bin.phone binp
+                join fetch bt.invoiceSettings invSet
+                join fetch bt.plsCustomerTerms terms
+                left join fetch bt.billToThresholdSettings
+                left join fetch bt.billToRequiredField
+                left join fetch bt.ediSettings
+                left join fetch bt.creditLimit
+                left join fetch bt.unbilledRevenue
+                left join fetch bt.openBalance
+                left join fetch bt.billToDefaultValues btdv
+                left join fetch btdv.ediCustomsBrokerPhone
+                left join fetch bin.fax
+                left join fetch bina.country
+                left join fetch bina.zipCode binaz
+                left join fetch binaz.id.country
+                left join fetch invSet.processingTimeTimezone
+                left join fetch org.network
+                left join fetch org.companyCodeEntity
+                left join fetch org.fax
+                left join fetch oa.country
+                left join fetch oa.zipCode oaz
+                left join fetch oaz.id.country
+                where org.id = :orgId
+                    and (:currency is null or bt.currency = :currency)
+                    and org.name is not null
+                    and oa.address1 is not null
+                    and oa.zip is not null
+                    and org.contactFirstName is not null
+                    and org.contactLastName is not null
+                    and op.phoneNumber is not null
+                    and org.contactEmail is not null
+                    and org.networkId is not null
+                    and bt.name is not null
+                    and bina.address1 is not null
+                    and bina.zip is not null
+                    and bin.contactName is not null
+                    and binp.number is not null
+                    and bin.email is not null
+                    and invSet.invoiceType is not null
+                    and ((invSet.invoiceType = 'CBI' and invSet.processingType = 'MANUAL') or invSet.processingTime is not null)
+                    and (invSet.invoiceType = 'TRANSACTIONAL'
+                        or (invSet.processingType is not null
+                            and (invSet.processingType = 'MANUAL'
+                                or (invSet.processingPeriod = 'DAILY' or (invSet.processingDayOfWeek is not null and invSet.releaseDayOfWeek is not null)))))
+                    and (invSet.invoiceType = 'TRANSACTIONAL' or invSet.ediInvoice = 'Y' or invSet.documents is not null
+                        or invSet.cbiInvoiceType = 'FIN' or invSet.noInvoiceDocument = 'Y')
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.organization.BillToEntity.Q_GET_FOR_CUSTOMER">
+        <![CDATA[
+                from BillToEntity
+                where organization.id = :orgId
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.organization.BillToEntity.Q_GET_DEFAULT_VALUES_BY_ID">
+        <![CDATA[
+                from BillToDefaultValuesEntity
+                where id = :id
+        ]]>
+    </query>
+</hibernate-mapping>

@@ -1,0 +1,31 @@
+<div data-ng-controller="CustomerLocationCtrl">
+    <div id="editCustomerLocationDialog" data-pls-modal="editCustomerLocationModel.showCustomersLocationDialog"
+            data-options="editCustomerLocationDialogOptions"
+            data-close="closeEditCustomerLocationDialog()" class="modalWidth11 modalHeight8"
+            data-enter="updateCustomersLocations()">
+        <div class="modal-header">
+            <h4>Locations</h4>
+        </div>
+        <div class="modal-body" data-ng-if="editCustomerLocationModel.showCustomersLocationDialog" data-pls-form-disabled='viewMode'>
+            <div class="row-fluid">
+                <div class="span10">
+                    <div class="gridStyle gridHeight4 span12" data-ng-grid="customerLocationGrid"></div>
+                </div>
+                <div class="span2">
+                    <strong>Notifications:</strong>
+                    <label data-ng-repeat="notification in allNotifications">
+                        <input type="checkbox"
+                             data-checklist-model="selectedLocation[0].notifications"
+                             data-checklist-value="notification.value"
+                             data-ng-disabled="_.isEmpty(selectedLocation) || !selectedLocation[0].isChecked"
+                             class="checkbox-label-spacing"/>{{notification.label}}
+                    </label>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn" data-ng-click="closeEditCustomerLocationDialog()()">Cancel</button>
+            <button type="button" class="btn btn-primary" data-ng-click="updateCustomersLocations()">Ok</button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.user.domain.GroupCapabilitiesEntity.Q_DELETE_FOR_GROUP_STATEMENT">
+        <![CDATA[
+                delete GroupCapabilitiesEntity gce WHERE gce.groupId = :groupId
+        ]]>
+    </query>
+    <query name="com.pls.user.domain.GroupCapabilitiesEntity.Q_GET_GROUP_CAPABILITIES">
+        <![CDATA[
+                from GroupCapabilitiesEntity gce WHERE gce.groupId = :groupId
+        ]]>
+    </query>
+</hibernate-mapping>

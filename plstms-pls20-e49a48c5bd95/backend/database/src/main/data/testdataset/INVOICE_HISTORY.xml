@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset>
+    <FLATBED.INVOICE_HISTORY INVOICE_HISTORY_ID="1" INVOICE_ID="1" INVOICE_TYPE="CBI" LOAD_ID="1" release_status="C" DATE_CREATED="2012-01-19" CREATED_BY="2" DATE_MODIFIED="2012-08-12" MODIFIED_BY="2"/>
+</dataset>

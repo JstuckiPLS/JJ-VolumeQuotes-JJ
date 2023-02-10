@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.core.domain.organization.OrganizationEntity.Q_GET_PLS_PRO_ORGANIZATION">
+        <![CDATA[
+                select id from OrganizationEntity where name = 'PLS PRO'
+        ]]>
+    </query>
+    <sql-query name="com.pls.core.domain.organization.OrganizationEntity.Q_FIND_CUSTOMERS_BY_VALUES_QUERY">
+        <![CDATA[
+            SELECT
+            org.org_id as customerId,
+            org.name as customerName,
+            u.person_id as accountExecId,
+            u.first_name ||' '|| u.last_name as accountExecName,
+            org.date_created as createdDate,
+            MAX(lsd.orig_departure) as lastLoadDate
+                FROM organizations org
+                left JOIN (
+                    select org_id, MAX(lsd.orig_departure) orig_departure, location_id
+                    from load_search_data lsd
+                    group by org_id,location_id
+                ) lsd ON lsd.org_id = org.org_id
+                LEFT JOIN USER_CUSTOMER uc ON uc.org_id = org.org_id AND LOCALTIMESTAMP BETWEEN uc.EFF_DATE AND uc.EXP_DATE and uc.STATUS = 'A'
+                LEFT JOIN USERS u ON u.person_id = uc.person_id AND u.status = 'A'
+                LEFT JOIN ORGANIZATION_USERS ou ON ou.org_id = org.org_id AND ou.ORG_TYPE = 'SHIPPER' AND ou.LOCATION_ID is null AND ou.person_id = :currentPersonId
+                LEFT JOIN ORGANIZATION_USERS oucu ON oucu.org_id = org.org_id AND oucu.ORG_TYPE = 'SHIPPER' AND oucu.STATUS = 'A' AND oucu.person_id = :currentPersonId
+                LEFT JOIN NETWORKS net ON net.network_id = org.network_id
+                LEFT JOIN NETWORK_USERS netus ON net.network_id = netus.network_id AND netus.STATUS = 'A' AND netus.person_id = :currentPersonId
+                LEFT JOIN ORGANIZATION_LOCATIONS l ON l.org_id = org.org_id
+                    WHERE org.org_type = 'SHIPPER'
+                    AND (cast(:fromDate as timestamp) is null or cast(:toDate as timestamp) is null
+                        or (date_trunc('day', org.date_created) BETWEEN date_trunc('day', cast(:fromDate as timestamp)) AND date_trunc('day', cast(:toDate as timestamp))))
+                    AND (cast(:fromLoadDate as timestamp) is null or cast(:toLoadDate as timestamp) is null
+                        or (date_trunc('day', lsd.orig_departure) BETWEEN date_trunc('day', cast(:fromLoadDate as timestamp)) AND date_trunc('day', cast(:toLoadDate as timestamp))))
+                    AND (:status is null or org.status = :status)
+                    AND (:personId is null or u.person_id = :personId)
+                    AND (:orgName is null or upper(org.name) like :orgName)
+                    AND (netus.network_user_id is not null or (oucu.person_id is not null and oucu.location_id = l.location_id))
+                    GROUP BY org.org_id, org.name, u.person_id, u.first_name, u.last_name, org.date_created
+            ]]>
+    </sql-query>
+</hibernate-mapping>

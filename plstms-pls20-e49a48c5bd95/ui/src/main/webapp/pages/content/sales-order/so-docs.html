@@ -1,0 +1,10 @@
+<div data-ng-controller="SODocsCtrl" data-ng-init="init()">
+    <div data-ng-if="!wizardData.step" data-ng-include="'pages/content/sales-order/so-docs-customer-carrier.html'"></div>
+    <div data-ng-if="wizardData.step" data-ng-include="'pages/content/sales-order/sales-order-customer-carrier.html'"></div>
+
+    <div data-pls-add-delete-documents data-shipment="wizardData.shipment" data-should-save-temp-documents="true" data-step="wizardData.step"
+        data-edit-sales-order="editSalesOrderModel"
+        data-selected-customer="wizardData.selectedCustomer"
+        data-full-view-doc-model="fullViewDocModel" data-email-options="emailOptions">
+    </div>
+</div>

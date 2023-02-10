@@ -1,0 +1,47 @@
+<div class="modalWidth11" data-ng-show="fullMapDialog.show" data-pls-modal="fullMapDialog.show"
+    data-close="fullMapDialog.close()" data-options="fullMapDialog.options">
+    <div class="modal-header">
+        <h4 data-ng-bind="isOrigin ? origin.addressName : destination.addressName">Address Name</h4>
+    </div>
+    <div class="modal-body" data-ng-cloak>
+        <div class="container-fluid">
+            <div class="row-fluid">
+                <form class="form-search">
+                    <label class="control-label" for="geocodeString">Google</label>
+                    <input id="geocodeString" type="text" class="input-xxlarge search-query" data-ng-model="fullMapDialog.mapSearchString">
+                    <button type="submit" class="btn" data-ng-click="doMapSearch()" data-ng-disabled="!fullMapDialog.mapSearchString">
+                        Search
+                    </button>
+                </form>
+                <hr/>
+            </div>
+            <div class="row-fluid">
+                <div class="span3 mapDivHeight right-border-line">
+                    <div class="row-fluid cursor-pointer" data-ng-repeat="geocodeResult in geocodeResults"
+                        data-ng-click="chooseGeocodeResult(geocodeResult)">
+                        <div class="span2">
+                            <img data-ng-src="{{getMarkerImageUrl($index, geocodeResult.formatted_address)}}" src="">
+                        </div>
+                        <div class="span10">
+                            <span data-ng-bind="geocodeResult.formatted_address"></span>
+                        </div>
+                    </div>
+                </div>
+                <div class="span9 mapDivHeight">
+                    <div data-ng-if="bigMapOptions.mapIsReady">
+                        <div id="map_canvas" class="span12 mapDivHeight" data-ui-map="bigMapOptions.map" data-ui-options="bigMapOptions"
+                            data-ui-event="{'map-idle' : 'onBigMapIdle()'}"></div>
+                        <div data-ng-repeat="marker in bigMapOptions.mapMarkers" data-ui-map-marker="bigMapOptions.mapMarkers[$index]"
+                            data-ui-event="{'map-rightclick': 'bigMapMarkerClicked(marker)'}"></div>
+                        <div data-ui-map-info-window="bigMapOptions.infoWindow" data-ui-options="{disableAutoPan: true}">
+                            <h4 data-ng-bind="bigMapOptions.chosenMarker.title"></h4>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn" data-ng-click="fullMapDialog.close()">Close</button>
+    </div>
+</div>

@@ -1,0 +1,92 @@
+<div class="row-fluid" data-pls-form-disabled="isFormDisabled()">
+    <form name="auditCostForm">
+        <div class="span6">
+            <div class="row-fluid">
+                <div class="span5 label-middle"><strong>Update Revenue:</strong></div>
+                <div class="span7">
+                    <select class="span12" data-ng-model="auditCostDetails.updateRevenue.id" data-ng-change="updateRevenueChangedId()"
+                            data-ng-options="option[0] as option[1] for option in $root._.pairs(updateRevenues)">
+                            <option value=""/>
+                    </select>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="offset5 span7">
+                    <input type="text" class="span12" data-ng-disabled="true" data-ng-if="!auditCostDetails.updateRevenue.id"/>
+                    <input type="text" data-pls-number="positivePercentage" data-ng-model="auditCostDetails.updateRevenue.value" class="span12"
+                           data-ng-change="updateRevenueChangedValue()" required data-ng-if="auditCostDetails.updateRevenue.id === 'MARGIN_PERCENT'"/>
+                    <input type="text"  data-pls-number="positiveNegativeDecimal" data-ng-model="auditCostDetails.updateRevenue.value" class="span12"
+                           data-ng-change="updateRevenueChangedValue()" required data-ng-if="auditCostDetails.updateRevenue.id === 'MARGIN_VALUE'"/>
+                    <input type="text" data-pls-number="positiveNegativeDecimal" data-ng-model="auditCostDetails.updateRevenue.value" class="span12"
+                           data-ng-change="updateRevenueChangedValue()" required data-ng-if="auditCostDetails.updateRevenue.id === 'TOTAL_REVENUE_AMOUNT'"/>
+                    <input type="text" data-ng-model="auditCostDetails.updateRevenue.value" class="span12" data-ng-disabled="true" 
+                           data-ng-if="auditCostDetails.updateRevenue.id === 'UPDATE_USING_COST_DIFF' || auditCostDetails.updateRevenue.id === 'INVOICE_WITHOUT_MARKUP'"/>
+                </div>
+            </div>
+            <div>
+                <strong>
+                    Invoice Note:
+                </strong>
+                <div class="fa fa-md fa-info-circle" data-pls-popover="invoice-note-info"></div>
+            </div>
+            <div id="invoice-note-info">
+                This note will be shown on the customer's invoice
+            </div>
+            <div class="row-fluid">
+                <textarea class="span12" id="revenueInvoiceComment" data-ng-model="auditCostDetails.invoiceNote" rows="1" maxlength="500"></textarea>
+            </div>
+            <div class="row-fluid">
+                <div class="span5 label-middle"><strong>Dispute Cost:</strong></div>
+                <div class="span7">
+                    <select class="span12" data-ng-model="auditCostDetails.disputeCost" data-ng-change="disputeCostChanged()"
+                            data-ng-options="option[0] as option[1] for option in $root._.pairs(disputeCosts)">
+                        <option value=""/>
+                    </select>
+                </div>
+            </div>
+            <div><strong>Add Note to Load:</strong></div>
+            <div class="row-fluid">
+                <textarea class="span12" id="revenueLoadComment" data-ng-model="auditCostDetails.plsNote" rows="1" maxlength="500"></textarea>
+            </div>
+        </div>
+        <div class="span6">
+            <table class="table table-bordered">
+                <tbody>
+                    <tr>
+                        <td class="span2"></td>
+                        <td class="span2"><div class="text-center">Amount</div></td>
+                    </tr>
+                    <tr>
+                        <td class="span2"><div class="text-left">Total Revenue:</div></td>
+                        <td class="span2"><div class="text-center">{{totalRevenue | plsCurrency}}</div></td>
+                    </tr>
+                    <tr>
+                        <td class="span2"><div class="text-left">Total Cost:</div></td>
+                        <td class="span2"><div class="text-center">{{totalCost | plsCurrency}}</div></td>
+                    </tr>
+                    <tr>
+                        <td class="span2"><div class="text-left">Margin:</div></td>
+                        <td class="span2"><div class="text-center">{{absoluteMargin | plsCurrency}}</div></td>
+                    </tr>
+                    <tr>
+                        <td class="span2"><div class="text-left">Margin %:</div></td>
+                        <td class="span2"><div class="text-center">{{relativeMargin | number : 2}}</div></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div class="form-inline text-right">
+                <input type="checkbox" class="checkbox inline" id="requestPaperwork" data-ng-model="auditCostDetails.requestPaperWork">
+                <label class="checkbox inline" for="requestPaperwork">Request Paperwork</label>
+                <div class="fa fa-md fa-info-circle" data-pls-popover="req-paperwork-info"></div>
+            </div>
+            <div id="req-paperwork-info">
+                Request additional documents from finance
+            </div>
+            <br/>
+            <div class="text-right">
+                <button class="btn" type="button" data-ng-click="sendAuditCostDetails()"
+                        data-ng-disabled="auditCostForm.$invalid || isSubmitDisabled()">Submit</button>
+            </div>
+        </div>
+    </form>
+ </div>

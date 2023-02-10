@@ -1,0 +1,14 @@
+<div data-ng-controller="SODataHistoryCtrl">
+    <div data-ng-init="init()" data-ng-if="isPageOpen('data_history')">
+        <div class="row-fluid">
+            <div class="span9">
+                <div data-ng-include="'pages/content/sales-order/sales-order-customer-carrier.html'"></div>
+            </div>
+            <div class="span3">
+                <button type="button" class="btn pull-right" data-ng-disabled="shipmentDataHistoryGridOptions.ngGrid.filteredRows.length === 0"
+                    data-ng-click="exportDataHistory()">Export</button>
+            </div>
+        </div>
+        <div class="gridStyle gridHeight4_12 full-width" data-ng-grid="shipmentDataHistoryGridOptions"></div>
+    </div>
+</div>

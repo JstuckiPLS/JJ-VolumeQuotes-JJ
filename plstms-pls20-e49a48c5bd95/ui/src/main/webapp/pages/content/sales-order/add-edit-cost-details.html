@@ -1,0 +1,59 @@
+<div id="addEditCostDetailsDialogDiv" data-pls-modal="editCostDetailsDialogVisible" data-close="cancelEditCostDetails()"
+     class="modalWidth4" data-options="addEditCostDetailsDialogOptions" data-ng-controller="AddEditCostDetailsCtrl"
+     data-enter-allowed="{{!costDetailsForm.$invalid}}" data-enter="saveCostDetails()">
+
+    <div class="modal-header">
+        <h4>
+            <span ng-if="!isEdit">Add</span>
+            <span ng-if="isEdit">Edit</span> Cost Details
+        </h4>
+    </div>
+    <div class="modal-body">
+        <form name="costDetailsForm" class="form-inline" novalidate>
+            <div class="row-fluid control-group">
+                <div class="span12">
+                    <label class="control-label span4" for="refType">Description:</label>
+                    <select class="span8" id="refType" data-ng-model="editedCostDetail.refType" data-required data-ng-disabled="isEdit"
+                            data-ng-options="type.id as (type.id | refCodeAndDesc) for type in accessorialTypes" data-ng-change="onTypeChange()"></select>
+                    <div data-ng-show="false" data-ng-bind="editedCostDetail.refType">
+                        <!-- Workaround to make the IE display the selected value correctly immediately-->
+                    </div>
+                </div>
+            </div>
+            <div class="row-fluid control-group">
+                <div class="span12">
+                    <label class="control-label span4" for="revenue">Revenue:</label>
+                    <input class="span4" id="revenue" type="text" data-pls-number="cost" data-ng-model="editedCostDetail.revenue"
+                        data-ng-disabled="!$root.isFieldRequired('EDIT_PLS_REVENUE')"
+                        data-ng-required="$root.isFieldRequired('EDIT_PLS_REVENUE')"/>
+                </div>
+            </div>
+            <div class="row-fluid control-group">
+                <div class="span12">
+                    <label for="revenueComments" class="control-label span4">Revenue Comment:</label>
+                    <textarea class="span8" id="revenueComments" data-ng-model="editedCostDetail.revenueNote" rows="3" maxlength="500"
+                        data-ng-disabled="!$root.isFieldRequired('EDIT_PLS_REVENUE')"></textarea>
+                </div>
+            </div>
+            <div class="row-fluid control-group" data-ng-if="!hideCost && !revenueOnlyTypeSelected">
+                <div class="span12">
+                    <label class="control-label span4" for="addCostDetailsCost">Cost:</label>
+                    <input class="span4" id="addCostDetailsCost" type="text" data-pls-number="cost" required data-ng-model="editedCostDetail.cost"
+                        data-ng-disabled="!$root.isFieldRequired('EDIT_CARRIER_COST')"
+                        data-ng-required="$root.isFieldRequired('EDIT_CARRIER_COST')"/>
+                </div>
+            </div>
+            <div class="row-fluid control-group" data-ng-if="!hideCost && !revenueOnlyTypeSelected">
+                <div class="span12">
+                    <label for="costComments" class="control-label span4">Cost Comment:</label>
+                    <textarea class="span8" id="costComments" data-ng-model="editedCostDetail.costNote" rows="3" maxlength="500"
+                        data-ng-disabled="!$root.isFieldRequired('EDIT_CARRIER_COST')"></textarea>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button class="btn" type="button" data-ng-click="cancelEditCostDetails()">Cancel</button>
+        <button class="btn btn-primary" type="button" data-ng-disabled="costDetailsForm.$invalid" data-ng-click="saveCostDetails()">Save</button>
+    </div>
+</div>

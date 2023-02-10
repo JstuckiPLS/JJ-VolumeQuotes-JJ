@@ -1,0 +1,102 @@
+<div data-ng-controller="BaseSalesOrderCtrl">
+    <div data-ng-controller="EditSalesOrderCtrl" data-ng-init="initialize()">
+        <div id="detailsDialogDiv" data-pls-modal="editSalesOrderModel.showEditOrderDialog" data-close="closeEditOrder(true)"
+             class="modalWidth12 modalHeight7 a_editSalesOrder" data-options="editSalesOrderModel.showEditOrderDialogOptions"
+             data-enter-allowed="{{editSalesOrderModel.selectedTab != 'audit' && isAvailable('ok_click')}}" data-enter="updateOrder()">
+
+            <div class="modal-header">
+                <h4 data-ng-if="!editSalesOrderModel.formDisabled">Edit Sales Order - Load ID: {{wizardData.shipment.id}}</h4>
+                <h4 data-ng-if="editSalesOrderModel.formDisabled">View Sales Order - Load ID: {{wizardData.shipment.id}}</h4>
+            </div>
+            <div class="modal-body">
+                <div class="row-fluid" data-ng-if="editSalesOrderModel.showEditOrderDialog && (wizardData.shipment.id || editSalesOrderModel.isLoaded)">
+                    <div class="tabbable tabbable-bordered">
+                        <ul class="nav nav-tabs">
+                            <li data-ng-class="{active:editSalesOrderModel.selectedTab == 'general_information',
+                                                disabled:!editSalesOrderModel.formDisabled && !isAvailable('general_information')}">
+                                <a class="a_general_information" data-ng-click="selectTab('general_information')">General</a>
+                            </li>
+                            <li data-ng-class="{active:editSalesOrderModel.selectedTab == 'addresses', disabled:!editSalesOrderModel.formDisabled && !isAvailable('addresses')}">
+                                <a class="a_addresses" data-ng-click="selectTab('addresses')">Addresses</a>
+                            </li>
+                            <li data-ng-class="{active:editSalesOrderModel.selectedTab == 'details', disabled:!editSalesOrderModel.formDisabled && !isAvailable('details')}">
+                                <a class="a_details" data-ng-click="selectTab('details')">Details</a>
+                            </li>
+                            <li data-ng-class="{active:editSalesOrderModel.selectedTab == 'docs', disabled:!editSalesOrderModel.formDisabled && !isAvailable('docs')}">
+                                <a class="a_docs" data-ng-click="selectTab('docs')">Docs</a>
+                            </li>
+                            <li data-ng-class="{active: editSalesOrderModel.selectedTab == 'notes', disabled:!editSalesOrderModel.formDisabled && !isAvailable('notes')}">
+                                <a class="a_notes" data-ng-click="selectTab('notes')">Notes</a>
+                            </li>
+                            <li data-ng-class="{active:editSalesOrderModel.selectedTab == 'vendor_bills', disabled:!editSalesOrderModel.formDisabled && !isAvailable('vendor_bills')}">
+                                <a class="a_vendor_bills" data-ng-click="selectTab('vendor_bills')">Vendor Bill</a>
+                            </li>
+                            <li data-ng-class="{active:editSalesOrderModel.selectedTab == 'tracking', disabled:!editSalesOrderModel.formDisabled && !isAvailable('tracking')}">
+                                <a data-ng-click="selectTab('tracking')">Tracking</a>
+                            </li>
+                            <li data-ng-class="{active:editSalesOrderModel.selectedTab == 'audit', disabled:!editSalesOrderModel.formDisabled && !isAvailable('audit')}">
+                                <a data-ng-click="selectTab('audit')">Audit</a>
+                            </li>
+                            <li data-ng-class="{active:editSalesOrderModel.selectedTab == 'emails_history', disabled:!editSalesOrderModel.formDisabled && !isAvailable('emails_history')}"
+                                data-ng-show="$root.isPlsPermissions('VIEW_INVOICES_EMAIL_HISTORY || VIEW_NOTIFICATIONS_EMAIL_HISTORY || VIEW_DOCUMENTS_EMAIL_HISTORY')">
+                                <a class="a_email_history" data-ng-click="selectTab('emails_history')">Emails History</a>
+                            </li>
+                            <li data-ng-class="{active:editSalesOrderModel.selectedTab == 'data_history', disabled:!editSalesOrderModel.formDisabled && !isAvailable('data_history')}">
+                                <a data-ng-click="selectTab('data_history')">Data History</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+
+                            <div class="tab-pane active" >
+                                <!-- !!!DON'T CHANGE NG-SHOW TO NG-SWITCH here!!! This will break validation!!! -->
+                                <div data-pls-form-disabled="editSalesOrderModel.formDisabled" data-ng-if="wizardData.shipment.invoiceDate" data-ng-show="editSalesOrderModel.selectedTab == 'general_information'" data-ng-include="'pages/content/sales-order/so-general-adjustment-information.html'"></div>
+                                <div data-pls-form-disabled="editSalesOrderModel.formDisabled" data-ng-if="!wizardData.shipment.invoiceDate" data-ng-show="editSalesOrderModel.selectedTab == 'general_information'" data-ng-include="'pages/content/sales-order/so-general-information.html'"></div>
+                                <div data-pls-form-disabled="editSalesOrderModel.formDisabled" data-ng-show="editSalesOrderModel.selectedTab == 'addresses'" data-ng-include="'pages/content/sales-order/so-addresses.html'"></div>
+                                <div data-pls-form-disabled="editSalesOrderModel.formDisabled" data-ng-show="editSalesOrderModel.selectedTab == 'details'" data-ng-include="'pages/content/sales-order/so-details.html'"></div>
+                                <div data-pls-form-disabled="editSalesOrderModel.formDisabled" data-ng-show="editSalesOrderModel.selectedTab == 'docs'" data-ng-include="'pages/content/sales-order/so-docs.html'"></div>
+                                <div data-pls-form-disabled="editSalesOrderModel.formDisabled" data-ng-show="editSalesOrderModel.selectedTab == 'notes'" data-ng-include="'pages/content/sales-order/so-notes.html'"></div>
+                                <div data-pls-form-disabled="editSalesOrderModel.formDisabled" data-ng-show="editSalesOrderModel.selectedTab == 'vendor_bills'" data-ng-include="'pages/content/sales-order/so-vendor-bills.html'"></div>
+                                <div data-pls-form-disabled="editSalesOrderModel.formDisabled" data-ng-show="editSalesOrderModel.selectedTab == 'tracking'" data-ng-include="'pages/content/sales-order/so-tracking.html'"></div>
+                       
+                                <div data-ng-show="editSalesOrderModel.selectedTab == 'audit'" data-ng-include="'pages/content/sales-order/so-audit.html'"></div>
+                       
+                                <div data-pls-form-disabled="editSalesOrderModel.formDisabled" data-ng-if="isPageOpen('emails_history')">
+                                    <div class="span9">
+                                        <div data-ng-include="'pages/content/sales-order/sales-order-customer-carrier.html'"></div>
+                                    </div>
+                                    <div data-pls-emails-history data-parent-dialog="detailsDialogDiv" data-shipment-id="wizardData.shipment.id"></div>
+                                </div>
+                                <div data-ng-show="editSalesOrderModel.selectedTab == 'data_history'" data-ng-include="'pages/content/sales-order/so-data-history.html'"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn pull-left a_cancelOrderButton" data-ng-disabled="!canBeCancelled()" data-ng-click="confirmCancel()">Cancel Order</button>
+
+                <button type="button" class="btn a_editButton" data-ng-click="switchEditMode()" data-ng-if="isEditAvailable()">Edit</button>
+                <button type="button" class="btn a_cancelButton" data-ng-click="closeEditOrder(editSalesOrderModel.formDisabled)">{{!wizardData.shipment.invoiceDate && editSalesOrderModel.formDisabled ? 'Close' : 'Cancel'}}</button>
+
+                <button type="button" class="btn a_okButton" data-ng-click="updateOrder()" data-ng-if="!wizardData.shipment.invoiceDate && !editSalesOrderModel.formDisabled" data-ng-disabled="!isAvailable('ok_click')">Ok</button>
+                <button type="button" class="btn a_okButton" data-ng-click="saveInvoices()" data-ng-if="wizardData.shipment.invoiceDate">Ok</button>
+            </div>
+        </div>
+        <div data-pls-customer-notification-list="wizardData.selectedCustomer.id" data-parent-dialog="detailsDialogDiv"></div>
+        <div id="addNoteDialogHolder"></div>
+        <div data-pls-confirm-cancel-order-dialog data-show-confirmation-dialog="cancelOrderConfirmationDialog.show"
+             data-close-handler="resetAfterCancel()" data-shipment-id="wizardData.shipment.id"
+             data-status="wizardData.shipment.status" data-parent-dialog="detailsDialogDiv"
+             data-api-capable="wizardData.shipment.selectedProposition.carrier.apiCapable"></div>
+    </div>
+    <div data-pls-add-edit-product data-selected-customer="selectedCustomer" data-parent-dialog="parentDialog"></div>
+    <div data-google-maps data-origin="wizardData.shipment.originDetails.address" data-destination="wizardData.shipment.destinationDetails.address"></div>
+    <div data-ng-include="'pages/content/sales-order/so-docs-full-view-dlg.html'"></div>
+    <div data-ng-include="'pages/content/vendor-bill/add-edit-vendor-bill.html'"></div>
+    <div data-ng-include="'pages/content/trackingBoard/terminal-info.html'"></div>
+    <div data-ng-include="'pages/content/address-book/add-edit-address.html'"></div>
+    <div data-ng-include="'pages/content/sales-order/add-edit-cost-details.html'"></div>
+    <div data-ng-include="'pages/content/sales-order/add-edit-adjustment.html'"></div>
+    <div data-pls-send-mail="emailOptions" data-dialog-show-option="emailOptions.showSendEmailDialog" data-modal-options="emailOptions.docSendMailModalOptions"></div>
+</div>

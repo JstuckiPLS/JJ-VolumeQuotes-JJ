@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+    xmlns:amq="http://activemq.apache.org/schema/core"
+    xmlns:aop="http://www.springframework.org/schema/aop"
+    xsi:schemaLocation="
+           http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+           http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd
+           http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd
+           http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd">
+
+    <context:component-scan base-package="com.pls.invoice" />
+
+    <amq:queue id="PLS.FinancialIntegrationQueue" physicalName="PLS.FinancialIntegrationQueue"/>
+    <amq:redeliveryPolicy id="financialIntegrationRedeliveryPolicy" destination="#PLS.FinancialIntegrationQueue"
+                          useExponentialBackOff="true"
+                          backOffMultiplier="3"
+                          maximumRedeliveries="4"
+                          initialRedeliveryDelay="3000"/>
+    <amq:connectionFactory id="financialIntegrationConnectionFactory" brokerURL="${activeMQ.brokerURL}"
+        redeliveryPolicy="#financialIntegrationRedeliveryPolicy" trustAllPackages="true" nonBlockingRedelivery="true"/>
+    <bean id="financialIntegrationCachingConnectionFactory" class="org.springframework.jms.connection.CachingConnectionFactory">
+        <property name="targetConnectionFactory" ref="financialIntegrationConnectionFactory" />
+        <property name="sessionCacheSize" value="10" />
+    </bean>
+    <bean id="financialIntegrationJMSTemplate" class="org.springframework.jms.core.JmsTemplate">
+        <property name="connectionFactory" ref="financialIntegrationCachingConnectionFactory" />
+        <property name="defaultDestination" ref="PLS.FinancialIntegrationQueue" />
+        <property name="sessionTransacted" value="true" />
+        <qualifier value="financialIntegrationTemplate"/>
+    </bean>
+</beans>

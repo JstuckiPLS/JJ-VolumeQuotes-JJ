@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+     <query name="com.pls.shipment.domain.LdBillingAuditReasonsEntity.Q_DEACTIVATE_ADJUSTMENT_REASONS">
+        <![CDATA[
+                update LdBillingAuditReasonsEntity set
+                status = 'I', modification.modifiedDate = LOCALTIMESTAMP, modification.modifiedBy = :modifiedBy
+                where status = 'A'  and financialAccessorialDetailId = :adjustmentId
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LdBillingAuditReasonsEntity.Q_DEACTIVATE_LOAD_REASONS">
+        <![CDATA[
+                update LdBillingAuditReasonsEntity set
+                status = 'I', modification.modifiedDate = LOCALTIMESTAMP, modification.modifiedBy = :modifiedBy
+                where status = 'A' and loadId = :loadId
+        ]]>
+    </query>
+    <query name="com.pls.shipment.domain.LdBillingAuditReasonsEntity.Q_DEACTIVATE_MANUAL_LOAD_REASONS">
+        <![CDATA[
+                update LdBillingAuditReasonsEntity set
+                status = 'I', modification.modifiedDate = LOCALTIMESTAMP, modification.modifiedBy = :modifiedBy
+                where status = 'A'
+                    and loadId = :loadId
+                    and reasonCd in (select id from LdBillAuditReasonCodeEntity where reasonType in (:manualReasonTypes) or id = 'CR')
+        ]]>
+    </query>
+</hibernate-mapping>

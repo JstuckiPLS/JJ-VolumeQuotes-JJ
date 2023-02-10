@@ -1,0 +1,49 @@
+<div class="row-fluid" >
+    <div data-ng-controller="PalletPricingCtrl">
+        <form name="gridArea" novalidate>
+            <div class="row-fluid" data-ng-hide="_.contains(['BLANKET_CSP'], profileDetails.pricingType.ltlPricingType)">
+                <div class="span6">
+                    <div class="form-horizontal" data-ng-hide="customerMarginSetup">
+                        <label class="control-label" for="inputCopyFrom"><b>Copy from:</b></label>
+                        <div class="controls" >
+                            <select class="span9" id="inputCopyFrom" data-ng-change="openDialog()" data-ng-model="selectedRateToCopy"
+                                data-ng-options="prof.id as prof.rateName for prof in copyProfiles">
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="offset5 span1">
+                    <button class="btn btn-block" type="button" data-ng-click="addNewEmptyRecord()" data-ng-disabled="activeTab===false">Add New</button>
+                </div>
+            </div>
+            <br>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="tabbable tabbable-bordered span12">
+                        <ul class="nav nav-tabs">
+                            <li class="active"><a href="" data-toggle="tab" data-ng-click="loadActiveDetails()">Active</a></li>
+                            <li><a href="" data-toggle="tab" data-ng-click="loadArchivedDetails()">Archived</a></li>
+                        </ul>
+                        <div class="tab-content">
+                            <div class="tab-pane active" id="tab1">
+                                <div data-ng-if="activeTab">
+                                    <div class="gridStyle gridHeight4 span12" data-ng-grid="activeGridOptions"></div>
+                                </div>
+                                <div data-ng-if="activeTab===false">
+                                    <div class="gridStyle gridHeight4 span12" data-ng-grid="inactiveGridOptions"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <div class="row-fluid">
+                <div class="offset10 span2">
+                    <button type="button" class="btn span6" data-ng-click="loadActiveDetails()" data-ng-disabled="activeTab===false">Reset</button>
+                    <button type="button" class="btn btn-primary span6" data-ng-click="save()" data-ng-disabled="gridArea.$invalid || !activeTab">Save</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>

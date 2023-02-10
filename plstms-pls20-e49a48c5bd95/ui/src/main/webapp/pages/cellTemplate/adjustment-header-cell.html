@@ -1,0 +1,9 @@
+<div class="ngHeaderSortColumn  ngSorted" data-ng-style="{'cursor': col.cursor}" draggable="true" style="cursor: pointer;"
+     data-ng-class="{ 'ngSorted': !noSortVisible }" data-tooltip-placement="right" data-tooltip="Adjustment">
+    <div data-ng-click="col.sort($event)" data-ng-class="'colt' + col.index" class="ngHeaderText">Adj</div>
+    <div class="ngSortButtonDown ng-hide" data-ng-show="col.showSortButtonDown()"></div>
+    <div class="ngSortButtonUp" data-ng-show="col.showSortButtonUp()"></div>
+    <div class="ngSortPriority ng-binding"></div>
+    <div data-ng-class="{ngPinnedIcon:col.pinned,ngUnPinnedIcon:!col.pinned }" data-ng-click="togglePin(col)" data-ng-show="col.pinnable"></div>
+</div>
+<div data-ng-show="col.resizable" class="ngHeaderGrip" data-ng-click="col.gripClick($event)" data-ng-mousedown="col.gripOnMouseDown($event)"></div>

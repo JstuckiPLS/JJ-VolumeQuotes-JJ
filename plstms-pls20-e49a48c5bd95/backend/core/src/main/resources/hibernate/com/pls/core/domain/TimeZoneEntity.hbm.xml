@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <sql-query name="com.pls.core.domain.TimeZoneEntity.Q_FIND_BY_COUNTRY_ZIP">
+        <return class="com.pls.core.domain.TimeZoneEntity"/>
+        <![CDATA[
+                SELECT tz.* FROM FLATBED.TIMEZONE tz, FLATBED.ZIPCODES zc
+                WHERE cast(tz.timezone as varchar) = trim(zc.time_zone) AND zc.country_code = :countryCode AND zc.zip_code = :zipCode
+        ]]>
+    </sql-query>
+</hibernate-mapping>

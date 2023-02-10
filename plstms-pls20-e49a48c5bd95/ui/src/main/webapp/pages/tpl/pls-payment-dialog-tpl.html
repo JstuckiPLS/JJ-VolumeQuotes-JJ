@@ -1,0 +1,66 @@
+<div id="paymentDialog" data-close="closePaymentDialog()"
+    data-pls-modal="paymentModel.showDialog" class="modalWidth7">
+    <div data-ng-if="!paymentModel.emailMod">
+        <div data-ng-if="!paymentModel.isPlsUser">
+            <div class="modal-header">
+                <h4>
+                    <span>Secure online payment</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div>
+                    Please go to <a target="_blank" href="{{paymentModel.plsPayUrl}}">PLSPay</a>
+                    to make your payment.
+                </div>
+                <br>
+                <div>Upon confirmation of payment, your shipment
+                    will be dispatched to the selected carrier for
+                    pickup.</div>
+                <br>
+                <div>
+                    An email about this payment request has been sent to
+                    <a href="" data-ng-click="openEmailDialog(paymentModel.creditCardEmail)">{{paymentModel.creditCardEmail}}</a>.
+                </div>
+                <br>
+                <div>Please contact your PLS Customer service
+                    representative with any questions.</div>
+                <br>
+                <div>
+                    <b>PLS</b>
+                </div>
+                <div>Name:{{paymentModel.contactName}}</div>
+                <div>Phone: {{paymentModel.phone | phone}}</div>
+                <div>
+                    Email:<a href="" data-ng-click="openEmailDialog(paymentModel.email)">{{paymentModel.email}}</a>
+                </div>
+            </div>
+        </div>
+
+        <div data-ng-if="paymentModel.isPlsUser">
+            <div class="modal-header">
+                <h4>
+                    <span>Payment Required</span>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <div>This customer is required to Prepay before
+                    the shipment can be dispatched.</div>
+                <br>
+                <div>
+                    An email with the Payment request and a link to the
+                    PLSPay portal has been sent to this customer email
+                    address:<a
+                        href="" data-ng-click="openEmailDialog(paymentModel.creditCardEmail)">{{paymentModel.creditCardEmail}}</a>.
+                </div>
+                <br>
+                <div>Upon confirmation of payment, the shipment
+                    will be dispatched to the selected carrier for pick
+                    up.</div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+         <button type="button" class="btn" data-ng-click="closePaymentDialog()">Close</button>
+    </div>
+    <div data-pls-send-mail="paymentModel.emailOptions" data-dialog-show-option="paymentModel.emailOptions.showSendMailDialog"></div>
+</div>

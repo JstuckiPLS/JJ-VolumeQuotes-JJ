@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.domain.pricing.profile.ALL_FUEL_TRIGGERS_BY_PROFILE_DETAILS">
+        <![CDATA[
+                from LtlFuelEntity lfs
+                where lfs.ltlPricingProfileId = :profileDetailId
+        ]]>
+    </query>
+    <sql-query name="com.pls.domain.pricing.profile.ALL_FUEL_TRIGGERS_BY_PROFILE_DETAILS_AND_STATUS">
+        <return-scalar column="region" type="string"/>
+        <return-scalar column="status" type="string"/>
+        <return-scalar column="effectiveDay" type="string"/>
+        <return-scalar column="origin" type="string"/>
+        <return-scalar column="expirationDate" type="date"/>
+        <return-scalar column="id" type="long"/>
+        <return-scalar column="pricingProfileId" type="long"/>
+        <![CDATA[
+                select * from (SELECT lf.ltl_fuel_id as id, dr.description as region, lf.status as status, lf.eff_day as effectiveDay,
+                    (select string_agg(orig.geo_value, ', ')
+                     from (
+                        select orig_geo.geo_value
+                        from ltl_fuel_geo_serv_dtls orig_geo
+                        where orig_geo.ltl_fuel_geo_service_id in
+                            (select lfgs.ltl_fuel_geo_service_id from ltl_fuel_geo_services lfgs where lfgs.ltl_fuel_id = lf.ltl_fuel_id)
+                            and orig_geo.geo_type = 1
+                        ORDER BY orig_geo.geo_value
+                        LIMIT 100) orig
+                    ) origin,
+                    lf.exp_date as expirationDate, lf.ltl_pric_prof_detail_id as pricingProfileId
+                FROM ltl_fuel lf
+                JOIN dot_regions dr on lf.dot_region_id = dr.dot_region_id
+                WHERE lf.ltl_pric_prof_detail_id = :profileDetailId and lf.status = :status) t where origin is not null
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.domain.pricing.profile.ACTIVE_EFFECTIVE_FUEL_TRIGGERS_BY_PROFILE_DETAIL">
+        <return-scalar column="region" type="string"/>
+        <return-scalar column="status" type="string"/>
+        <return-scalar column="effectiveDay" type="string"/>
+        <return-scalar column="origin" type="string"/>
+        <return-scalar column="expirationDate" type="date"/>
+        <return-scalar column="id" type="long"/>
+        <return-scalar column="pricingProfileId" type="long"/>
+        <![CDATA[
+                select * from (SELECT lf.ltl_fuel_id as id, dr.description as region, lf.status as status, lf.eff_day as effectiveDay,
+                    (select string_agg(orig.geo_value, ', ')
+                     from (
+                        select orig_geo.geo_value
+                        from ltl_fuel_geo_serv_dtls orig_geo
+                        where orig_geo.ltl_fuel_geo_service_id in
+                            (select lfgs.ltl_fuel_geo_service_id from ltl_fuel_geo_services lfgs where lfgs.ltl_fuel_id = lf.ltl_fuel_id)
+                            and orig_geo.geo_type = 1
+                        ORDER BY orig_geo.geo_value
+                        LIMIT 100) orig
+                    ) origin,
+                    lf.exp_date as expirationDate, lf.ltl_pric_prof_detail_id as pricingProfileId
+                FROM ltl_fuel lf
+                JOIN dot_regions dr on lf.dot_region_id = dr.dot_region_id
+                WHERE lf.ltl_pric_prof_detail_id = :profileDetailId and lf.status = 'A'
+                AND (lf.exp_date is null or lf.exp_date > LOCALTIMESTAMP)
+                ) t where origin is not null
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.domain.pricing.profile.EXPIRED_FUEL_TRIGGERS_BY_DATE_AND_PROFILE_DETAILS">
+        <return-scalar column="region" type="string"/>
+        <return-scalar column="status" type="string"/>
+        <return-scalar column="effectiveDay" type="string"/>
+        <return-scalar column="origin" type="string"/>
+        <return-scalar column="expirationDate" type="date"/>
+        <return-scalar column="id" type="long"/>
+        <return-scalar column="pricingProfileId" type="long"/>
+        <![CDATA[
+                select * from (SELECT lf.ltl_fuel_id as id, dr.description as region, lf.status as status, lf.eff_day as effectiveDay,
+                    (select string_agg(orig.geo_value, ', ')
+                     from (
+                        select orig_geo.geo_value
+                        from ltl_fuel_geo_serv_dtls orig_geo
+                        where orig_geo.ltl_fuel_geo_service_id in
+                            (select lfgs.ltl_fuel_geo_service_id from ltl_fuel_geo_services lfgs where lfgs.ltl_fuel_id = lf.ltl_fuel_id)
+                            and orig_geo.geo_type = 1
+                        ORDER BY orig_geo.geo_value
+                        LIMIT 100) orig
+                    ) origin,
+                    lf.exp_date as expirationDate, lf.ltl_pric_prof_detail_id as pricingProfileId
+                FROM ltl_fuel lf
+                JOIN dot_regions dr on lf.dot_region_id = dr.dot_region_id
+                WHERE lf.ltl_pric_prof_detail_id = :profileDetailId and lf.status = 'A'
+                AND (lf.exp_date is not null and lf.exp_date <= LOCALTIMESTAMP)
+                ) t where origin is not null
+        ]]>
+    </sql-query>
+    <query name="com.pls.domain.pricing.profile.ACTIVE_EFFECTIVE_FUEL_TRIGGERS_FOR_PROFILE">
+        <![CDATA[
+                from LtlFuelEntity lfs
+                where lfs.ltlPricingProfileId = :profileDetailId and lfs.status = 'A'
+                and (lfs.expirationDate is null or lfs.expirationDate > LOCALTIMESTAMP)
+        ]]>
+    </query>
+    <query name="com.pls.domain.pricing.profile.UPDATE_STATUS">
+        <![CDATA[
+                update LtlFuelEntity lfs set lfs.status = :newStatus
+                where lfs.id in (:ids)
+        ]]>
+    </query>
+    <query name="com.pls.ltlrating.domain.LtlFuelEntity.INACTIVATE_BY_PROFILE_STATEMENT">
+        <![CDATA[
+                UPDATE LtlFuelEntity lfe SET lfe.status = 'I',
+                lfe.modification.modifiedDate = LOCALTIMESTAMP,
+                lfe.modification.modifiedBy = :modifiedBy
+                WHERE lfe.ltlPricingProfileId = :id AND
+                lfe.status = 'A' AND (lfe.expirationDate >= LOCALTIMESTAMP OR lfe.expirationDate IS NULL)  AND
+                lfe.effectiveDate < LOCALTIMESTAMP
+        ]]>
+    </query>
+    <query name="com.pls.ltlrating.domain.LtlFuelEntity.EXPIRE_BY_IDS">
+        <![CDATA[
+                UPDATE LtlFuelEntity lfe SET lfe.expirationDate = current_date
+                , lfe.modification.modifiedDate = LOCALTIMESTAMP
+                , lfe.modification.modifiedBy = :modifiedBy
+                WHERE lfe.id IN (:ids)
+        ]]>
+    </query>
+    <sql-query name="com.pls.ltlrating.domain.LtlFuelEntity.FIND_CSP_FUEL_COPIED_FROM">
+        <return class="com.pls.ltlrating.domain.LtlFuelEntity"/>
+        <![CDATA[
+                SELECT f.*
+                FROM ltl_fuel f
+                JOIN ltl_pricing_profile_details ppd ON ppd.ltl_pric_prof_detail_id = f.ltl_pric_prof_detail_id
+                JOIN ltl_pricing_profile pp ON pp.ltl_pricing_profile_id = ppd.ltl_pricing_profile_id AND pp.ltl_pricing_type = 'BLANKET_CSP'
+                WHERE f.copied_from = :id
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.ltlrating.domain.LtlFuelEntity.EXPIRATE_CSP_BY_COPIED_FROM_STATEMENT">
+        <![CDATA[
+                UPDATE ltl_fuel lf
+                SET exp_date = current_date, modified_by = :modifiedBy, date_modified = LOCALTIMESTAMP
+                WHERE lf.ltl_fuel_id IN (
+                SELECT f.ltl_fuel_id
+                FROM ltl_fuel f
+                JOIN ltl_pricing_profile_details ppd ON ppd.ltl_pric_prof_detail_id = f.ltl_pric_prof_detail_id
+                JOIN ltl_pricing_profile pp ON pp.ltl_pricing_profile_id = ppd.ltl_pricing_profile_id AND pp.ltl_pricing_type = 'BLANKET_CSP'
+                WHERE f.copied_from IN (:ownersIds))
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.ltlrating.domain.LtlFuelEntity.UPDATE_CSP_STATUS_STATEMENT">
+        <![CDATA[
+                UPDATE ltl_fuel lf
+                SET status = :status, modified_by = :modifiedBy, date_modified = LOCALTIMESTAMP
+                WHERE lf.ltl_fuel_id IN (
+                SELECT f.ltl_fuel_id
+                FROM ltl_fuel f
+                JOIN ltl_pricing_profile_details ppd ON ppd.ltl_pric_prof_detail_id = f.ltl_pric_prof_detail_id
+                JOIN ltl_pricing_profile pp ON pp.ltl_pricing_profile_id = ppd.ltl_pricing_profile_id AND pp.ltl_pricing_type = 'BLANKET_CSP'
+                WHERE f.copied_from IN (:ownersIds))
+        ]]>
+    </sql-query>
+    <sql-query name="com.pls.ltlrating.domain.LtlFuelEntity.INACTIVATE_CSP_BY_DETAIL_ID">
+        <![CDATA[
+                UPDATE ltl_fuel lf SET status = 'I', modified_by = :modifiedBy, date_modified = LOCALTIMESTAMP
+                WHERE lf.ltl_pric_prof_detail_id IN (SELECT pd.ltl_pric_prof_detail_id
+                FROM ltl_pricing_profile p
+                JOIN ltl_pricing_profile_details pd ON pd.ltl_pricing_profile_id = p.ltl_pricing_profile_id
+                WHERE p.ltl_pricing_type = 'BLANKET_CSP' AND p.copied_from = (SELECT pp.ltl_pricing_profile_id
+                FROM ltl_pricing_profile pp
+                JOIN ltl_pricing_profile_details ppd ON ppd.ltl_pricing_profile_id = pp.ltl_pricing_profile_id
+                AND ppd.ltl_pric_prof_detail_id = :ownerId))
+        ]]>
+    </sql-query>
+
+</hibernate-mapping>

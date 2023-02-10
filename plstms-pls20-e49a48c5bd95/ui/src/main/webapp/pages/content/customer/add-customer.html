@@ -1,0 +1,66 @@
+<form name="addCustomerForm" novalidate class="margin0">
+    <div data-ng-controller="AddCustomerCtrl">
+        <div id="addCustomer" data-pls-modal="addCustomerWizard.showDialog" data-close="init()"
+             data-ng-class="{modalWidth12: addCustomerWizard.step=='details', modalWidth7: addCustomerWizard.step!='details'}"
+             class="addCustomerModalSize" data-ng-init="init()" data-enter="nextStepKeyHandler()">
+            <div class="modal-header">
+                <h4>Add Customer</h4>
+            </div>
+            <div class="modal-body" data-ng-if="addCustomerWizard.showDialog">
+                <div class="row-fluid">
+                    <ul class="breadcrumb">
+                        <li data-ng-repeat="breadCrumb in addCustomerWizard.breadCrumbs.list"
+                            data-ng-class="{active: addCustomerWizard.step != breadCrumb.id}">
+                            <strong data-ng-if="addCustomerWizard.step == breadCrumb.id"><span data-ng-bind="breadCrumb.label"></span></strong>
+                            <span data-ng-if="addCustomerWizard.step != breadCrumb.id" data-ng-bind="breadCrumb.label"></span>
+                            <span data-ng-if="breadCrumb.next" class="divider">/</span>
+                        </li>
+                    </ul>
+                </div>
+                <div class="row-fluid">
+                    <div data-ng-switch="addCustomerWizard.step">
+                        <div data-ng-switch-when="details">
+                            <div data-ng-include="'pages/content/customer/add/customer-details.html'"></div>
+                        </div>
+                        <div data-ng-switch-when="address" class="well-small">
+                            <div data-ng-include="'pages/content/customer/add/customer-billto.html'"></div>
+                        </div>
+                        <div data-ng-switch-when="invoice_preferences" class="well-small">
+                            <div data-ng-include="'pages/content/customer/add/customer-invoice-preferences.html'"></div>
+                        </div>
+                        <div data-ng-switch-when="edi_settings" class="well-small">
+                            <div data-ng-include="'pages/content/customer/add/customer-edi-settings.html'"></div>
+                        </div>
+
+                        <div data-ng-switch-when="req_fields">
+                            <div data-pls-bill-to-req-fields data-bill-to="addCustomerWizard.customer.billTo" data-parent-dialog-id="addCustomer"
+                                 class="well-small"></div>
+                        </div>
+
+                        <div data-ng-switch-when="default_values" class="well-small">
+                            <div data-pls-bill-to-default-values data-bill-to="addCustomerWizard.customer.billTo"></div>
+                        </div>
+
+                        <div data-ng-switch-when="req_docs" class="well-small">
+                            <div data-ng-include="'pages/content/customer/add/customer-req-docs.html'"></div>
+                        </div>
+                        <div data-ng-switch-when="audit_preferences" class="well-small">
+                            <div data-ng-include="'pages/content/customer/add/customer-audit-preferences.html'"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button id="cancel" type="button" class="btn btn-navbar" data-ng-click="init()">Cancel</button>
+                <button id="back" type="button" class="btn btn-navbar" data-ng-click="prevStep()" data-ng-hide="isFirstStep()"><i
+                        class="icon-white icon-chevron-left"></i>Back
+                </button>
+                <button id="next" type="button" class="btn btn-navbar" data-ng-click="safeNextStep()" data-ng-disabled="!canNextStep()"
+                        data-ng-hide="isLastStep()">
+                    Next<i class="icon-white icon-chevron-right"></i></button>
+                <button id="done" type="button" class="btn btn-primary" data-ng-click="saveCustomer()" data-ng-show="isLastStep()">Done
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

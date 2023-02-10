@@ -1,0 +1,125 @@
+<div id="customersList" data-ng-controller="VendorBillController">
+    <div class="row-fluid">
+        <div class="tabbable tabbable-bordered">
+            <ul class="nav nav-tabs">
+                <li class="pls-menu-item">
+                    <a href="#/vendorBill/unmatched">Unmatched Vendor Bills</a>
+                </li>
+                <li class="pls-menu-item">
+                    <a href="#/vendorBill/archived">Archived Vendor Bills</a>
+                </li>
+            </ul>
+            <div class="tab-content">
+                <div class="tab-pane active">
+                    <div class="row-fluid" data-ng-if="isTabSelected('unmatched')">
+                        <div class="span4">
+                            <button type="button" class="btn span4" data-ng-click="checkingMatchLoads()"
+                                data-ng-if="$root.isFieldRequired('VEND_BILL_CREATE_SALES_ORDER')"
+                                data-ng-disabled="_.isEmpty(vendorBillsModel.selectedVendorBills) 
+                                || vendorBillsModel.selectedVendorBills.length !== 1">Create Sales Order</button>
+                            <label class="span4 label-middle">
+                                Records:<b>{{vendorBillsGrid.ngGrid.filteredRows.length}}</b>
+                            </label>
+                        </div>
+                        <div class="offset4 span4">
+                            <button type="button" class="btn offset2 span4" data-ng-click="searchSalesOrder()"
+                                    data-ng-if="$root.isFieldRequired('VEND_BILL_SEARCH_SALES_ORDER')"
+                                    data-ng-disabled="_.isEmpty(vendorBillsModel.selectedVendorBills)
+                                    || vendorBillsModel.selectedVendorBills.length !== 1">Search Sales Order</button>
+                            <button type="button" class="btn span2" data-ng-click="viewVendorBill()" data-ng-disabled="_.isEmpty(vendorBillsModel.selectedVendorBills)
+                                    || vendorBillsModel.selectedVendorBills.length !== 1">View</button>
+                            <button type="button" class="btn span2" data-ng-click="vendorBillsModel.confirmArchiveDialog.showDialog()"
+                                    data-ng-disabled="_.isEmpty(vendorBillsModel.selectedVendorBills)"
+                                    data-ng-if="$root.isFieldRequired('VEND_BILL_ARCHIVE_AND_UNMATCH')">Archive</button>
+                            <button type="button" class="btn span2" data-ng-click="exportVendorBills(vendorBillsGrid)"
+                                    data-ng-disabled="_.isEmpty(vendorBillsGrid.ngGrid.filteredRows)">Export</button>
+                        </div>
+                    </div>
+
+                    <div class="row-fluid" data-ng-if="isTabSelected('archived')">
+                        <div class="offset8 span4">
+                            <button type="button" class="btn offset2 span5" data-ng-click="changeState('unArchive')"
+                                    data-ng-if="$root.isFieldRequired('VEND_BILL_ARCHIVE_AND_UNMATCH')"
+                                    data-ng-disabled="_.isEmpty(vendorBillsModel.selectedVendorBills)
+                                    || vendorBillsModel.selectedVendorBills.length !== 1">Move To Unmatched</button>
+                            <button type="button" class="btn span5" data-ng-click="viewVendorBill()" data-ng-disabled="_.isEmpty(vendorBillsModel.selectedVendorBills)
+                            || vendorBillsModel.selectedVendorBills.length !== 1">View</button>
+                        </div>
+                    </div>
+                    <br/>
+
+                    <div class="row-fluid">
+                        <div class="gridStyle span12 gridHeight4 a_customersGrid" data-ng-grid="vendorBillsGrid" data-ng-model="vendorBills"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div data-pls-modal="vendorBillsModel.vendorBillView.show" data-close="vendorBillsModel.vendorBillView.show = false" class="modalWidth12 modalHeight7">
+        <div class="modal-header">
+            <h5>Vendor Bill</h5>
+        </div>
+        <div class="modal-body">
+            <div data-pls-view-vendor-bill="vendorBillsModel.vendorBillModel"
+                 data-customer-name="vendorBillsModel.selectedVendorBills[0].customerName"></div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-ng-click="vendorBillsModel.vendorBillView.show = false">Close</button>
+        </div>
+    </div>
+    <div data-pls-modal="vendorBillsModel.showCustomerDialog" data-close="closeCustomerDialog()" class="modalWidth4">
+        <div class="modal-header">
+            <h5>Enter customer name</h5>
+        </div>
+        <div class="modal-body plsVisibleOverflow">
+            <div class="row-fluid">
+	            <div class="span10 offset1" data-ng-if="vendorBillsModel.showCustomerDialog">
+	                <div data-pls-customer-lookup="vendorBillsModel.selectedCustomer" data-pls-customer-lookup-required></div>
+	            </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn" data-ng-click="closeCustomerDialog()">Close</button>
+            <button type="button" class="btn" data-ng-click="createSalesOrderWithCustomer()"
+                data-ng-disabled="!vendorBillsModel.selectedCustomer">Ok</button>
+        </div>
+    </div>
+
+    <div data-pls-modal="vendorBillsModel.confirmArchiveDialog.show" data-close="vendorBillsModel.confirmArchiveDialog.close()" class="modalWidth4">
+        <form name="archiveDialogForm" style="margin: 0">
+        <div class="modal-header">
+            <h5>Archive Vendor Bill</h5>
+        </div>
+        <div class="modal-body">
+            <div class="row-fluid">
+                <label class="span2 label-middle" for="reason">Reason:</label>
+                <div class="span10 ">
+                        <select id="reason" data-ng-model="vendorBillsModel.confirmArchiveDialog.reason" required class="span12"
+                        data-ng-options="k as v for (k, v) in VBReasonsCode"></select>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="span2 label-middle" for="loadid">Load ID:</label>
+                <div class="span10 ">
+                        <input id="loadid" maxlength="50" data-ng-required="vendorBillsModel.confirmArchiveDialog.reason === 'DUPLICATE' ||
+                        vendorBillsModel.confirmArchiveDialog.reason === 'LOAD_1_0' " type="text" data-ng-model="vendorBillsModel.confirmArchiveDialog.loadId" class="span12">
+                </div>
+            </div>
+            <div class="row-fluid">
+                <label class="span2 label-middle" for="note">Note:</label>
+                <div class="span10 ">
+                        <textarea id="note"  maxlength="500" data-ng-required="vendorBillsModel.confirmArchiveDialog.reason === 'OTHER'"
+                        data-ng-model="vendorBillsModel.confirmArchiveDialog.note" class="span12"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn" data-ng-click="vendorBillsModel.confirmArchiveDialog.close()">Cancel</button>
+            <button type="button" class="btn btn-primary" data-ng-click="vendorBillsModel.confirmArchiveDialog.ok()" data-ng-disabled="archiveDialogForm.$invalid">Ok</button>
+        </div>
+        </form>
+    </div>
+
+    <div data-ng-include="searchSalesOrderTemplate"></div>
+    <div data-ng-include="editSalesOrderTemplate"></div>
+</div>

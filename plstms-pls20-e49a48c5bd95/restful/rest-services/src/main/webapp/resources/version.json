@@ -1,0 +1,12 @@
+{
+    "build":{
+        "version":"${git-version.commit.id.describe}",
+        "branch":"${git-version.branch}",
+        "time":"${git-version.build.time}"
+    },
+    "commit":{
+        "id":"${git-version.commit.id}",
+        "user":"${git-version.commit.user.name}",
+        "time":"${git-version.commit.time}"
+    }
+}

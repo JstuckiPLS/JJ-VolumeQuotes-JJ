@@ -1,0 +1,46 @@
+<div class="row-fluid">
+    <div class="span7">
+        <strong class="span6">Inbound / Outbound:</strong>
+        <span data-ng-bind="billToListModel.selectedBillTos[0].billToDefaultValues.direction | shipmentDirection: 'Outbound'" class="span5"></span>
+    </div>
+    <div class="span5">
+        <strong class="span7">Manual BOL: Inbound/Outbound</strong>
+        <span data-ng-bind="billToListModel.selectedBillTos[0].billToDefaultValues.manualBolDirection | shipmentDirection: 'Outbound'" class="span4"></span>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <div class="span7">
+        <strong class="span6">Pay Terms:</strong>
+        <span data-ng-bind="billToListModel.selectedBillTos[0].billToDefaultValues.payTerms | paymentTerms: 'Prepaid'" class="span5"></span>
+    </div>
+    <div class="span5">
+        <strong class="span7">Manual BOL: Pay Terms</strong>
+        <span data-ng-bind="billToListModel.selectedBillTos[0].billToDefaultValues.manualBolPayTerms | paymentTerms: 'Collect'" class="span4"></span>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span7 wrap">
+        <strong class="span6">EDI 210: Customs Broker</strong>
+        <div data-ng-bind="billToListModel.selectedBillTos[0].billToDefaultValues.ediCustomsBroker" class="span5"></div>
+    </div>
+    <div class="span5">
+        <strong class="span7">EDI 210: Inbound/Outbound</strong>
+        <span data-ng-bind="billToListModel.selectedBillTos[0].billToDefaultValues.ediDirection | shipmentDirection: 'Outbound'" class="span4"></span>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span7">
+        <strong class="span6">EDI 210: Phone</strong>
+        <span data-ng-if="billToListModel.selectedBillTos[0].billToDefaultValues.ediCustomsBrokerPhone.number" class="span5">
+              +{{billToListModel.selectedBillTos[0].billToDefaultValues.ediCustomsBrokerPhone.countryCode}}
+              ({{billToListModel.selectedBillTos[0].billToDefaultValues.ediCustomsBrokerPhone.areaCode}})
+              {{billToListModel.selectedBillTos[0].billToDefaultValues.ediCustomsBrokerPhone.number}}
+              <span data-ng-if="billToListModel.selectedBillTos[0].billToDefaultValues.ediCustomsBrokerPhone.extension">
+              Ext.: {{billToListModel.selectedBillTos[0].billToDefaultValues.ediCustomsBrokerPhone.extension}}</span></span>
+    </div>
+    <div class="span5">
+        <strong class="span7">EDI 210: Pay Terms</strong>
+        <span data-ng-bind="billToListModel.selectedBillTos[0].billToDefaultValues.ediPayTerms | paymentTerms: 'Prepaid'" class="span4"></span>
+    </div>
+</div>

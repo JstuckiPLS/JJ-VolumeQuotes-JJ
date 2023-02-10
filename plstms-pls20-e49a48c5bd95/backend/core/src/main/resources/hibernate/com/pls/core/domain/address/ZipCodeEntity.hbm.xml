@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC
+        "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+        "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<hibernate-mapping>
+    <query name="com.pls.core.domain.address.ZipCodeEntity.Q_SEARCH">
+        <![CDATA[
+                from ZipCodeEntity
+                where (id.country.id = :countryCode or :countryCode is null)
+                    and lower(city || ', ' || stateCode || ', ' || zipCode) like :criteria
+                order by id.country.id, city, stateCode, zipCode
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.address.ZipCodeEntity.Q_GET_DEFAULT_BY_ZIP_AND_COUNTRY">
+        <![CDATA[
+                from ZipCodeEntity
+                where id.country.id = :countryCode
+                    and zipCode = :zip
+                    and (prefCity is null or prefCity = city)
+        ]]>
+    </query>
+         <query name="com.pls.core.domain.address.ZipCodeEntity.Q_SEARCH_MULTIPLE_COUNTRY">
+        <![CDATA[
+                from ZipCodeEntity
+                where (id.country.id in (:countryCode) or :countryCode is null)
+                    and lower(city || ', ' || stateCode || ', ' || zipCode) like :criteria
+                order by id.country.id, city, stateCode, zipCode
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.address.ZipCodeEntity.Q_IS_ZIP_CODE_EXIST">
+        <![CDATA[
+                select distinct(zce.zipCode) from ZipCodeEntity zce where zce.zipCode in (:zipCodes)
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.address.ZipCodeEntity.Q_IS_STATE_CODE_EXIST">
+        <![CDATA[
+                select distinct(zce.stateCode) from ZipCodeEntity zce where zce.stateCode in(:stateCodes)
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.address.ZipCodeEntity.Q_IS_CITY_EXIST">
+        <![CDATA[
+                select distinct(zce.city) from ZipCodeEntity zce where zce.city in (:cities)
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.address.ZipCodeEntity.Q_IS_COUNTRY_EXIST">
+        <![CDATA[
+                select distinct(zce.countryCode) from ZipCodeEntity zce where zce.countryCode in (:countryCodes)
+        ]]>
+    </query>
+    <query name="com.pls.core.domain.address.ZipCodeEntity.Q_GET_ZIP_CODES_FOR_CACHE">
+        <![CDATA[
+            from ZipCodeEntity
+        ]]>
+    </query>
+</hibernate-mapping>

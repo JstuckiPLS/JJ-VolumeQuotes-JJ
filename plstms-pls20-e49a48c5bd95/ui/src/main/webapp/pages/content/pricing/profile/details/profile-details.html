@@ -1,0 +1,291 @@
+<div class="row-fluid" data-ng-controller="ProfileDetailsCtrl">
+
+    <!--FIRST COLUMN -->
+    <div class="span4">
+        <div class="form-horizontal">
+            <div class="control-group">
+                <label class="control-label">Profile Id:</label>
+
+                <div class="controls customer-label" data-ng-bind="profileDetails.id"></div>
+            </div>
+            <div data-ng-hide="_.contains(['BUY_SELL'], profileDetails.ltlPricingType) ">
+                <div class="control-group">
+                    <label class="control-label">Detail Id:</label>
+
+                    <div class="controls customer-label" data-ng-bind="profileDetails.profileDetails[0].id"></div>
+                </div>
+            </div>
+
+            <div data-ng-hide="_.contains(['BENCHMARK','MARGIN'], profileDetails.ltlPricingType) ">
+                <div class="control-group">
+                    <label class="control-label" for="inputPricingType">Pricing Type:</label>
+
+                    <div class="controls">
+                        <select id="inputPricingType" class="span12"
+                                data-ng-change="initProfileDetails()"
+                                data-ng-model="profileDetails.ltlPricingType"
+                                data-ng-options="type.ltlPricingType as  type.description for type in profileDictionary.pricingTypes"
+                                required>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div data-ng-show="_.contains(['BENCHMARK'], profileDetails.ltlPricingType) ">
+                <div class="control-group">
+                    <label class="span3 offset2" for="inputPricingType">Pricing Type:</label>
+
+                    <div class="span3">Benchmark</div>
+                </div>
+            </div>
+            <div data-ng-show="_.contains(['MARGIN'], profileDetails.ltlPricingType) ">
+                <div class="row-fluid">
+                    <label class="span3 offset2" for="inputPricingType">Pricing Type:</label>
+
+                    <div class="span3">Margin</div>
+                </div>
+            </div>
+
+            <div data-ng-show="_.contains(['BENCHMARK'], profileDetails.ltlPricingType) ">
+                <div class="control-group">
+                    <label class="control-label" for="inputBenchmarkCarrierOption">Select Carrier:</label>
+
+                    <div class="controls">
+                        <select id="inputBenchmarkCarrierOption" class="span12"
+                                data-ng-change="setBenchmarkCarrierType()"
+                                data-ng-model="benchmarkCarrierOption"
+                                data-ng-options="type.id as  type.label for type in benchmarkCarrierOptions"
+                                required>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div data-ng-hide="(_.contains(['BENCHMARK'], profileDetails.ltlPricingType) && 
+                    _.contains(['ALL'], benchmarkCarrierOption)) || (_.contains(['MARGIN'], profileDetails.ltlPricingType))">
+                <div class="control-group">
+                    <label class="control-label" for="inputOrganization">SCAC:</label>
+
+                    <div class="controls">
+                        <input id="inputOrganization" class="span12"
+                               data-scac-disabled="_.contains(['BLANKET_CSP'], profileDetails.ltlPricingType) "
+                               data-pls-scac-search="profileDetails.carrierOrganization"
+                               data-ng-required="!profileDetails.carrierOrganization" required/>
+                    </div>
+                </div>
+            </div>
+
+            <div data-ng-hide="_.contains(['BUY_SELL'], profileDetails.ltlPricingType) ">
+                <div data-ng-include="'pages/content/pricing/profile/details/buy-profile-details.html'">
+                </div>
+            </div>
+            <!-- end for inputPricingTypeModel='Blanket', 'Blanket/CSP', 'CSP' -->
+
+            <div data-ng-show="_.contains(['BUY_SELL'], profileDetails.ltlPricingType) " class="row-fluid">
+                <!-- empty div for proper alignment -->
+                <div class="span12"></div>
+                <div class="offset1 span12 well well-small">
+                    <p>Buy:</p>
+
+                    <div data-ng-include="'pages/content/pricing/profile/details/buy-profile-details.html'">
+                    </div>
+                </div>
+
+                <br/>
+
+                <div class="offset1 span12 well well-small">
+                    <p>Sell:</p>
+
+                    <div data-ng-include="'pages/content/pricing/profile/details/sell-profile-details.html'">
+                    </div>
+                </div>
+
+            </div>
+            <!-- end for inputPricingTypeModel='Buy/Sell' -->
+
+        </div>
+    </div>
+    <!--FIRST COLUMN END-->
+
+    <!--SECOND COLUMN -->
+    <div class="span6">
+        <div class="form-horizontal">
+            <div
+                data-ng-hide="_.contains(['BENCHMARK','MARGIN'], profileDetails.ltlPricingType) ">
+                <!-- NOT USED ANYWHERE in the SYSTEM. HENCE COMMENTING IT -->
+                <!-- 
+                    <div class="control-group">
+                        <label class="control-label" for="inputCarrierCode">Carrier
+                            Code:</label>
+                        <div class="controls">{{profileDetails.carrierCode}}</div>
+                    </div>
+    
+                    <div class="control-group">
+                        <label class="control-label" for="inputDisplayName">Display
+                            Name:</label>
+                        <div class="controls">
+                            <input id="inputDisplayName" type="text"
+                                data-ng-model="profileDetails.aliasName" />
+                        </div>
+                    </div>
+    
+                    <div class="control-group">
+                        <label class="control-label" for="inputCarrierWebSite">Carrier
+                            Website:</label>
+                        <div class="controls">
+                            <input id="inputCarrierWebSite" type="url"
+                                data-ng-model="profileDetails.carrierWebsite" />
+                        </div>
+                    </div>
+                 -->
+            </div>
+
+            <div class="control-group">
+                <label class="control-label" for="inputActive">Active:</label>
+                <div class="controls">
+                    <input type="checkbox" id="inputActive"
+                        data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.ltlPricingType)"
+                        data-ng-model="profileDetails.isActive" />
+                </div>
+            </div>
+            <div class="control-group" data-ng-hide="_.contains(['BENCHMARK','MARGIN'], profileDetails.ltlPricingType)">
+                <label class="control-label" for="inputActive">Exclude from Booking:</label>
+                <div class="controls">
+                    <input type="checkbox" id="inputBlkFrmBkngLoad"
+                        data-ng-model="profileDetails.isBlckdFrmBkng" 
+                        data-ng-change="profileDetails.actCarrierOrganization = profileDetails.isBlckdFrmBkng 
+                                          ? profileDetails.actCarrierOrganization : null"/>
+                </div>
+            </div>
+            <div data-ng-hide="!profileDetails.isBlckdFrmBkng">
+                <div class="control-group">
+                    <label class="control-label" for="inputOrganization">Original SCAC:</label>
+                    <div class="span5" >
+                        <input id="inputActOrganization" class="span12"
+                            data-scac-disabled="_.contains(['BLANKET_CSP'], profileDetails.ltlPricingType) "
+                            data-pls-scac-search="profileDetails.actCarrierOrganization" required />
+                    </div>
+                    <div class="span1">
+                        <i class="icon-info-sign label-middle" data-placement="top" data-pls-popover="description"></i>
+                        <div id="description">For "Exclude From Booking", the original SCAC is used to obtain Carrier
+                            Connect information during "Get Quote".  The Quote will not be selectable
+                            for booking by PLS or Customer users.</div>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group">
+                <label class="control-label" for="inputEffectiveDate1">Effective:</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input name="dateField" type="text" id="inputEffectiveDate1"
+                            data-ng-model="profileDetails.effDate"
+                            data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.ltlPricingType)"
+                            data-max-date="profileDetails.expDate"
+                            data-date-format="mm/dd/yy" data-pls-datepicker
+                            class="input-small" required />
+                        <button type="button" class="btn" data-toggle="datepicker"
+                            data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.ltlPricingType)">
+                            <i class="icon-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div class="control-group" data-ng-form="plsProfileDetailsForm">
+                <label class="control-label" for="inputExpiresDate1">Expires:</label>
+                <div class="controls">
+                    <div class="input-append">
+                        <input name="dateField" type="text" id="inputExpiresDate1"
+                            data-ng-model="profileDetails.expDate"
+                            data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.ltlPricingType)"
+                            data-min-date="profileDetails.effDate"
+                            data-date-format="mm/dd/yy" data-pls-datepicker
+                            class="input-small" />
+                        <button type="button" class="btn" data-toggle="datepicker"
+                            data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.ltlPricingType)">
+                            <i class="icon-calendar"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div
+                data-ng-hide="_.contains(['BENCHMARK','MARGIN'], profileDetails.ltlPricingType) ">
+                <div class="control-group">
+                    <label class="control-label">Blocked:</label>
+                    <div class="controls  controls-row">
+                        <button type="button" class="btn btn-small"
+                            data-ng-click="openAffectedCustomersDialog()">Affects</button>
+                    </div>
+                </div>
+                <div
+                    data-ng-hide="_.contains(['BLANKET'], profileDetails.ltlPricingType) ">
+                    <div class="control-group">
+                        <label class="control-label" for="inputCustomers">Customers:</label>
+                        <div class="controls  controls-row">
+                            <select id="inputCustomers" multiple="multiple">
+                                <option
+                                    data-ng-repeat="applCust in profileDetails.applicableCustomers">
+                                    {{applCust.customer.name}}</option>
+                            </select>
+                            <button type="button" class="btn btn-small"
+                                data-ng-click="openAssignedCustomersDialog()">Edit
+                                List</button>
+                        </div>
+                    </div>
+                    <div data-pls-assigned-customers-dialog data-assigned-customers="profileDetails.applicableCustomers"
+                         data-model-id="profileDetails.id"></div>
+                </div>
+            </div>
+
+            <div class="control-group"
+                data-ng-hide="_.contains(['BENCHMARK','MARGIN'], profileDetails.ltlPricingType)">
+                <label class="control-label" for="inputComments">{{profileNoteLabel}}:</label>
+                <div class="controls">
+                    <textarea id="inputComments" rows="3" class="input-xlarge"
+                              data-ng-model="profileDetails.note"
+                              data-ng-disabled="_.contains(['BLANKET_CSP'], profileDetails.ltlPricingType)"></textarea>
+                </div>
+            </div>
+
+            <div class="control-group" data-ng-show="profileDetails.isLTLLCApi()">
+                <label class="control-label" for="inputShowQuoteNumberOnBOL">Quote Number on BOL:</label>
+                <div class="controls">
+                    <input type="checkbox" id="inputShowQuoteNumberOnBOL"
+                        data-ng-model="profileDetails.displayQuoteNumberOnBol" />
+                </div>
+            </div>
+            
+            <div class="control-group" data-ng-show="profileDetails.isLTLLCApi()">
+                <label class="control-label" for="inputTrackWithLTLLC">Track with LTL-Lifecycle:</label>
+                <div class="controls">
+                    <input type="checkbox" id="inputTrackWithLTLLC" data-ng-disabled="profileDetails.dispatchWithLTLLC"
+                        data-ng-model="profileDetails.trackWithLTLLC" />
+                </div>
+            </div>
+            <div class="control-group" data-ng-show="profileDetails.isLTLLCApi()">
+                <label class="control-label" for="inputDispatchWithLTLLC">Dispatch with LTL-Lifecycle:</label>
+                <div class="controls">
+                    <input type="checkbox" id="inputDispatchWithLTLLC"
+                        data-ng-model="profileDetails.dispatchWithLTLLC" 
+                        data-ng-change="profileDetails.trackWithLTLLC = profileDetails.dispatchWithLTLLC 
+                                          ? true : profileDetails.trackWithLTLLC" />
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--SECOND END -->
+
+    <!--BUTTONS AREA-->
+    <div class="row-fluid">
+        <div class="span9 ">&nbsp;</div>
+        <div class="span3 ">
+            <button class="btn btn-primary" type="button"
+                    data-ng-click="cancel()">Cancel
+            </button>
+            <button class="btn btn-primary" type="button"
+                    data-ng-click="submit()">Save
+            </button>
+        </div>
+    </div>
+    <!--BUTTONS AREA END-->
+    <div data-ng-include="'pages/content/pricing/profile/details/profile-details-affected-customers.html'"></div>
+</div>

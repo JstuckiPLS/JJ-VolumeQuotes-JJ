@@ -1,0 +1,55 @@
+<div data-ng-controller="TrackingBoardUnbilledController" data-ng-init="init()" data-pls-ignore-location-change-check="true">
+    <div class="row-fluid text-right">
+        <div class="span4 offset4">
+        <div class="form-inline text-right" data-ng-hide="_.isEmpty(businessUnits)">
+                <label class="label-middle" for="businessUnitName">Business Unit:&nbsp;</label>
+                <select id="businessUnitName"
+                    class="input-large"
+                    data-ng-model="selectedBusinessUnit"
+                    data-ng-options="item for item in businessUnits"
+                    data-ng-change="showLoadsBySelectedBusinessUnit()">
+                </select>
+            </div>
+        </div>
+        <div class="span4">
+            <button type="button" class="btn"
+                    data-ng-click="exportAllShipments(shipmentsGrid)"
+                    data-ng-disabled="shipmentsGrid.ngGrid.filteredRows.length === 0"
+                    data-ng-show="$root.isFieldRequired('CAN_EXPORT_UNBILLED_LOADS')">Export</button>
+            <button type="button" class="btn" data-ng-click=OverrideDateHold(selectedShipments[0].shipmentId)
+                    data-ng-show="$root.isFieldRequired('OVERRIDE_DATE_HOLD')"
+                    data-ng-disabled="selectedShipments.length != 1 || !selectedShipments[0].billToRecieved">Override Date Hold</button>
+            <button type="button" class="btn a_shipmentEditButton" data-ng-click=toShipmentEntry(selectedShipments[0].shipmentId)
+                    data-ng-show="$root.isFieldRequired('ADD_SHIPMENT_ENTRY')"
+                    data-ng-disabled="selectedShipments.length != 1">Shipment Edit</button>
+            <button type="button" class="btn a_editButton" data-ng-click="editSalesOrder()"
+                    data-ng-show="$root.isFieldRequired('BOARD_CAN_EDIT_SALES_ORDER')"
+                    data-ng-disabled="selectedShipments.length != 1">Edit</button>
+        </div>
+    </div>
+
+    <div class="row-fluid">
+        &nbsp;
+    </div>
+    <div class="row-fluid">
+        <div class="span12">
+            <div class="gridStyle span12 gridHeight4_4 a_shipmentsGrid" data-ng-grid="shipmentsGrid" data-ng-model="shipments"></div>
+        </div>
+    </div>
+    <div class="row-fluid">
+            <div class="offset4 span8 text-right">
+                <div class="span3">
+                    Records: <strong><span data-ng-bind="shipmentsGrid.ngGrid.filteredRows.length"></span></strong>
+                </div>
+                <div class="span3 text-right">
+                    Total Revenue: <strong><span data-ng-bind="totalRevenue | plsCurrency"></span></strong>
+                </div>
+                <div class="span3 text-right">
+                    Total Cost: <strong><span data-ng-bind="totalCost | plsCurrency"></span></strong>
+                </div>
+                <div class="span3 text-right">
+                    Total Margin: <strong><span data-ng-bind="totalMargin | plsCurrency"></span></strong>
+                </div>
+            </div>
+        </div>
+</div>

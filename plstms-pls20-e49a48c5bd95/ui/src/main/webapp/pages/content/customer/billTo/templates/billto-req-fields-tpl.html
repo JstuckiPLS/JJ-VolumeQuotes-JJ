@@ -1,0 +1,20 @@
+<div class="row-fluid">
+    <div class="span12" id="a_addNewCheckBoxCheck">
+        <div class="row-fluid">
+            <strong class="span2">Required Fields:</strong>
+
+            <div class="span3 pls-required-buttons">
+                <button type="button" class="btn" data-ng-click="deleteReqField()" data-ng-disabled="!isDeletable">Delete</button>
+                <button type="button" class="btn" data-ng-click="editReqField()" data-ng-disabled="isNotEditable()">Edit</button>
+                <button type="button" class="btn" data-ng-click="addReqField()">Add</button>
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                <div data-ng-if="reqFieldsGrid" data-ng-grid="reqFieldsGrid" class="gridStyle gridHeight4_4 gridWidth11"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div data-pls-bill-to-identifier-dialog></div>
