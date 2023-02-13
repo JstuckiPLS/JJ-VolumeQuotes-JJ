@@ -1,3 +1,0 @@
-Contains timezones used in PLS 1.0&2.0
-All timezone information is stored as separate columns and contain some offset. Mapping of offset to real timezone in stored in TIMEZONE table. See
- LOCAL_OFFSET and TIMEZONE columns.

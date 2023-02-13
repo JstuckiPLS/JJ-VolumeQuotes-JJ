@@ -1,9 +1,0 @@
-<div data-ng-controller="QuoteWizard">
-    <div data-ng-if="wizardData.step === 'rate_quote'" data-ng-include="wizardData.rateQuotePath"></div>
-    <div data-ng-if="wizardData.step === 'select_carrier'" data-ng-include="'pages/content/quotes/select-carrier.html'"></div>
-    <div data-ng-if="wizardData.step === 'build_order'" data-ng-include="'pages/content/quotes/build-order.html'"></div>
-    <div data-ng-if="wizardData.step === 'finish_order'" data-ng-include="'pages/content/quotes/finish-order.html'"></div>
-    <div data-ng-if="wizardData.step === 'finish_quote'" data-ng-include="'pages/content/quotes/finish-quote.html'"></div>
-    <div data-pls-add-edit-product data-selected-customer="selectedCustomerCopy"></div>
-    <div data-pls-gl-generator data-shipment="wizardData.shipment" data-customer="wizardData.selectedCustomer"></div>
-</div>

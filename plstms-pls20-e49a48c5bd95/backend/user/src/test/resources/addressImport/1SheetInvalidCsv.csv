@@ -1,4 +1,0 @@
-Address Name,Address Code,Contact Name,Country Code,Address 1,Address 2,City (invalid header),St/Province,Zip/Postal Code,Phone,Fax,E-mail
-TestAddress1,,Name1,111,address11,address21,city1,NY,65445,1234567890,1234567890,a@a.com
-,9874563212,Name2,123,address12,,city2,NY,65445,7894561320,1234567890,a@a.com
-TestAddress3,9874563213,Name3,123,address13,address23,city3,NY,65445,7894561320,1234567890,a@a.com

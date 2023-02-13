@@ -1,6 +1,0 @@
-Product Description,NMFC #,Commodity Class,SKU/ Product  Code,Shared ( yes or no),Hazmat (yes or no),"UN# 
-(if Hazmat is Yes)","Packaging Group 
-(if Hazmat is Yes)","Hazmat Class 
-(if Hazmat is Yes)"
-nmfc1,TestProd1,50,sku1,no,yes,UN1,PG1,5
-nmfc2,TestProd2,55,sku2,yes,no,,,

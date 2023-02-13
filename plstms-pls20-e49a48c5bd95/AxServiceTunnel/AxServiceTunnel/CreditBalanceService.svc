@@ -1,1 +1,0 @@
-﻿<%@ ServiceHost Language="C#" Debug="true" Service="AxServiceTunnel.CreditBalanceService" CodeBehind="CreditBalanceService.svc.cs" %>

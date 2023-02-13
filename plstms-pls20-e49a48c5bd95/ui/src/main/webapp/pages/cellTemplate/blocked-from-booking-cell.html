@@ -1,7 +1,0 @@
-<div data-ng-if="row.entity.origProposal.blockedFrmBkng !== 'YES'" class="ngCellText"
-     data-ng-class="col.colIndex()">{{row.getProperty(col.field)}}</div>
-<div data-ng-if="row.entity.origProposal.blockedFrmBkng === 'YES'" class="ngCellText"
-     data-ng-class="col.colIndex()">{{row.getProperty(col.field)}}
-    <i class="icon-info-sign label-top ng-scope" data-position="top" data-pls-popover="excludeFromBooking"></i>
-</div>
-<div id="excludeFromBooking">This quote is for comparison purposes only and is excluded from booking.</div>

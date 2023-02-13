@@ -1,6 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns="http://com.pls.load" targetNamespace="http://com.pls.load"
-    elementFormDefault="qualified" attributeFormDefault="unqualified">
-    <xs:include schemaLocation="CommonTypes.xsd"/>
-    <xs:element name="LtlLoadMessage" type="LtlLoadMessage" />
-</xs:schema>
